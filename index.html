@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XREZZKY STORE | Premium Digital Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #05080f;
+            --surface: #0f172a;
+            --surface-light: #1e293b;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --accent: #f59e0b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(15, 23, 42, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .font-syne { font-family: 'Syne', sans-serif; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 10px; }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+        }
+
+        .glow-blue { box-shadow: 0 0 20px var(--primary-glow); }
+        
+        #loader {
+            position: fixed; inset: 0; background: var(--bg-dark);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid var(--border);
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .product-img-container { position: relative; overflow: hidden; border-radius: 18px; }
+        .product-card:hover .product-img { transform: scale(1.1); }
+        .product-img { transition: transform 0.6s ease; width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px); z-index: 1000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: var(--surface);
+            width: 100%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+            border-radius: 28px; border: 1px solid var(--border);
+            position: relative; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        .custom-input {
+            width: 100%; background: #0a0f1a; border: 1px solid var(--border);
+            padding: 14px 18px; border-radius: 14px; color: white; transition: 0.3s;
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+        }
+        .custom-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(59,130,246,0.2); }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; padding: 14px 28px; border-radius: 14px;
+            font-weight: 700; transition: 0.3s; text-align: center; display: block;
+            cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-primary:active { transform: scale(0.95); }
+
+        .nav-link { color: var(--text-dim); transition: 0.3s; font-size: 0.8rem; font-weight: 600; background: none; border: none; cursor: pointer; }
+        .nav-link.active { color: var(--primary); }
+
+        .badge-new { background: #ef4444; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
+        .badge-limit { background: #f59e0b; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
+
+        #fullImageView { z-index: 9999 !important; background-color: rgba(0, 0, 0, 0.95); }
+        #fullImageView img { animation: zoomIn 0.3s ease-out; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+        .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+        .trx-item {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .promo-ticker { animation: ticker 18s linear infinite; }
+        .promo-ticker:hover { animation-play-state: paused; }
+
+        /* Star rating geser */
+        .star-input { display:flex; flex-direction:row-reverse; gap:6px; justify-content:flex-start; margin-bottom:16px; }
+        .star-input input { display:none; }
+        .star-input label { font-size:32px; color:#374151; cursor:pointer; transition:.15s; line-height:1; }
+        .star-input label:hover,
+        .star-input label:hover ~ label,
+        .star-input input:checked ~ label { color:#f59e0b; }
+
+        /* Qty counter */
+        .qty-btn { background: rgba(255,255,255,0.1); border:1px solid var(--border); color:white; width:36px; height:36px; border-radius:10px; font-size:18px; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; }
+        .qty-btn:hover { background: rgba(59,130,246,0.3); }
+
+        /* Address drill-down select */
+        .addr-select { width:100%; background:#0a0f1a; border:1px solid var(--border); padding:12px 16px; border-radius:12px; color:white; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; appearance:none; cursor:pointer; }
+        .addr-select:disabled { opacity:0.4; cursor:not-allowed; }
+        .addr-select:focus { border-color:var(--primary); outline:none; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div class="spinner mb-4"></div>
+        <h2 class="text-2xl font-bold font-syne animate-pulse">XREZZKY</h2>
+        <p class="text-xs text-gray-500 mt-2 tracking-[0.3em] uppercase">Menyinkronkan dengan Firebase...</p>
+    </div>
+
+    <!-- BG GLOW -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full z-[-1]"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full z-[-1]"></div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-[100] glass-card !rounded-none border-t-0 border-x-0 bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center glow-blue">
+                    <i class="fas fa-bolt text-white"></i>
+                </div>
+                <span class="text-2xl font-extrabold font-syne hidden md:block">XREZZKY</span>
+            </div>
+
+            <div class="flex-1 max-w-xl mx-6 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input type="text" id="globalSearch" placeholder="Cari skin, jasa, atau akun..." 
+                       class="custom-input !pl-12 !py-3 !rounded-full text-sm w-full">
+            </div>
+
+            <div id="authHeader" class="flex items-center gap-3"></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 mt-8">
+        
+        <!-- HOME PAGE -->
+        <section id="page-home" class="page-view fade-in">
+
+            <!-- HERO BANNER (kosong — diisi dari admin panel via Firebase) -->
+            <div id="heroBannerSection" class="mb-6"></div>
+
+            <!-- PROMO TICKER (kosong — diisi dari admin panel via Firebase) -->
+            <div id="promoTickerSection" class="mb-6"></div>
+
+            <!-- FITUR UNGGULAN -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-shield-alt text-blue-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Transaksi Aman</p>
+                        <p class="text-[10px] text-gray-500">Sistem escrow & garansi</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-bolt text-green-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Proses Cepat</p>
+                        <p class="text-[10px] text-gray-500">Pengiriman instan</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-headset text-purple-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">CS 24/7</p>
+                        <p class="text-[10px] text-gray-500">Siap bantu kapanpun</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Produk Premium</p>
+                        <p class="text-[10px] text-gray-500">Kualitas terjamin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOKO SECTION -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-extrabold font-syne text-lg flex items-center gap-2"><i class="fas fa-store text-blue-400"></i> Semua Toko</h3>
+                    <button onclick="openModal('modalAllStores')" class="text-blue-400 text-xs font-bold hover:underline flex items-center gap-1">Lihat Semua <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div id="storeChips" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    <div class="animate-pulse glass-card h-16 w-44 rounded-2xl shrink-0"></div>
+                    <div class="animate-pulse glass-card h-16 w-44 rounded-2xl shrink-0"></div>
+                </div>
+            </div>
+
+            <!-- SELLER CTA BANNER (hidden kalau sudah seller/admin) -->
+            <div id="homeSellerCta" class="relative rounded-[28px] overflow-hidden mb-8 border border-blue-500/30 cursor-pointer hover:border-blue-400/60 transition group hidden" onclick="openModal('modalBecomeSeller')">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0d1f3c] to-[#0a1020]"></div>
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-blue-600/10 blur-2xl"></div>
+                <div class="relative z-10 flex items-center justify-between p-6 md:p-8 gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/40 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-500/30 transition">
+                            <i class="fas fa-store text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-blue-400 mb-1">Jadi Seller di XREZZKY</p>
+                            <h3 class="text-lg md:text-xl font-extrabold font-syne leading-tight">Buka Toko Kamu Sekarang</h3>
+                            <p class="text-gray-400 text-xs mt-1">Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif</p>
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-sm transition whitespace-nowrap">
+                        Mulai <i class="fas fa-arrow-right ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CATEGORY FILTER (diisi dinamis dari Firebase) -->
+            <div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar" id="categoryFilter">
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn active-cat" data-cat="all">Semua</div>
+            </div>
+
+            <!-- PRODUCT GRID -->
+            <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4">
+                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+            </div>
+        </section>
+
+        <!-- ORDERS PAGE -->
+        <section id="page-orders" class="page-view hidden fade-in">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-2xl font-extrabold font-syne mb-6">Riwayat Pesanan</h2>
+                <div id="ordersList">
+                    <div class="glass-card p-12 text-center text-gray-500">
+                        <i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i>
+                        <p class="font-bold">Belum ada pesanan</p>
+                        <p class="text-sm mt-1">Pesanan kamu akan muncul di sini setelah bertransaksi via WhatsApp</p>
+                        <button onclick="navigate('home')" class="btn-primary mt-4 !inline-block">Mulai Belanja</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROFILE PAGE -->
+        <section id="page-profile" class="page-view hidden fade-in">
+            <div class="max-w-3xl mx-auto">
+
+                <!-- NOT LOGGED IN STATE -->
+                <div id="profileNotLoggedIn" class="hidden">
+                    <div class="glass-card p-12 text-center mb-5">
+                        <i class="fas fa-user-circle text-6xl text-gray-600 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Kamu Belum Login</h3>
+                        <p class="text-gray-400 text-sm mb-6">Login untuk akses profil, riwayat transaksi, dan fitur lainnya.</p>
+                        <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Login / Daftar</button>
+                    </div>
+                    <div class="space-y-3">
+                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LOGGED IN STATE -->
+                <div id="profileLoggedIn" class="hidden">
+                    <!-- USER CARD -->
+                    <div class="glass-card p-8 mb-5">
+                        <div class="flex flex-col items-center">
+                            <div class="relative group mb-4">
+                                <div id="profileAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-500/30 shadow-2xl overflow-hidden">
+                                    <span id="avatarText">?</span>
+                                </div>
+                            </div>
+                            <h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
+                            <p id="userEmailText" class="text-gray-400 text-sm mb-3"></p>
+                            <div id="roleBadgeContainer" class="mb-5"></div>
+                            <div class="grid grid-cols-2 gap-4 w-full">
+                                <div class="bg-white/5 p-4 rounded-2xl text-center">
+                                    <p class="text-xs text-gray-400 mb-1">Total Transaksi</p>
+                                    <p class="text-xl font-bold" id="statsTrx">0</p>
+                                </div>
+                                <div class="bg-white/5 p-4 rounded-2xl text-center">
+                                    <p class="text-xs text-gray-400 mb-1">Member Sejak</p>
+                                    <p class="text-sm font-bold text-blue-400" id="statsMember">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC ROLE/SELLER BANNER -->
+                    <div id="sellerBanner" class="mb-5"></div>
+
+                    <!-- SELLER CTA CARD (promosi daftar seller — hilang jika sudah daftar) -->
+                    <div id="sellerCtaCard" class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group hidden" onclick="openModal('modalBecomeSeller')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-black font-syne">SELLER</div>
+                        <div class="relative z-10 p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-500/30 border border-blue-400/40 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-store text-blue-300 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5">Upgrade Akun</p>
+                                <p class="font-extrabold font-syne text-base">Jadilah Seller XREZZKY</p>
+                                <p class="text-gray-400 text-xs">Buka toko & jual produk digitalmu ke ribuan pembeli</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-blue-400 shrink-0"></i>
+                        </div>
+                    </div>
+
+                    <!-- MENU LIST -->
+                    <div class="space-y-3 mb-5">
+                        <button onclick="openEditProfile()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-edit text-blue-400"></i></div><span class="font-semibold">Ubah Profil & Sandi</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
+                        <button onclick="showTransactionHistory()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-history text-purple-400"></i></div><span class="font-semibold">Riwayat Pembelian</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
+                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
+                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
+                        <button onclick="logoutUser()" class="w-full flex items-center justify-between p-5 glass-card border-red-500/20 hover:bg-red-500/10 transition rounded-2xl">
+                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400"></i></div><span class="font-semibold text-red-400">Keluar dari Akun</span></div>
+                        </button>
+                    </div>
+
+                    <p class="text-center text-[10px] text-gray-600 pb-2">XREZZKY STORE v2.0.0 · Made with ❤️</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="fixed bottom-0 inset-x-0 z-[100] glass-card !rounded-none border-x-0 border-b-0 px-4 py-2 flex justify-around items-center md:hidden">
+        <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-1">
+            <i class="fas fa-home text-xl"></i>
+            <span>Beranda</span>
+        </button>
+        <button onclick="navigate('orders')" id="nav-orders" class="nav-link flex flex-col items-center gap-1">
+            <i class="fas fa-shopping-bag text-xl"></i>
+            <span>Pesanan</span>
+        </button>
+        <button onclick="navigate('profile')" id="nav-profile" class="nav-link flex flex-col items-center gap-1">
+            <i class="fas fa-user-circle text-xl"></i>
+            <span>Profil</span>
+        </button>
+    </nav>
+
+    <!-- MODAL PRODUCT DETAIL -->
+    <div id="modalDetail" class="modal-overlay">
+        <div class="modal-content !max-w-4xl p-0 overflow-hidden">
+            <div class="flex flex-col md:flex-row h-full">
+                <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative min-h-[280px]">
+                    <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-xl rounded-full flex items-center justify-center z-10 hover:bg-white/10 transition">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <img id="detImg" src="" onclick="expandImg(this.src)" class="max-h-[400px] w-full object-contain shadow-2xl cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
+                </div>
+                <div class="w-full md:w-1/2 p-8 overflow-y-auto">
+                    <div class="flex justify-between items-start mb-4">
+                        <span id="detCat" class="text-xs font-bold text-blue-500 uppercase tracking-widest">KATEGORI</span>
+                        <div id="detRatingDisplay" class="flex items-center gap-1 text-sm"></div>
+                    </div>
+                    <h2 id="detTitle" class="text-3xl font-extrabold mb-2 leading-tight">Nama Produk</h2>
+                    <p id="detPrice" class="text-2xl font-bold text-blue-400 mb-2">Rp 0</p>
+                    <p class="text-sm text-gray-500 mb-4">Stok: <span id="detStock" class="text-green-400 font-bold">-</span></p>
+
+                    <!-- QTY -->
+                    <div class="flex items-center gap-4 mb-6">
+                        <p class="text-sm text-gray-400">Jumlah:</p>
+                        <div class="flex items-center gap-3">
+                            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                            <span id="detQty" class="text-lg font-bold w-8 text-center">1</span>
+                            <button class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                        <p class="text-sm font-bold text-blue-300 ml-auto">Total: <span id="detTotal">Rp 0</span></p>
+                    </div>
+                    
+                    <div id="detSellerCard" onclick="openStoreFromDetail()" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6 cursor-pointer hover:bg-white/10 transition">
+                        <div id="detSellerAvatar" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg shrink-0">S</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs text-gray-400">Penjual Terverifikasi ✅</p>
+                            <p id="detSellerName" class="font-bold line-clamp-1">XREZZKY Official</p>
+                            <p id="detStoreName" class="text-xs text-blue-400 font-semibold line-clamp-1"></p>
+                        </div>
+                        <div class="flex items-center gap-1 text-blue-400 text-xs font-bold shrink-0">Lihat Toko <i class="fas fa-chevron-right ml-1"></i></div>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <h4 class="font-bold border-l-4 border-blue-500 pl-3">Deskripsi Produk</h4>
+                        <p id="detDesc" class="text-gray-400 text-sm leading-relaxed">-</p>
+                    </div>
+
+                    <div id="detReviews" class="mb-6"></div>
+
+                    <div class="flex gap-4">
+                        <button onclick="copyLink()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-white/10 transition" title="Salin Link">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button onclick="handleBuyNow()" class="flex-1 btn-primary !rounded-2xl flex items-center justify-center gap-3">
+                            <i class="fas fa-shopping-cart"></i> Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AUTH -->
+    <div id="modalAuth" class="modal-overlay">
+        <div class="modal-content !max-w-md p-8">
+            <button onclick="closeModal('modalAuth')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm">
+                <h2 class="text-3xl font-extrabold mb-2 font-syne">Selamat Datang</h2>
+                <p class="text-gray-400 text-sm mb-8">Masuk ke akun XREZZKY STORE kamu</p>
+                <div class="input-group">
+                    <input type="email" id="authEmail" class="custom-input" placeholder="Alamat Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="authPass" class="custom-input" placeholder="Password">
+                </div>
+                <button onclick="processLogin()" class="btn-primary w-full mb-4">Masuk Sekarang</button>
+                <!-- LUPA SANDI -->
+                <p class="text-center text-sm mb-4">
+                    <span onclick="showForgotPassword()" class="text-yellow-400 font-bold cursor-pointer hover:underline">Lupa Sandi? (Reset 1×24 jam)</span>
+                </p>
+                <p class="text-center text-sm text-gray-500">
+                    Belum punya akun? <span onclick="toggleAuthForm('reg')" class="text-blue-400 font-bold cursor-pointer hover:underline">Daftar</span>
+                </p>
+            </div>
+            
+            <!-- REGISTER FORM -->
+            <div id="regForm" class="hidden">
+                <h2 class="text-3xl font-extrabold mb-2 font-syne">Buat Akun</h2>
+                <p class="text-gray-400 text-sm mb-8">Daftar untuk mulai belanja produk premium</p>
+                <div class="input-group">
+                    <input type="text" id="regName" class="custom-input" placeholder="Nama Lengkap">
+                </div>
+                <div class="input-group">
+                    <input type="email" id="regEmail" class="custom-input" placeholder="Alamat Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPass" class="custom-input" placeholder="Password (min. 6 karakter)">
+                </div>
+                <button onclick="processRegister()" class="btn-primary w-full mb-6">Daftar Akun</button>
+                <p class="text-center text-sm text-gray-500">
+                    Sudah punya akun? <span onclick="toggleAuthForm('login')" class="text-blue-400 font-bold cursor-pointer hover:underline">Login</span>
+                </p>
+            </div>
+
+            <!-- FORGOT PASSWORD FORM -->
+            <div id="forgotForm" class="hidden">
+                <h2 class="text-3xl font-extrabold mb-2 font-syne">Reset Sandi</h2>
+                <p class="text-gray-400 text-sm mb-6">Kami kirimkan link reset sandi ke email kamu. Link berlaku <strong class="text-yellow-300">1×24 jam</strong>.</p>
+                <div class="input-group">
+                    <input type="email" id="forgotEmail" class="custom-input" placeholder="Alamat Email terdaftar">
+                </div>
+                <button onclick="processForgotPassword()" class="btn-primary w-full mb-4">Kirim Link Reset</button>
+                <p class="text-center text-sm text-gray-500">
+                    Ingat sandi? <span onclick="toggleAuthForm('login')" class="text-blue-400 font-bold cursor-pointer hover:underline">Kembali Login</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT PROFILE (Ubah Username + Ubah Sandi) -->
+    <div id="modalEditProfile" class="modal-overlay">
+        <div class="modal-content !max-w-md p-8">
+            <button onclick="closeModal('modalEditProfile')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="text-2xl font-extrabold mb-6 font-syne">Ubah Profil</h2>
+
+            <!-- UBAH USERNAME -->
+            <div class="mb-6">
+                <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Ubah Nama Tampilan</p>
+                <div class="input-group">
+                    <label class="text-xs text-gray-400 mb-2 block">Nama Baru</label>
+                    <input type="text" id="editName" class="custom-input" placeholder="Nama Lengkap">
+                </div>
+                <button onclick="saveEditName()" class="btn-primary w-full mb-2">Simpan Nama</button>
+            </div>
+
+            <div class="border-t border-white/10 my-4"></div>
+
+            <!-- UBAH SANDI -->
+            <div>
+                <p class="text-xs font-black text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-lock"></i> Ubah Kata Sandi</p>
+                <div class="input-group">
+                    <label class="text-xs text-gray-400 mb-2 block">Sandi Lama</label>
+                    <input type="password" id="editOldPass" class="custom-input" placeholder="Sandi lama kamu">
+                </div>
+                <div class="input-group">
+                    <label class="text-xs text-gray-400 mb-2 block">Sandi Baru</label>
+                    <input type="password" id="editNewPass" class="custom-input" placeholder="Sandi baru (min. 6 karakter)">
+                </div>
+                <div class="input-group">
+                    <label class="text-xs text-gray-400 mb-2 block">Konfirmasi Sandi Baru</label>
+                    <input type="password" id="editConfirmPass" class="custom-input" placeholder="Ulangi sandi baru">
+                </div>
+                <button onclick="saveEditPassword()" class="btn-primary w-full !bg-gradient-to-r !from-purple-600 !to-indigo-600">Ubah Kata Sandi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SELLER PROFILE -->
+    <div id="modalSeller" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+            <div class="p-8 bg-gradient-to-b from-blue-600/20 to-transparent relative">
+                <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex flex-col items-center">
+                    <div id="sBigAvatar" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold bg-blue-600 border-4 border-blue-500/30 shadow-2xl mb-4 text-white">S</div>
+                    <h2 id="sBigName" class="text-2xl font-extrabold font-syne mb-1 text-white">Nama Toko</h2>
+                    <p class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Verified Seller</p>
+                    <div class="grid grid-cols-3 gap-3 w-full">
+                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p><p id="sTotalItem" class="text-sm font-bold text-white">0</p></div>
+                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p><p id="sTotalStock" class="text-sm font-bold text-green-400">0</p></div>
+                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p><p id="sTotalSold" class="text-sm font-bold text-orange-400">0</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Koleksi Produk</h4>
+                <div id="sellerProductList" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar"></div>
+            </div>
+            <div class="p-6 border-t border-white/5 bg-black/20">
+                <button onclick="closeModal('modalSeller')" class="btn-primary w-full !rounded-xl !py-3">Tutup Profil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULL IMAGE VIEWER -->
+    <div id="fullImageView" class="fixed inset-0 hidden items-center justify-center cursor-pointer" onclick="closeFullScreen()">
+        <button class="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition pointer-events-none">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="imgExpanded" src="" class="max-w-[95%] max-h-[95%] object-contain">
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed top-24 right-4 z-[9999] transform translate-x-[150%] transition-transform duration-500">
+        <div class="glass-card !rounded-2xl p-4 flex items-center gap-4 min-w-[300px] border-l-4 border-l-blue-500">
+            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-500" id="toastIcon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div>
+                <p class="font-bold text-sm" id="toastTitle">Berhasil</p>
+                <p class="text-xs text-gray-400" id="toastMsg">Pesan berhasil diproses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TENTANG XREZZKY -->
+    <div id="modalAbout" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+            <div class="relative p-8 bg-gradient-to-b from-blue-600/20 to-transparent">
+                <button onclick="closeModal('modalAbout')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center glow-blue"><i class="fas fa-bolt text-white text-lg"></i></div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">XREZZKY OFFICIAL STORE</h2>
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p>
+                    </div>
+                </div>
+            </div>
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Tentang Kami</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">XREZZKY OFFICIAL STORE adalah platform marketplace digital yang hadir untuk menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terpercaya.</p>
+                </div>
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-eye"></i> Visi</h3>
+                    <p class="text-gray-200 text-sm leading-relaxed font-medium">"Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia."</p>
+                </div>
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-bullseye"></i> Misi</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-blue-400 text-xs font-black">1</span></div><p class="text-gray-300 text-sm">Menyediakan platform yang <strong class="text-white">aman & terpercaya</strong> melalui sistem escrow dan verifikasi seller ketat.</p></div>
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-purple-400 text-xs font-black">2</span></div><p class="text-gray-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau pasar yang lebih luas.</p></div>
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-green-400 text-xs font-black">3</span></div><p class="text-gray-300 text-sm">Menghadirkan <strong class="text-white">layanan pelanggan 24/7</strong> yang responsif dan solutif.</p></div>
+                    </div>
+                </div>
+                <button onclick="closeModal('modalAbout')" class="btn-primary w-full !rounded-xl">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: KEBIJAKAN & PERSYARATAN -->
+    <div id="modalPolicy" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+            <div class="relative p-8 bg-gradient-to-b from-orange-600/20 to-transparent">
+                <button onclick="closeModal('modalPolicy')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-500/30"><i class="fas fa-file-contract text-orange-400 text-lg"></i></div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">Kebijakan & Persyaratan</h2>
+                        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                    </div>
+                </div>
+            </div>
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+                <div class="bg-blue-500/5 border border-blue-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Kebijakan Pembeli</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Pembeli wajib melakukan pembayaran sesuai nominal yang disepakati.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Komplain wajib disampaikan maksimal 1×24 jam setelah produk diterima.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Refund hanya berlaku jika produk terbukti cacat atau tidak sesuai deskripsi.</li>
+                    </ul>
+                </div>
+                <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-green-300 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Kebijakan Seller</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib memastikan stok produk tersedia sebelum listing aktif.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Dilarang menjual produk ilegal, bajakan, atau yang melanggar hak cipta.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib merespons order maksimal 2 jam di jam operasional.</li>
+                    </ul>
+                </div>
+                <button onclick="closeModal('modalPolicy')" class="btn-primary w-full !rounded-xl">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DAFTAR JADI SELLER -->
+    <div id="modalBecomeSeller" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+
+            <!-- STEP 1: INFO -->
+            <div id="sellerStep1" class="p-8 relative">
+                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center"><i class="fas fa-store text-blue-400 text-2xl"></i></div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">Daftar Jadi Seller</h2>
+                        <p class="text-blue-400 text-xs font-bold">Bergabung & mulai berjualan sekarang</p>
+                    </div>
+                </div>
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-green-400"></i><p class="text-sm">Gratis daftar, tanpa biaya pendaftaran</p></div>
+                    <div class="flex items-center gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-blue-400"></i><p class="text-sm">Kelola produk sendiri lewat Seller Dashboard</p></div>
+                    <div class="flex items-center gap-3 bg-purple-500/10 border border-purple-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-purple-400"></i><p class="text-sm">Verifikasi admin dalam 1×24 jam</p></div>
+                </div>
+                <button onclick="goToSellerForm()" class="btn-primary w-full flex items-center justify-center gap-3"><i class="fas fa-arrow-right"></i> Isi Formulir Pendaftaran</button>
+            </div>
+
+            <!-- STEP 2: FORM -->
+            <div id="sellerStep2" class="hidden relative">
+                <div class="p-6 border-b border-white/5 flex items-center gap-4">
+                    <button onclick="backToSellerInfo()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-arrow-left"></i></button>
+                    <h2 class="text-xl font-extrabold font-syne">Formulir Pendaftaran Seller</h2>
+                </div>
+
+                <div class="px-8 pb-8 overflow-y-auto max-h-[75vh] custom-scrollbar space-y-4 mt-4">
+
+                    <!-- DATA TOKO -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Data Toko</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Toko <span class="text-red-400">*</span></label>
+                                <input id="sf_storeName" type="text" class="custom-input" placeholder="Contoh: RezzkySkins Store">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Deskripsi Toko <span class="text-red-400">*</span></label>
+                                <textarea id="sf_storeDesc" class="custom-input !h-24 resize-none" placeholder="Ceritakan tentang toko kamu..."></textarea>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Kategori Produk Utama <span class="text-red-400">*</span></label>
+                                <select id="sf_category" class="custom-input appearance-none cursor-pointer">
+                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <option value="Game Mobile">Game Mobile (skin, akun, dll)</option>
+                                    <option value="Premium Apps">Premium Apps & Software</option>
+                                    <option value="E-Voucher">E-Voucher & Gift Card</option>
+                                    <option value="Akun Sosmed">Akun Media Sosial</option>
+                                    <option value="Jasa Digital">Jasa Digital (boost, joki, dll)</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/5"></div>
+
+                    <!-- DATA PRIBADI -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Data Pribadi Pemilik</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label>
+                                <input id="sf_ownerName" type="text" class="custom-input" placeholder="Nama sesuai KTP">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nomor WhatsApp Aktif <span class="text-red-400">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span>
+                                    <input id="sf_whatsapp" type="tel" class="custom-input !pl-12" placeholder="8123456789">
+                                </div>
+                                <p class="text-[10px] text-gray-600 mt-1">Digunakan admin untuk verifikasi & koordinasi.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/5"></div>
+
+                    <!-- ALAMAT LENGKAP (Drill-down) -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-green-400 mb-1 flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> Alamat Lengkap Toko</p>
+                        <p class="text-[10px] text-gray-500 mb-3">Hanya Pulau → Provinsi → Kab/Kota yang tampil ke publik. Kecamatan & alamat lengkap hanya untuk keperluan admin.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Pulau <span class="text-red-400">*</span></label>
+                                <select id="sf_pulau" class="addr-select" onchange="loadProvinsi(this.value)">
+                                    <option value="" disabled selected>-- Pilih Pulau --</option>
+                                    <option value="Jawa">Jawa</option>
+                                    <option value="Sumatera">Sumatera</option>
+                                    <option value="Kalimantan">Kalimantan</option>
+                                    <option value="Sulawesi">Sulawesi</option>
+                                    <option value="Bali & Nusa Tenggara">Bali & Nusa Tenggara</option>
+                                    <option value="Maluku">Maluku</option>
+                                    <option value="Papua">Papua</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Provinsi <span class="text-red-400">*</span></label>
+                                <select id="sf_provinsi" class="addr-select" disabled onchange="loadKabKota(this.value)">
+                                    <option value="" disabled selected>-- Pilih Provinsi dulu --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Kabupaten / Kota <span class="text-red-400">*</span></label>
+                                <select id="sf_kabkota" class="addr-select" disabled onchange="loadKecamatan(this.value)">
+                                    <option value="" disabled selected>-- Pilih Provinsi dulu --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Kecamatan <span class="text-red-400">*</span></label>
+                                <select id="sf_kecamatan" class="addr-select" disabled>
+                                    <option value="" disabled selected>-- Pilih Kab/Kota dulu --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Alamat Lengkap <span class="text-red-400">*</span></label>
+                                <textarea id="sf_alamatlengkap" class="custom-input !h-20 resize-none" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan..."></textarea>
+                                <p class="text-[10px] text-gray-600 mt-1">Hanya diketahui admin, tidak ditampilkan ke publik.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/5"></div>
+
+                    <!-- PENGALAMAN -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3 flex items-center gap-2"><i class="fas fa-star"></i> Pengalaman Jualan</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Sudah pernah jualan digital sebelumnya?</label>
+                                <select id="sf_experience" class="custom-input appearance-none cursor-pointer">
+                                    <option value="Belum pernah">Belum pernah, ini pertama kali</option>
+                                    <option value="Pernah, informal">Pernah, tapi masih informal (WA, IG, dll)</option>
+                                    <option value="Pernah, marketplace lain">Pernah di marketplace lain (Tokopedia, dll)</option>
+                                    <option value="Sudah berpengalaman">Sudah cukup berpengalaman</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Perkiraan produk pertama yang akan dijual</label>
+                                <input id="sf_firstProduct" type="text" class="custom-input" placeholder="Contoh: Skin ML Epic, Akun FF, dll">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Pesan untuk Admin (opsional)</label>
+                                <textarea id="sf_notes" class="custom-input !h-20 resize-none" placeholder="Ada pertanyaan untuk admin?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AGREE -->
+                    <div class="bg-white/5 border border-white/5 rounded-xl p-4 flex items-start gap-3">
+                        <input type="checkbox" id="sf_agree" class="mt-1 w-4 h-4 accent-blue-500 cursor-pointer shrink-0">
+                        <label for="sf_agree" class="text-xs text-gray-300 cursor-pointer leading-relaxed">
+                            Saya menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 font-bold underline cursor-pointer">Kebijakan & Persyaratan Seller</span> XREZZKY OFFICIAL STORE dan menjamin semua data yang saya isi adalah benar.
+                        </label>
+                    </div>
+
+                    <button onclick="submitSellerApplication()" id="btnSubmitSeller"
+                        class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg">
+                        <i class="fas fa-paper-plane"></i> Kirim Pendaftaran
+                    </button>
+                    <p class="text-center text-[10px] text-gray-600">Setelah dikirim, admin akan memverifikasi data kamu dalam 1×24 jam.</p>
+                </div>
+            </div>
+
+            <!-- STEP 3: SUCCESS -->
+            <div id="sellerStep3" class="hidden p-10 text-center">
+                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <div class="w-20 h-20 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-check text-green-400 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold font-syne mb-2">Pendaftaran Terkirim! 🎉</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">Data kamu sudah masuk ke sistem admin. Proses verifikasi membutuhkan waktu <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp setelah disetujui.</p>
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6 text-left">
+                    <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-2">Status Aplikasi</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-bold text-yellow-300">Menunggu Verifikasi Admin</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('modalBecomeSeller')" class="btn-primary w-full !rounded-xl">Kembali ke Beranda</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: HALAMAN TOKO LENGKAP -->
+    <div id="modalStorePage" class="modal-overlay">
+        <div class="modal-content !max-w-3xl p-0 overflow-hidden">
+            <div class="relative p-7 bg-gradient-to-b from-blue-600/20 to-transparent">
+                <button onclick="closeModal('modalStorePage')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <div class="flex flex-col items-center">
+                    <div id="spAvatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-3xl font-bold border-4 border-blue-500/30 shadow-2xl mb-4">S</div>
+                    <h2 id="spStoreName" class="text-2xl font-extrabold font-syne mb-0.5 text-center">Nama Toko</h2>
+                    <p id="spOwnerName" class="text-gray-400 text-xs mb-1">oleh -</p>
+                    <span class="text-[10px] text-blue-400 font-black uppercase tracking-[0.2em] mb-2">✅ Verified Seller</span>
+                    <p id="spCity" class="text-gray-500 text-xs mb-3"></p>
+                    <div id="spOverallRating" class="flex items-center gap-2 mb-4 bg-white/5 px-4 py-2 rounded-full"></div>
+                    <p id="spDesc" class="text-gray-400 text-sm text-center max-w-md mb-5 leading-relaxed">-</p>
+                    <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
+                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p><p id="spTotalItem" class="text-sm font-bold">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p><p id="spTotalStock" class="text-sm font-bold text-green-400">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p><p id="spTotalSold" class="text-sm font-bold text-orange-400">0</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 pb-6">
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Semua Produk Toko</h4>
+                <div id="spProductList" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar"></div>
+            </div>
+            <div class="px-6 pb-6 border-t border-white/5 pt-4">
+                <button onclick="closeModal('modalStorePage')" class="btn-primary w-full !rounded-xl !py-3">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: SEMUA TOKO -->
+    <div id="modalAllStores" class="modal-overlay">
+        <div class="modal-content !max-w-3xl p-0 overflow-hidden">
+            <div class="p-6 border-b border-white/5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-extrabold font-syne flex items-center gap-2"><i class="fas fa-store text-blue-400"></i> Semua Toko</h2>
+                    <button onclick="closeModal('modalAllStores')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                    <input id="storeSearchInput" type="text" placeholder="Cari nama toko atau kategori..." class="custom-input !pl-11 !py-3 !rounded-2xl" oninput="filterStores(this.value)">
+                </div>
+            </div>
+            <div id="allStoreGrid" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[65vh] overflow-y-auto custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: RATING -->
+    <div id="modalRating" class="modal-overlay">
+        <div class="modal-content !max-w-sm p-8">
+            <button onclick="closeModal('modalRating')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+            <h2 class="text-xl font-extrabold font-syne mb-1">Beri Rating</h2>
+            <p id="ratingProdName" class="text-gray-400 text-sm mb-5 line-clamp-1">Produk</p>
+            <div class="star-input" id="starInputGroup">
+                <input type="radio" id="star5" name="rating_stars" value="5"><label for="star5" title="5">★</label>
+                <input type="radio" id="star4" name="rating_stars" value="4"><label for="star4" title="4">★</label>
+                <input type="radio" id="star3" name="rating_stars" value="3"><label for="star3" title="3">★</label>
+                <input type="radio" id="star2" name="rating_stars" value="2"><label for="star2" title="2">★</label>
+                <input type="radio" id="star1" name="rating_stars" value="1"><label for="star1" title="1">★</label>
+            </div>
+            <textarea id="ratingComment" class="custom-input mb-5" style="height:90px;resize:none" placeholder="Tulis ulasan kamu (opsional)..."></textarea>
+            <button onclick="submitRating()" class="btn-primary w-full">Kirim Rating ⭐</button>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { 
+        getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+        onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail,
+        EmailAuthProvider, reauthenticateWithCredential, updatePassword
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { 
+        getDatabase, ref, onValue, set, get, push, update
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+    // ============================================================
+    //  FIREBASE CONFIG (DIPERBARUI)
+    // ============================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyBDvrP9QU8ygAiyvYrjU3NrptjSIWvGjyg",
+        authDomain: "marketplace-c35db.firebaseapp.com",
+        databaseURL: "https://marketplace-c35db-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "marketplace-c35db",
+        storageBucket: "marketplace-c35db.firebasestorage.app",
+        messagingSenderId: "64170975843",
+        appId: "1:64170975843:web:12df9853f75dd68fe14e56",
+        measurementId: "G-NQLR7YDGLW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getDatabase(app);
+
+    // ============================================================
+    //  GLOBAL STATE
+    // ============================================================
+    let currentUser     = null;
+    let currentUserData = null;
+    let allProducts     = [];
+    let allSellers      = [];
+    let selectedProduct = null;
+    let ratingTarget    = null;
+    let currentFilter   = 'all';
+    let toastTimer      = null;
+    let currentQty      = 1;
+
+    // ============================================================
+    //  DATA ALAMAT (Pulau → Provinsi → Kab/Kota → Kecamatan)
+    // ============================================================
+    const ALAMAT_DATA = {
+        'Jawa': {
+            'DKI Jakarta': { kabkota: ['Kota Jakarta Pusat','Kota Jakarta Utara','Kota Jakarta Barat','Kota Jakarta Selatan','Kota Jakarta Timur','Kab. Kepulauan Seribu'], kecamatan: { 'Kota Jakarta Pusat':['Gambir','Sawah Besar','Kemayoran','Senen','Cempaka Putih','Menteng','Tanah Abang','Johar Baru'], 'default':['Kecamatan 1','Kecamatan 2','Kecamatan 3'] } },
+            'Jawa Barat': { kabkota: ['Kota Bandung','Kota Bogor','Kota Bekasi','Kota Depok','Kota Cimahi','Kota Sukabumi','Kota Tasikmalaya','Kota Banjar','Kab. Bogor','Kab. Bekasi','Kab. Bandung','Kab. Bandung Barat','Kab. Sukabumi','Kab. Cianjur','Kab. Garut','Kab. Tasikmalaya','Kab. Ciamis','Kab. Kuningan','Kab. Cirebon','Kab. Majalengka','Kab. Sumedang','Kab. Indramayu','Kab. Subang','Kab. Purwakarta','Kab. Karawang','Kab. Pangandaran'], kecamatan: { 'Kota Bandung':['Andir','Antapani','Arcamanik','Astana Anyar','Babakan Ciparay','Bandung Kidul','Bandung Kulon','Bandung Wetan','Batununggal','Bojongloa Kaler','Bojongloa Kidul','Buahbatu','Cibeunying Kaler','Cibeunying Kidul','Cibiru','Cicendo','Cidadap','Cinambo','Coblong','Gedebage','Kiaracondong','Lengkong','Mandalajati','Panyileukan','Rancasari','Regol','Sukajadi','Sukasari','Sumur Bandung','Ujung Berung'], 'Kab. Bogor':['Babakan Madang','Bojonggede','Cariu','Cigombong','Ciawi','Cibinong','Cileungsi','Cisarua','Gunungputri','Jonggol','Kemang','Klapanunggal','Leuwiliang','Megamendung','Nanggung','Parung','Rumpin','Sukaraja','Tajurhalang','Tenjo'], 'default':['Kecamatan A','Kecamatan B','Kecamatan C','Kecamatan D'] } },
+            'Jawa Tengah': { kabkota: ['Kota Semarang','Kota Solo','Kota Salatiga','Kota Magelang','Kota Pekalongan','Kota Tegal','Kab. Banyumas','Kab. Cilacap','Kab. Purbalingga','Kab. Kebumen','Kab. Magelang','Kab. Boyolali','Kab. Klaten','Kab. Sragen','Kab. Grobogan','Kab. Rembang','Kab. Pati','Kab. Kudus','Kab. Jepara','Kab. Demak','Kab. Semarang','Kab. Temanggung','Kab. Kendal','Kab. Batang','Kab. Pekalongan','Kab. Pemalang','Kab. Tegal','Kab. Brebes','Kab. Wonogiri','Kab. Karanganyar','Kab. Sukoharjo','Kab. Wonosobo','Kab. Purworejo','Kab. Blora'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'DI Yogyakarta': { kabkota: ['Kota Yogyakarta','Kab. Sleman','Kab. Bantul','Kab. Kulon Progo','Kab. Gunungkidul'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Jawa Timur': { kabkota: ['Kota Surabaya','Kota Malang','Kota Kediri','Kota Blitar','Kota Mojokerto','Kota Madiun','Kota Pasuruan','Kota Probolinggo','Kota Batu','Kab. Sidoarjo','Kab. Gresik','Kab. Mojokerto','Kab. Jombang','Kab. Nganjuk','Kab. Madiun','Kab. Magetan','Kab. Ngawi','Kab. Bojonegoro','Kab. Tuban','Kab. Lamongan','Kab. Malang','Kab. Lumajang','Kab. Pasuruan','Kab. Probolinggo','Kab. Situbondo','Kab. Bondowoso','Kab. Banyuwangi','Kab. Jember','Kab. Kediri','Kab. Blitar','Kab. Tulungagung','Kab. Trenggalek','Kab. Ponorogo','Kab. Pacitan','Kab. Bangkalan','Kab. Sampang','Kab. Pamekasan','Kab. Sumenep'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Banten': { kabkota: ['Kota Tangerang','Kota Serang','Kota Cilegon','Kota Tangerang Selatan','Kab. Tangerang','Kab. Serang','Kab. Lebak','Kab. Pandeglang'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Sumatera': {
+            'Aceh': { kabkota: ['Kota Banda Aceh','Kota Sabang','Kota Langsa','Kota Lhokseumawe','Kota Subulussalam','Kab. Aceh Besar','Kab. Pidie','Kab. Bireuen','Kab. Aceh Utara','Kab. Aceh Timur','Kab. Aceh Selatan','Kab. Aceh Barat','Kab. Aceh Tengah','Kab. Aceh Tenggara'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sumatera Utara': { kabkota: ['Kota Medan','Kota Pematangsiantar','Kota Sibolga','Kota Tanjungbalai','Kota Binjai','Kota Tebing Tinggi','Kota Padangsidimpuan','Kota Gunungsitoli','Kab. Deli Serdang','Kab. Langkat','Kab. Serdang Bedagai','Kab. Asahan','Kab. Tapanuli Utara','Kab. Tapanuli Tengah','Kab. Tapanuli Selatan','Kab. Mandailing Natal'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sumatera Barat': { kabkota: ['Kota Padang','Kota Bukittinggi','Kota Padang Panjang','Kota Payakumbuh','Kota Solok','Kota Sawahlunto','Kota Pariaman','Kab. Agam','Kab. Limapuluh Kota','Kab. Tanah Datar','Kab. Padang Pariaman','Kab. Pesisir Selatan','Kab. Solok','Kab. Solok Selatan','Kab. Sijunjung','Kab. Dharmasraya','Kab. Pasaman','Kab. Pasaman Barat','Kab. Kepulauan Mentawai'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Riau': { kabkota: ['Kota Pekanbaru','Kota Dumai','Kab. Kampar','Kab. Rokan Hulu','Kab. Rokan Hilir','Kab. Bengkalis','Kab. Siak','Kab. Pelalawan','Kab. Indragiri Hulu','Kab. Indragiri Hilir','Kab. Kuantan Singingi','Kab. Kep. Meranti'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kepulauan Riau': { kabkota: ['Kota Batam','Kota Tanjungpinang','Kab. Bintan','Kab. Karimun','Kab. Natuna','Kab. Lingga','Kab. Kepulauan Anambas'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Jambi': { kabkota: ['Kota Jambi','Kota Sungai Penuh','Kab. Batanghari','Kab. Muaro Jambi','Kab. Tanjung Jabung Barat','Kab. Tanjung Jabung Timur','Kab. Bungo','Kab. Tebo','Kab. Sarolangun','Kab. Merangin','Kab. Kerinci'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sumatera Selatan': { kabkota: ['Kota Palembang','Kota Prabumulih','Kota Pagaralam','Kota Lubuklinggau','Kab. Ogan Komering Ilir','Kab. Ogan Komering Ulu','Kab. Muara Enim','Kab. Lahat','Kab. Musi Rawas','Kab. Musi Banyuasin','Kab. Banyuasin','Kab. Empat Lawang'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Bengkulu': { kabkota: ['Kota Bengkulu','Kab. Bengkulu Utara','Kab. Bengkulu Selatan','Kab. Bengkulu Tengah','Kab. Rejang Lebong','Kab. Kepahiang','Kab. Lebong','Kab. Mukomuko','Kab. Seluma','Kab. Kaur'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Lampung': { kabkota: ['Kota Bandar Lampung','Kota Metro','Kab. Lampung Selatan','Kab. Lampung Tengah','Kab. Lampung Utara','Kab. Lampung Barat','Kab. Lampung Timur','Kab. Tanggamus','Kab. Pringsewu','Kab. Mesuji','Kab. Tulang Bawang','Kab. Tulang Bawang Barat','Kab. Way Kanan','Kab. Pesawaran','Kab. Pesisir Barat'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kepulauan Bangka Belitung': { kabkota: ['Kota Pangkalpinang','Kab. Bangka','Kab. Bangka Barat','Kab. Bangka Tengah','Kab. Bangka Selatan','Kab. Belitung','Kab. Belitung Timur'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Kalimantan': {
+            'Kalimantan Barat': { kabkota: ['Kota Pontianak','Kota Singkawang','Kab. Kubu Raya','Kab. Mempawah','Kab. Sambas','Kab. Bengkayang','Kab. Landak','Kab. Sanggau','Kab. Sekadau','Kab. Sintang','Kab. Melawi','Kab. Kapuas Hulu','Kab. Kayong Utara','Kab. Ketapang'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kalimantan Tengah': { kabkota: ['Kota Palangka Raya','Kab. Kotawaringin Barat','Kab. Kotawaringin Timur','Kab. Kapuas','Kab. Barito Selatan','Kab. Barito Utara','Kab. Barito Timur','Kab. Murung Raya','Kab. Gunung Mas','Kab. Pulang Pisau','Kab. Katingan','Kab. Seruyan','Kab. Sukamara','Kab. Lamandau'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kalimantan Selatan': { kabkota: ['Kota Banjarmasin','Kota Banjarbaru','Kab. Banjar','Kab. Barito Kuala','Kab. Tapin','Kab. Hulu Sungai Selatan','Kab. Hulu Sungai Tengah','Kab. Hulu Sungai Utara','Kab. Balangan','Kab. Tabalong','Kab. Kotabaru','Kab. Tanah Bumbu','Kab. Tanah Laut'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kalimantan Timur': { kabkota: ['Kota Samarinda','Kota Balikpapan','Kota Bontang','Kab. Kutai Kartanegara','Kab. Kutai Barat','Kab. Kutai Timur','Kab. Berau','Kab. Paser','Kab. Penajam Paser Utara','Kab. Mahakam Ulu'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Kalimantan Utara': { kabkota: ['Kota Tarakan','Kab. Nunukan','Kab. Malinau','Kab. Bulungan','Kab. Tana Tidung'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Sulawesi': {
+            'Sulawesi Utara': { kabkota: ['Kota Manado','Kota Bitung','Kota Tomohon','Kota Kotamobagu','Kab. Minahasa','Kab. Minahasa Selatan','Kab. Minahasa Utara','Kab. Minahasa Tenggara','Kab. Bolaang Mongondow','Kab. Bolaang Mongondow Selatan','Kab. Bolaang Mongondow Timur','Kab. Bolaang Mongondow Utara','Kab. Sangihe','Kab. Talaud','Kab. Kepulauan Sitaro'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sulawesi Tengah': { kabkota: ['Kota Palu','Kab. Donggala','Kab. Sigi','Kab. Parigi Moutong','Kab. Poso','Kab. Toli-Toli','Kab. Buol','Kab. Morowali','Kab. Morowali Utara','Kab. Banggai','Kab. Banggai Laut','Kab. Banggai Kepulauan','Kab. Tojo Una-Una'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sulawesi Selatan': { kabkota: ['Kota Makassar','Kota Pare-Pare','Kota Palopo','Kab. Gowa','Kab. Maros','Kab. Pangkep','Kab. Barru','Kab. Bone','Kab. Soppeng','Kab. Wajo','Kab. Sinjai','Kab. Bulukumba','Kab. Bantaeng','Kab. Jeneponto','Kab. Takalar','Kab. Selayar','Kab. Enrekang','Kab. Pinrang','Kab. Sidrap','Kab. Luwu','Kab. Luwu Utara','Kab. Luwu Timur','Kab. Tana Toraja','Kab. Toraja Utara'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sulawesi Tenggara': { kabkota: ['Kota Kendari','Kota Baubau','Kab. Konawe','Kab. Konawe Selatan','Kab. Konawe Utara','Kab. Konawe Kepulauan','Kab. Kolaka','Kab. Kolaka Utara','Kab. Kolaka Timur','Kab. Bombana','Kab. Buton','Kab. Buton Utara','Kab. Buton Selatan','Kab. Buton Tengah','Kab. Muna','Kab. Muna Barat','Kab. Wakatobi'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Gorontalo': { kabkota: ['Kota Gorontalo','Kab. Gorontalo','Kab. Gorontalo Utara','Kab. Boalemo','Kab. Pohuwato','Kab. Bone Bolango'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Sulawesi Barat': { kabkota: ['Kab. Mamuju','Kab. Mamuju Utara','Kab. Mamuju Tengah','Kab. Majene','Kab. Polewali Mandar','Kab. Mamasa'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Bali & Nusa Tenggara': {
+            'Bali': { kabkota: ['Kota Denpasar','Kab. Badung','Kab. Gianyar','Kab. Tabanan','Kab. Buleleng','Kab. Jembrana','Kab. Bangli','Kab. Klungkung','Kab. Karangasem'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Nusa Tenggara Barat': { kabkota: ['Kota Mataram','Kota Bima','Kab. Lombok Barat','Kab. Lombok Tengah','Kab. Lombok Timur','Kab. Lombok Utara','Kab. Sumbawa','Kab. Sumbawa Barat','Kab. Dompu','Kab. Bima'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Nusa Tenggara Timur': { kabkota: ['Kota Kupang','Kab. Kupang','Kab. Timor Tengah Selatan','Kab. Timor Tengah Utara','Kab. Belu','Kab. Malaka','Kab. Alor','Kab. Flores Timur','Kab. Sikka','Kab. Ende','Kab. Ngada','Kab. Nagekeo','Kab. Manggarai','Kab. Manggarai Barat','Kab. Manggarai Timur','Kab. Lembata','Kab. Rote Ndao','Kab. Sabu Raijua','Kab. Sumba Timur','Kab. Sumba Barat','Kab. Sumba Tengah','Kab. Sumba Barat Daya'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Maluku': {
+            'Maluku': { kabkota: ['Kota Ambon','Kota Tual','Kab. Maluku Tengah','Kab. Maluku Tenggara','Kab. Maluku Tenggara Barat','Kab. Maluku Barat Daya','Kab. Kepulauan Aru','Kab. Seram Bagian Barat','Kab. Seram Bagian Timur','Kab. Buru','Kab. Buru Selatan'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Maluku Utara': { kabkota: ['Kota Ternate','Kota Tidore Kepulauan','Kab. Halmahera Barat','Kab. Halmahera Utara','Kab. Halmahera Timur','Kab. Halmahera Selatan','Kab. Halmahera Tengah','Kab. Kepulauan Sula','Kab. Pulau Morotai','Kab. Pulau Taliabu'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        },
+        'Papua': {
+            'Papua': { kabkota: ['Kota Jayapura','Kab. Jayapura','Kab. Keerom','Kab. Sarmi','Kab. Jayawijaya','Kab. Yalimo','Kab. Mamberamo Tengah','Kab. Nduga','Kab. Lanny Jaya','Kab. Tolikara','Kab. Pegunungan Bintang','Kab. Puncak Jaya','Kab. Puncak','Kab. Mimika','Kab. Merauke','Kab. Boven Digoel','Kab. Mappi','Kab. Asmat','Kab. Waropen','Kab. Kepulauan Yapen','Kab. Biak Numfor','Kab. Supiori','Kab. Mamberamo Raya'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+            'Papua Barat': { kabkota: ['Kota Sorong','Kab. Sorong','Kab. Sorong Selatan','Kab. Raja Ampat','Kab. Teluk Bintuni','Kab. Teluk Wondama','Kab. Kaimana','Kab. Fakfak','Kab. Manokwari','Kab. Manokwari Selatan','Kab. Pegunungan Arfak'], kecamatan: {'default':['Kecamatan A','Kecamatan B','Kecamatan C']} },
+        }
+    };
+
+    // Fungsi drill-down alamat
+    window.loadProvinsi = (pulau) => {
+        const provSel = document.getElementById('sf_provinsi');
+        const kabSel  = document.getElementById('sf_kabkota');
+        const kecSel  = document.getElementById('sf_kecamatan');
+        provSel.innerHTML = '<option value="" disabled selected>-- Pilih Provinsi --</option>';
+        kabSel.innerHTML  = '<option value="" disabled selected>-- Pilih Provinsi dulu --</option>';
+        kecSel.innerHTML  = '<option value="" disabled selected>-- Pilih Kab/Kota dulu --</option>';
+        kabSel.disabled   = true;
+        kecSel.disabled   = true;
+
+        const provList = ALAMAT_DATA[pulau];
+        if (!provList) return;
+        Object.keys(provList).forEach(p => {
+            const o = document.createElement('option');
+            o.value = p; o.textContent = p;
+            provSel.appendChild(o);
+        });
+        provSel.disabled = false;
+        provSel.selectedIndex = 0;
+    };
+
+    window.loadKabKota = (provinsi) => {
+        const pulau  = document.getElementById('sf_pulau').value;
+        const kabSel = document.getElementById('sf_kabkota');
+        const kecSel = document.getElementById('sf_kecamatan');
+        kabSel.innerHTML = '<option value="" disabled selected>-- Pilih Kab/Kota --</option>';
+        kecSel.innerHTML = '<option value="" disabled selected>-- Pilih Kab/Kota dulu --</option>';
+        kecSel.disabled  = true;
+
+        const data = ALAMAT_DATA[pulau]?.[provinsi];
+        if (!data) return;
+        data.kabkota.forEach(k => {
+            const o = document.createElement('option');
+            o.value = k; o.textContent = k;
+            kabSel.appendChild(o);
+        });
+        kabSel.disabled = false;
+        kabSel.selectedIndex = 0;
+    };
+
+    window.loadKecamatan = (kabkota) => {
+        const pulau   = document.getElementById('sf_pulau').value;
+        const provinsi = document.getElementById('sf_provinsi').value;
+        const kecSel  = document.getElementById('sf_kecamatan');
+        kecSel.innerHTML = '<option value="" disabled selected>-- Pilih Kecamatan --</option>';
+
+        const data = ALAMAT_DATA[pulau]?.[provinsi];
+        if (!data) return;
+        const kecs = data.kecamatan[kabkota] || data.kecamatan['default'] || [];
+        kecs.forEach(k => {
+            const o = document.createElement('option');
+            o.value = k; o.textContent = k;
+            kecSel.appendChild(o);
+        });
+        kecSel.disabled = false;
+        kecSel.selectedIndex = 0;
+    };
+
+    // ============================================================
+    //  UTILS
+    // ============================================================
+    window.showToast = (title, msg, type = 'success') => {
+        const toast  = document.getElementById('toast');
+        const icon   = document.getElementById('toastIcon');
+        const border = toast.querySelector('.glass-card');
+        document.getElementById('toastTitle').textContent = title;
+        document.getElementById('toastMsg').textContent   = msg;
+        const colorMap = {
+            success: { border: 'border-l-green-500',  bg: 'bg-green-500/20',  text: 'text-green-400',  fa: 'fa-check-circle' },
+            error:   { border: 'border-l-red-500',    bg: 'bg-red-500/20',    text: 'text-red-400',    fa: 'fa-times-circle' },
+            info:    { border: 'border-l-blue-500',   bg: 'bg-blue-500/20',   text: 'text-blue-400',   fa: 'fa-info-circle' },
+            warning: { border: 'border-l-yellow-500', bg: 'bg-yellow-500/20', text: 'text-yellow-400', fa: 'fa-exclamation-circle' },
+        };
+        const c = colorMap[type] || colorMap.info;
+        border.className = border.className.replace(/border-l-\S+/, c.border);
+        icon.className = `w-10 h-10 ${c.bg} rounded-full flex items-center justify-center ${c.text}`;
+        icon.innerHTML = `<i class="fas ${c.fa}"></i>`;
+        toast.classList.remove('translate-x-[150%]');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.add('translate-x-[150%]'), 4000);
+    };
+
+    window.navigate = (page) => {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById(`page-${page}`);
+        if (target) { target.classList.remove('hidden'); target.classList.add('fade-in'); }
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        const navBtn = document.getElementById(`nav-${page}`);
+        if (navBtn) navBtn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (page === 'profile') refreshProfilePage();
+        if (page === 'orders') drawOrders();
+    };
+
+    window.openModal = (id) => {
+        const el = document.getElementById(id);
+        if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; if (id === 'modalAllStores') renderAllStores(); }
+    };
+    window.closeModal = (id) => {
+        const el = document.getElementById(id);
+        if (el) { el.style.display = 'none'; document.body.style.overflow = 'auto'; }
+    };
+
+    // ============================================================
+    //  AUTH
+    // ============================================================
+    window.toggleAuthForm = (target) => {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('regForm').classList.add('hidden');
+        document.getElementById('forgotForm').classList.add('hidden');
+        document.getElementById(target === 'reg' ? 'regForm' : target === 'forgot' ? 'forgotForm' : 'loginForm').classList.remove('hidden');
+    };
+
+    window.showForgotPassword = () => toggleAuthForm('forgot');
+
+    window.processForgotPassword = async () => {
+        const email = document.getElementById('forgotEmail').value.trim();
+        if (!email) return showToast('Error', 'Masukkan email dulu!', 'error');
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showToast('Terkirim! 📩', 'Link reset sandi sudah dikirim ke email kamu. Berlaku 1×24 jam.', 'success');
+            toggleAuthForm('login');
+        } catch (e) {
+            const msg = e.code === 'auth/user-not-found' ? 'Email tidak terdaftar!' : 'Gagal mengirim email reset.';
+            showToast('Gagal', msg, 'error');
+        }
+    };
+
+    window.processRegister = async () => {
+        const name  = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const pass  = document.getElementById('regPass').value;
+        if (!name)           return showToast('Error', 'Nama tidak boleh kosong!', 'error');
+        if (!email)          return showToast('Error', 'Email tidak boleh kosong!', 'error');
+        if (pass.length < 6) return showToast('Error', 'Password minimal 6 karakter!', 'error');
+        try {
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            await updateProfile(cred.user, { displayName: name });
+            // Realtime: auto create di /users
+            await set(ref(db, 'users/' + cred.user.uid), {
+                name, email, role: 'buyer', createdAt: Date.now(), sellerStatus: null
+            });
+            closeModal('modalAuth');
+            showToast('Berhasil! 🎉', 'Akun berhasil dibuat!', 'success');
+        } catch (e) {
+            const msg = e.code === 'auth/email-already-in-use' ? 'Email sudah dipakai!' : e.message;
+            showToast('Gagal', msg, 'error');
+        }
+    };
+
+    window.processLogin = async () => {
+        const email = document.getElementById('authEmail').value.trim();
+        const pass  = document.getElementById('authPass').value;
+        if (!email || !pass) return showToast('Error', 'Email & password wajib diisi!', 'error');
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            closeModal('modalAuth');
+            showToast('Berhasil!', 'Selamat datang kembali! 👋', 'success');
+        } catch (e) {
+            showToast('Gagal', 'Email atau password salah!', 'error');
+        }
+    };
+
+    window.logoutUser = () => {
+        if (!confirm('Yakin mau logout?')) return;
+        signOut(auth).then(() => { navigate('home'); showToast('Logout', 'Sampai jumpa lagi! 👋', 'info'); });
+    };
+
+    // ============================================================
+    //  EDIT PROFIL: UBAH NAMA & UBAH SANDI
+    // ============================================================
+    window.openEditProfile = () => {
+        if (!currentUser) return;
+        document.getElementById('editName').value = currentUser.displayName || '';
+        document.getElementById('editOldPass').value = '';
+        document.getElementById('editNewPass').value = '';
+        document.getElementById('editConfirmPass').value = '';
+        openModal('modalEditProfile');
+    };
+
+    window.saveEditName = async () => {
+        if (!currentUser) return;
+        const newName = document.getElementById('editName').value.trim();
+        if (!newName) return showToast('Error', 'Nama tidak boleh kosong!', 'error');
+        try {
+            await updateProfile(currentUser, { displayName: newName });
+            // Update di /users realtime
+            await update(ref(db, 'users/' + currentUser.uid), { name: newName });
+            showToast('Berhasil!', 'Nama berhasil diperbarui!', 'success');
+            refreshProfilePage();
+            updateAuthHeader();
+        } catch (e) {
+            showToast('Gagal', 'Gagal memperbarui nama.', 'error');
+        }
+    };
+
+    window.saveEditPassword = async () => {
+        if (!currentUser) return;
+        const oldPass     = document.getElementById('editOldPass').value;
+        const newPass     = document.getElementById('editNewPass').value;
+        const confirmPass = document.getElementById('editConfirmPass').value;
+        if (!oldPass)            return showToast('Error', 'Masukkan sandi lama!', 'error');
+        if (newPass.length < 6)  return showToast('Error', 'Sandi baru minimal 6 karakter!', 'error');
+        if (newPass !== confirmPass) return showToast('Error', 'Konfirmasi sandi tidak cocok!', 'error');
+        try {
+            const cred = EmailAuthProvider.credential(currentUser.email, oldPass);
+            await reauthenticateWithCredential(currentUser, cred);
+            await updatePassword(currentUser, newPass);
+            showToast('Berhasil!', 'Kata sandi berhasil diubah!', 'success');
+            closeModal('modalEditProfile');
+        } catch (e) {
+            const msg = e.code === 'auth/wrong-password' ? 'Sandi lama salah!' : 'Gagal mengubah sandi.';
+            showToast('Gagal', msg, 'error');
+        }
+    };
+
+    // ============================================================
+    //  PROFILE PAGE
+    // ============================================================
+    const refreshProfilePage = () => {
+        const notLogged = document.getElementById('profileNotLoggedIn');
+        const logged    = document.getElementById('profileLoggedIn');
+        if (currentUser) {
+            notLogged?.classList.add('hidden');
+            logged?.classList.remove('hidden');
+            document.getElementById('userNameText').textContent = currentUser.displayName || 'User';
+            document.getElementById('userEmailText').textContent = currentUser.email;
+            const avatarEl = document.getElementById('avatarText');
+            if (avatarEl) avatarEl.textContent = (currentUser.displayName || 'U').charAt(0).toUpperCase();
+            const profAvEl = document.getElementById('profileAvatar');
+            if (profAvEl && !profAvEl.querySelector('img')) profAvEl.textContent = (currentUser.displayName || 'U').charAt(0).toUpperCase();
+            const created = currentUser.metadata?.creationTime;
+            if (created) {
+                const d = new Date(created);
+                const el = document.getElementById('statsMember');
+                if (el) el.textContent = d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short' });
+            }
+            // Hitung transaksi
+            get(ref(db, `orders/${currentUser.uid}`)).then(snap => {
+                const trxEl = document.getElementById('statsTrx');
+                if (trxEl) trxEl.textContent = snap.exists() ? Object.keys(snap.val()).length : 0;
+            }).catch(() => {});
+        } else {
+            notLogged?.classList.remove('hidden');
+            logged?.classList.add('hidden');
+        }
+    };
+
+    // ============================================================
+    //  PRODUCT RENDER
+    // ============================================================
+    const makeStarsHtml = (rating, count) => {
+        if (!rating) return '';
+        let s = '';
+        for (let i = 1; i <= 5; i++) s += `<span style="color:${i<=Math.round(parseFloat(rating))?'#f59e0b':'#374151'}">★</span>`;
+        return `<span class="flex items-center gap-1 text-sm">${s}<span class="text-gray-400 text-xs ml-1">(${count||0})</span></span>`;
+    };
+
+    const renderProducts = (list) => {
+        const grid = document.getElementById('mainProductGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        if (list.length === 0) {
+            grid.innerHTML = `<div class="col-span-full glass-card p-12 text-center text-gray-500"><i class="fas fa-box-open text-5xl mb-4 opacity-30"></i><p class="font-bold">Belum ada produk</p><p class="text-sm mt-1">Produk akan muncul di sini setelah ditambahkan seller</p></div>`;
+            return;
+        }
+        list.forEach(p => {
+            const low = Number(p.stock) > 0 && Number(p.stock) < 5;
+            const out = Number(p.stock) <= 0;
+            const card = document.createElement('div');
+            card.className = 'product-card p-4';
+            card.onclick   = () => showDetail(p);
+            card.innerHTML = `
+                <div class="product-img-container mb-3">
+                    <img src="${p.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}"
+                         class="product-img"
+                         onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">
+                    ${out ? '<span class="badge-limit" style="background:#6b7280">Habis</span>' : ''}
+                    ${low && !out ? '<span class="badge-limit">Limit</span>' : ''}
+                    ${!low && !out && p.isNew ? '<span class="badge-new">NEW</span>' : ''}
+                </div>
+                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">${p.category || 'Digital'}</p>
+                <h3 class="font-bold text-sm mb-2 line-clamp-2">${p.name || 'Produk'}</h3>
+                ${p.rating ? `<div class="mb-2">${makeStarsHtml(p.rating, p.ratingCount)}</div>` : ''}
+                <div class="flex items-center justify-between">
+                    <p class="font-extrabold text-blue-400">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
+                    ${p.sold ? `<span class="text-[10px] text-gray-500">${p.sold} terjual</span>` : ''}
+                </div>`;
+            grid.appendChild(card);
+        });
+    };
+
+    const applyFilters = (searchQuery = '') => {
+        let filtered = [...allProducts];
+        if (currentFilter !== 'all') filtered = filtered.filter(p => p.category === currentFilter);
+        const q = (searchQuery || document.getElementById('globalSearch')?.value || '').toLowerCase().trim();
+        if (q) filtered = filtered.filter(p =>
+            (p.name || '').toLowerCase().includes(q) ||
+            (p.description || '').toLowerCase().includes(q) ||
+            (p.category || '').toLowerCase().includes(q) ||
+            (p.storeName || '').toLowerCase().includes(q)
+        );
+        renderProducts(filtered);
+    };
+
+    // ============================================================
+    //  CATEGORY FILTER (Dinamis dari Firebase)
+    // ============================================================
+    const buildCategoryFilter = () => {
+        // Kumpulkan semua kategori unik dari produk
+        const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+        const container = document.getElementById('categoryFilter');
+        if (!container) return;
+        container.innerHTML = `<div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn active-cat" data-cat="all">Semua</div>`;
+        cats.forEach(cat => {
+            const btn = document.createElement('div');
+            btn.className = 'flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer category-btn';
+            btn.dataset.cat = cat;
+            btn.textContent = cat;
+            container.appendChild(btn);
+        });
+        // Bind click
+        container.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                container.querySelectorAll('.category-btn').forEach(b => { b.classList.remove('active-cat','bg-blue-500/10','border-blue-500'); });
+                btn.classList.add('active-cat','bg-blue-500/10','border-blue-500');
+                currentFilter = btn.dataset.cat;
+                applyFilters();
+            });
+        });
+    };
+
+    // ============================================================
+    //  HERO BANNER & PROMO TICKER (dari Firebase /settings)
+    // ============================================================
+    const renderHeroBanner = (data) => {
+        const sec = document.getElementById('heroBannerSection');
+        if (!sec) return;
+        if (!data || !data.enabled) { sec.innerHTML = ''; return; }
+        sec.innerHTML = `
+        <div class="relative rounded-[32px] overflow-hidden mb-0" style="min-height:260px;">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f3c] to-[#05080f]"></div>
+            <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-blue-600/20 blur-[80px] rounded-full"></div>
+            <div class="absolute bottom-[-40%] left-[20%] w-[40%] h-[150%] bg-purple-600/15 blur-[80px] rounded-full"></div>
+            <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:32px 32px;"></div>
+            <div class="relative z-10 px-8 py-10 md:px-14 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-4 flex-wrap">
+                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-blue-300 bg-blue-500/15 border border-blue-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-shield-alt text-blue-400"></i> TERJAMIN</span>
+                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-green-300 bg-green-500/15 border border-green-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-check-circle text-green-400"></i> TRUSTED</span>
+                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-yellow-300 bg-yellow-500/15 border border-yellow-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-star text-yellow-400"></i> #1 MARKETPLACE</span>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-extrabold font-syne leading-tight mb-1">${data.title || 'XREZZKY'}</h1>
+                    <h2 class="text-xl md:text-3xl font-extrabold font-syne text-blue-400 mb-4">${data.subtitle || 'OFFICIAL STORE'}</h2>
+                    <p class="text-gray-300 text-sm md:text-base mb-6 max-w-md leading-relaxed">${data.tagline || 'Platform jual-beli produk digital paling aman & terpercaya.'}</p>
+                    <div class="flex gap-3 flex-wrap">
+                        <button onclick="document.getElementById('mainProductGrid').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-900/40"><i class="fas fa-bolt"></i> Belanja Sekarang</button>
+                        <button onclick="openModal('modalAbout')" class="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur rounded-xl font-bold text-sm transition border border-white/10"><i class="fas fa-info-circle"></i> Tentang Kami</button>
+                    </div>
+                </div>
+                <div class="flex flex-row md:flex-col gap-3 shrink-0">
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p id="statProduk" class="text-2xl font-extrabold text-blue-400">${data.statProduk || '500+'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p></div>
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p class="text-2xl font-extrabold text-green-400">${data.statPembeli || '2K+'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pembeli</p></div>
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p class="text-2xl font-extrabold text-yellow-400">${data.statRating || '4.9★'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p></div>
+                </div>
+            </div>
+        </div>`;
+    };
+
+    const renderPromoTicker = (data) => {
+        const sec = document.getElementById('promoTickerSection');
+        if (!sec) return;
+        if (!data || !data.enabled || !data.items || data.items.length === 0) { sec.innerHTML = ''; return; }
+        const doubled = [...data.items, ...data.items];
+        const spans = doubled.map(t => `<span class="text-sm font-semibold text-gray-200">${t}</span>`).join('');
+        sec.innerHTML = `
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-white/10 py-3 px-4">
+            <div class="flex items-center gap-3">
+                <span class="shrink-0 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">🔥 PROMO</span>
+                <div class="overflow-hidden flex-1">
+                    <div class="promo-ticker flex gap-10 whitespace-nowrap">${spans}</div>
+                </div>
+            </div>
+        </div>`;
+    };
+
+    // ============================================================
+    //  QTY & DETAIL
+    // ============================================================
+    window.changeQty = (delta) => {
+        if (!selectedProduct) return;
+        const maxStock = Number(selectedProduct.stock || 99);
+        currentQty = Math.max(1, Math.min(maxStock, currentQty + delta));
+        document.getElementById('detQty').textContent = currentQty;
+        document.getElementById('detTotal').textContent = `Rp ${(Number(selectedProduct.price || 0) * currentQty).toLocaleString('id-ID')}`;
+    };
+
+    const loadProductReviews = async (productId) => {
+        const el = document.getElementById('detReviews');
+        if (!el) return;
+        try {
+            const snap = await get(ref(db, `products/${productId}/reviews`));
+            if (!snap.exists()) { el.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada ulasan untuk produk ini.</p>`; return; }
+            const reviews = snap.val();
+            let h = `<div class="mb-3"><h4 class="font-bold border-l-4 border-blue-500 pl-3 text-sm mb-3">Ulasan Pembeli</h4>`;
+            Object.values(reviews).slice(0, 5).forEach(r => {
+                let s = '';
+                for (let i = 1; i <= 5; i++) s += `<span style="color:${i<=r.stars?'#f59e0b':'#374151'}">★</span>`;
+                const dt = new Date(r.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                h += `<div class="bg-white/5 rounded-xl p-3 mb-2"><div class="flex items-center justify-between mb-1"><p class="text-xs font-bold">${r.userName || 'User'}</p><div class="flex items-center gap-1">${s}<span class="text-[9px] text-gray-500 ml-1">${dt}</span></div></div>${r.comment ? `<p class="text-xs text-gray-400 leading-relaxed">${r.comment}</p>` : ''}</div>`;
+            });
+            h += `</div>`;
+            el.innerHTML = h;
+        } catch { el.innerHTML = ''; }
+    };
+
+    window.showDetail = (product) => {
+        selectedProduct = product;
+        currentQty = 1;
+        document.getElementById('detImg').src = product.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img';
+        document.getElementById('detTitle').textContent  = product.name || '-';
+        document.getElementById('detPrice').textContent  = `Rp ${Number(product.price || 0).toLocaleString('id-ID')}`;
+        document.getElementById('detDesc').textContent   = product.description || 'Tidak ada deskripsi.';
+        document.getElementById('detCat').textContent    = product.category || 'Digital Asset';
+        document.getElementById('detStock').textContent  = product.stock ?? '-';
+        document.getElementById('detQty').textContent    = 1;
+        document.getElementById('detTotal').textContent  = `Rp ${Number(product.price || 0).toLocaleString('id-ID')}`;
+        document.getElementById('detRatingDisplay').innerHTML = makeStarsHtml(product.rating, product.ratingCount);
+
+        const seller = allSellers.find(s => s.uid === product.sellerId);
+        const sellerName = seller?.ownerName || product.sellerName || 'XREZZKY Official';
+        const storeName  = seller?.storeName  || product.storeName  || '';
+        document.getElementById('detSellerName').textContent   = sellerName;
+        document.getElementById('detStoreName').textContent    = storeName ? `🏪 ${storeName}` : '';
+        document.getElementById('detSellerAvatar').textContent = (storeName || sellerName).charAt(0).toUpperCase();
+        document.getElementById('detReviews').innerHTML = `<p class="text-xs text-gray-500">Memuat ulasan...</p>`;
+        loadProductReviews(product.id);
+        openModal('modalDetail');
+    };
+
+    window.openStoreFromDetail = () => {
+        if (!selectedProduct) return;
+        closeModal('modalDetail');
+        openStorePageById(selectedProduct.sellerId);
+    };
+
+    // ============================================================
+    //  BUY NOW (WhatsApp dengan format lengkap + ID Pesanan)
+    // ============================================================
+    window.handleBuyNow = async () => {
+        if (!currentUser) {
+            closeModal('modalDetail');
+            openModal('modalAuth');
+            showToast('Info', 'Silakan login untuk bertransaksi', 'info');
+            return;
+        }
+        if (!selectedProduct) return;
+
+        const seller   = allSellers.find(s => s.uid === selectedProduct.sellerId);
+        const waNumber = (seller?.whatsapp || '6281234567890').replace(/\D/g, '');
+        const storeName = seller?.storeName || selectedProduct.storeName || 'XREZZKY STORE';
+        const harga     = Number(selectedProduct.price || 0);
+        const total     = harga * currentQty;
+
+        // Generate Order ID & simpan ke Firebase Realtime
+        const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substring(2,7).toUpperCase()}`;
+        const orderData = {
+            orderId,
+            productId:    selectedProduct.id,
+            productName:  selectedProduct.name,
+            productDesc:  selectedProduct.description || '-',
+            storeName,
+            sellerId:     selectedProduct.sellerId || '',
+            sellerWa:     seller?.whatsapp || '-',
+            qty:          currentQty,
+            price:        harga,
+            totalPrice:   total,
+            buyerName:    currentUser.displayName || '-',
+            buyerEmail:   currentUser.email,
+            status:       'pending',
+            rated:        false,
+            createdAt:    Date.now(),
+        };
+
+        try {
+            // Auto create pesanan di Realtime DB
+            await set(ref(db, `orders/${currentUser.uid}/${orderId}`), orderData);
+            // Update sold count produk
+            await update(ref(db, `products/${selectedProduct.id}`), { sold: (Number(selectedProduct.sold || 0) + currentQty) });
+        } catch (e) { console.error('Gagal simpan pesanan:', e); }
+
+        // Format pesan WA
+        const ratingLink = `${window.location.origin}${window.location.pathname}?rate=${orderId}`;
+        const msg = encodeURIComponent(
+            `Halo ${storeName}, saya ingin memesan:\n\n` +
+            `*ID PESANAN:* ${orderId}\n` +
+            `*NAMA PRODUK:* ${selectedProduct.name}\n` +
+            `*DESKRIPSI:* ${selectedProduct.description || '-'}\n` +
+            `*NAMA TOKO:* ${storeName}\n` +
+            `*JUMLAH:* ${currentQty}\n` +
+            `*HARGA SATUAN:* Rp ${harga.toLocaleString('id-ID')}\n` +
+            `*TOTAL:* Rp ${total.toLocaleString('id-ID')}\n\n` +
+            `*ID PRODUK:* ${selectedProduct.id}\n\n` +
+            `*NAMA PEMBELI:* ${currentUser.displayName || '-'}\n` +
+            `*EMAIL PEMBELI:* ${currentUser.email}\n\n` +
+            `*STATUS:* Menunggu Konfirmasi\n\n` +
+            `Mohon instruksi selanjutnya untuk pembayaran 🙏\n\n` +
+            `---\n` +
+            `Setelah pesanan selesai, silakan beri ulasan di:\n${ratingLink}`
+        );
+        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        closeModal('modalDetail');
+        showToast('Pesanan Dibuat! 🛍️', `ID Pesanan: ${orderId.slice(-8)}`, 'success');
+        navigate('orders');
+    };
+
+    // ============================================================
+    //  COPY LINK
+    // ============================================================
+    window.copyLink = () => {
+        if (!selectedProduct) return;
+        const shareUrl = `${window.location.origin}${window.location.pathname}?id=${selectedProduct.id}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(() => showToast('Link Disalin! 🔗', 'Tautan produk berhasil disalin', 'success')).catch(() => fallbackCopy(shareUrl));
+        } else fallbackCopy(shareUrl);
+    };
+    const fallbackCopy = (text) => {
+        const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try { document.execCommand('copy'); showToast('Link Disalin! 🔗', 'Tautan produk berhasil disalin', 'success'); } catch { showToast('Gagal', 'Tidak bisa menyalin link', 'error'); }
+        document.body.removeChild(ta);
+    };
+
+    // ============================================================
+    //  FULL IMAGE VIEWER
+    // ============================================================
+    window.expandImg = (src) => {
+        document.getElementById('imgExpanded').src = src;
+        const v = document.getElementById('fullImageView');
+        v.classList.remove('hidden'); v.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    };
+    window.closeFullScreen = () => {
+        const v = document.getElementById('fullImageView');
+        v.classList.add('hidden'); v.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    };
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFullScreen(); });
+
+    // ============================================================
+    //  STORE PAGE FUNCTIONS
+    // ============================================================
+    const openStorePageById = (sellerId) => {
+        if (!sellerId) { showToast('Info', 'Info toko tidak tersedia', 'info'); return; }
+        const seller = allSellers.find(s => s.uid === sellerId);
+        if (!seller) { showToast('Info', 'Toko belum terverifikasi atau tidak ditemukan', 'info'); return; }
+        renderStorePage(seller);
+        openModal('modalStorePage');
+    };
+
+    window.openSellerProfile = () => {
+        if (!selectedProduct) return;
+        closeModal('modalDetail');
+        openStorePageById(selectedProduct.sellerId);
+    };
+
+    const renderStorePage = (seller) => {
+        const prods = allProducts.filter(p => p.sellerId === seller.uid);
+        let totalStock = 0, totalSold = 0, allRatings = [], totalRatingCount = 0;
+        prods.forEach(p => {
+            totalStock += Number(p.stock || 0);
+            totalSold  += Number(p.sold  || 0);
+            if (p.rating && p.ratingCount) {
+                for (let i = 0; i < p.ratingCount; i++) allRatings.push(parseFloat(p.rating));
+                totalRatingCount += p.ratingCount;
+            }
+        });
+        const storeAvgRating = allRatings.length > 0 ? (allRatings.reduce((a,b) => a+b, 0) / allRatings.length).toFixed(1) : null;
+
+        // Tampilkan ke publik: Provinsi/Kab saja
+        const publicLocation = seller.provinsi && seller.kabkota ? `${seller.provinsi} / ${seller.kabkota}` : (seller.city || '');
+
+        document.getElementById('spAvatar').textContent    = (seller.storeName || 'S').charAt(0).toUpperCase();
+        document.getElementById('spStoreName').textContent = seller.storeName || '-';
+        document.getElementById('spOwnerName').textContent = `oleh ${seller.ownerName || seller.name || 'Seller'}`;
+        document.getElementById('spCity').textContent      = publicLocation ? `📍 ${publicLocation}` : '';
+        document.getElementById('spDesc').textContent      = seller.storeDesc || 'Tidak ada deskripsi.';
+        document.getElementById('spTotalItem').textContent  = prods.length;
+        document.getElementById('spTotalStock').textContent = totalStock;
+        document.getElementById('spTotalSold').textContent  = totalSold;
+        const ratingEl = document.getElementById('spOverallRating');
+        if (storeAvgRating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) stars += `<span style="color:${i<=Math.round(parseFloat(storeAvgRating))?'#f59e0b':'#374151'}">★</span>`;
+            ratingEl.innerHTML = `<span class="text-base">${stars}</span><span class="text-xs text-gray-400 ml-1">${storeAvgRating} dari ${totalRatingCount} ulasan</span>`;
+        } else ratingEl.innerHTML = `<span class="text-xs text-gray-500 italic">Belum ada ulasan</span>`;
+
+        const list = document.getElementById('spProductList');
+        list.innerHTML = '';
+        if (prods.length === 0) { list.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-sm">Belum ada produk di toko ini</div>`; return; }
+        prods.forEach(p => {
+            const low = Number(p.stock) > 0 && Number(p.stock) < 5;
+            const out = Number(p.stock) <= 0;
+            const item = document.createElement('div');
+            item.className = 'bg-white/5 border border-white/5 rounded-xl p-2 cursor-pointer hover:border-blue-500/50 transition';
+            item.onclick = () => { closeModal('modalStorePage'); showDetail(p); };
+            item.innerHTML = `<div class="relative overflow-hidden rounded-lg mb-1.5" style="aspect-ratio:1/1"><img src="${p.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">${out ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-gray-600 text-white px-1.5 py-0.5 rounded-full">Habis</span>' : ''}${low ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-amber-500 text-white px-1.5 py-0.5 rounded-full">Limit</span>' : ''}</div><p class="text-[10px] text-blue-400 font-bold uppercase mb-0.5">${p.category || '-'}</p><p class="text-[11px] font-bold line-clamp-1 mb-1">${p.name}</p><div class="flex justify-between items-center"><p class="text-[11px] font-extrabold">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>${p.rating ? `<span style="color:#f59e0b" class="text-[10px] font-bold">★ ${p.rating}</span>` : ''}</div>`;
+            list.appendChild(item);
+        });
+    };
+
+    const renderStoreChips = () => {
+        const el = document.getElementById('storeChips');
+        if (!el) return;
+        el.innerHTML = '';
+        if (allSellers.length === 0) { el.innerHTML = `<p class="text-gray-500 text-sm py-3 px-2">Belum ada toko aktif</p>`; return; }
+        allSellers.forEach(s => {
+            const chip = document.createElement('div');
+            chip.className = 'shrink-0 glass-card px-4 py-3 flex items-center gap-3 cursor-pointer hover:border-blue-500 transition min-w-[160px] rounded-2xl';
+            chip.onclick = () => { renderStorePage(s); openModal('modalStorePage'); };
+            chip.innerHTML = `<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-sm shrink-0">${(s.storeName || 'S').charAt(0).toUpperCase()}</div><div class="min-w-0"><p class="text-xs font-bold line-clamp-1">${s.storeName || '-'}</p><p class="text-[10px] text-gray-500">${s.category || 'Digital'}</p></div>`;
+            el.appendChild(chip);
+        });
+    };
+
+    const renderAllStores = (q = '') => {
+        const grid = document.getElementById('allStoreGrid');
+        if (!grid) return;
+        const list = q ? allSellers.filter(s => (s.storeName||'').toLowerCase().includes(q) || (s.category||'').toLowerCase().includes(q) || (s.ownerName||'').toLowerCase().includes(q)) : allSellers;
+        grid.innerHTML = '';
+        if (list.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500"><i class="fas fa-store text-4xl mb-3 opacity-30"></i><p class="font-bold">Toko tidak ditemukan</p></div>`; return; }
+        list.forEach(s => {
+            const prods = allProducts.filter(p => p.sellerId === s.uid);
+            let totStk = 0, allR = [], totRc = 0;
+            prods.forEach(p => { totStk += Number(p.stock||0); if (p.rating && p.ratingCount) { for (let i=0;i<p.ratingCount;i++) allR.push(parseFloat(p.rating)); totRc += p.ratingCount; } });
+            const avg = allR.length > 0 ? (allR.reduce((a,b)=>a+b,0)/allR.length).toFixed(1) : null;
+            const publicLoc = s.provinsi && s.kabkota ? `${s.provinsi} / ${s.kabkota}` : (s.city || '');
+            const card = document.createElement('div');
+            card.className = 'glass-card p-5 cursor-pointer hover:border-blue-500 transition rounded-2xl';
+            card.onclick = () => { renderStorePage(s); openModal('modalStorePage'); };
+            card.innerHTML = `<div class="flex items-center gap-3 mb-3"><div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xl font-bold shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div><div class="flex-1 min-w-0"><p class="font-extrabold font-syne line-clamp-1 text-sm">${s.storeName||'-'}</p><p class="text-[10px] text-blue-400 font-bold uppercase">${s.category||'General'}</p></div><span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold shrink-0">✅ Verified</span></div><p class="text-gray-400 text-xs leading-relaxed line-clamp-2 mb-3">${s.storeDesc||'-'}</p>${publicLoc ? `<p class="text-[10px] text-gray-500 mb-2">📍 ${publicLoc}</p>` : ''}${avg ? `<div class="flex items-center gap-1 mb-3"><span style="color:#f59e0b">★</span><span class="text-xs font-bold">${avg}</span><span class="text-[10px] text-gray-500">(${totRc} ulasan)</span></div>` : ''}<div class="grid grid-cols-3 gap-2 text-center"><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold">${prods.length}</p><p class="text-[9px] text-gray-500">Produk</p></div><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold text-green-400">${totStk}</p><p class="text-[9px] text-gray-500">Stok</p></div><div class="bg-white/5 rounded-xl py-1.5 flex items-center justify-center"><span class="text-xs font-bold text-blue-400">Lihat →</span></div></div>`;
+            grid.appendChild(card);
+        });
+    };
+    window.filterStores = (q) => renderAllStores(q.toLowerCase());
+
+    // ============================================================
+    //  RATING SYSTEM (1 kali per produk per user)
+    // ============================================================
+    window.openRatingModal = (orderId, productId, productName) => {
+        ratingTarget = { orderId, productId, productName };
+        document.getElementById('ratingProdName').textContent = productName;
+        document.querySelectorAll('#starInputGroup input').forEach(i => i.checked = false);
+        document.getElementById('ratingComment').value = '';
+        openModal('modalRating');
+    };
+
+    window.submitRating = async () => {
+        if (!ratingTarget || !currentUser) return;
+        const starEl = [...document.querySelectorAll('#starInputGroup input')].find(i => i.checked);
+        if (!starEl) return showToast('Error', 'Pilih bintang dulu!', 'error');
+        const stars   = parseInt(starEl.value);
+        const comment = document.getElementById('ratingComment').value.trim();
+        try {
+            // Simpan review (1 kali per user per produk — pakai uid sebagai key)
+            await set(ref(db, `products/${ratingTarget.productId}/reviews/${currentUser.uid}`), {
+                userId: currentUser.uid, userName: currentUser.displayName || 'User',
+                stars, comment, createdAt: Date.now()
+            });
+            // Hitung ulang rata-rata
+            const snapR = await get(ref(db, `products/${ratingTarget.productId}/reviews`));
+            if (snapR.exists()) {
+                const vals = Object.values(snapR.val()).map(r => r.stars);
+                const avg  = (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
+                await update(ref(db, `products/${ratingTarget.productId}`), { rating: avg, ratingCount: vals.length });
+            }
+            // Tandai rated di order
+            await update(ref(db, `orders/${currentUser.uid}/${ratingTarget.orderId}`), { rated: true });
+            closeModal('modalRating');
+            showToast('Terima kasih! ⭐', 'Rating berhasil dikirim!', 'success');
+            drawOrders();
+        } catch (e) { showToast('Gagal', e.message, 'error'); }
+    };
+
+    // ============================================================
+    //  ORDERS (Realtime)
+    // ============================================================
+    const drawOrders = () => {
+        const el = document.getElementById('ordersList');
+        if (!el) return;
+        if (!currentUser) {
+            el.innerHTML = `<div class="glass-card p-12 text-center text-gray-500"><i class="fas fa-lock text-4xl mb-4 opacity-30"></i><p class="font-bold">Login dulu untuk lihat pesanan</p><button onclick="openModal('modalAuth')" class="btn-primary !inline-block mt-4">Login</button></div>`;
+            return;
+        }
+        // Realtime listener pesanan
+        onValue(ref(db, `orders/${currentUser.uid}`), (snap) => {
+            el.innerHTML = '';
+            if (!snap.exists()) {
+                el.innerHTML = `<div class="glass-card p-12 text-center text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p class="font-bold">Belum ada pesanan</p><p class="text-sm mt-1">Pesanan muncul di sini setelah kamu memesan via WhatsApp.</p><button onclick="navigate('home')" class="btn-primary !inline-block mt-4">Mulai Belanja</button></div>`;
+                return;
+            }
+            const orders = snap.val();
+            const statusMap = {
+                pending:    { l:'Menunggu Konfirmasi', c:'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
+                confirmed:  { l:'Terkonfirmasi',       c:'text-blue-400 bg-blue-500/10 border-blue-500/30' },
+                payment:    { l:'Menunggu Pembayaran', c:'text-orange-400 bg-orange-500/10 border-orange-500/30' },
+                processing: { l:'Sedang Diproses',     c:'text-purple-400 bg-purple-500/10 border-purple-500/30' },
+                shipped:    { l:'Dikirim / Dikirimkan', c:'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
+                completed:  { l:'Selesai',              c:'text-green-400 bg-green-500/10 border-green-500/30' },
+                cancelled:  { l:'Dibatalkan',           c:'text-red-400 bg-red-500/10 border-red-500/30' },
+            };
+            Object.keys(orders).sort((a,b) => orders[b].createdAt - orders[a].createdAt).forEach(oid => {
+                const o  = orders[oid];
+                const st = statusMap[o.status] || statusMap.pending;
+                const dt = new Date(o.createdAt).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'});
+                const div = document.createElement('div');
+                div.className = 'glass-card p-5 mb-3 rounded-2xl';
+                div.innerHTML = `
+                    <div class="flex items-start justify-between mb-3 gap-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-extrabold font-syne text-sm line-clamp-1">${o.productName || '-'}</p>
+                            <p class="text-[10px] text-gray-500">${dt} · ID: ${oid.slice(-8).toUpperCase()}</p>
+                            ${o.cancelReason ? `<p class="text-[10px] text-red-400 mt-1">Alasan: ${o.cancelReason}</p>` : ''}
+                        </div>
+                        <span class="text-[10px] font-black px-2.5 py-1 rounded-full border shrink-0 ${st.c}">${st.l}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</p>
+                            <p class="text-[10px] text-gray-500">${o.storeName || 'XREZZKY Store'} · Qty: ${o.qty || 1}</p>
+                        </div>
+                        ${o.status === 'completed' && !o.rated
+                            ? `<button onclick="openRatingModal('${oid}','${o.productId}','${(o.productName||'').replace(/'/g,"\\'")}');" class="btn-primary !py-2 !px-4 !text-xs !rounded-xl flex items-center gap-1 !w-auto"><i class="fas fa-star"></i> Beri Rating</button>`
+                            : o.status === 'completed' && o.rated
+                            ? `<div class="flex items-center gap-1 text-yellow-400 text-xs font-bold"><i class="fas fa-star"></i> Sudah Dirating</div>`
+                            : ''
+                        }
+                    </div>`;
+                el.appendChild(div);
+            });
+        });
+    };
+
+    window.showTransactionHistory = () => { navigate('orders'); };
+
+    // ============================================================
+    //  UPDATE AUTH HEADER
+    // ============================================================
+    const updateAuthHeader = () => {
+        const authHeader = document.getElementById('authHeader');
+        if (currentUser) {
+            const role  = currentUserData?.role || 'buyer';
+            const label = role === 'admin' ? 'Admin' : role === 'seller' ? 'Seller' : 'Buyer';
+            const cls   = role === 'admin' ? 'text-red-400' : role === 'seller' ? 'text-green-400' : 'text-blue-400';
+            authHeader.innerHTML = `
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                    <div class="text-right hidden sm:block leading-none">
+                        <p class="text-xs font-bold">${currentUser.displayName || 'User'}</p>
+                        <p class="text-[9px] ${cls} font-black uppercase">${label} Tier</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold border-2 border-white/10 text-sm">
+                        ${(currentUser.displayName || 'U').charAt(0).toUpperCase()}
+                    </div>
+                </div>`;
+        } else {
+            authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm"><i class="fas fa-sign-in-alt mr-2"></i>Masuk</button>`;
+        }
+    };
+
+    // ============================================================
+    //  LOADER HELPER
+    // ============================================================
+    const dismissLoader = () => {
+        const loader = document.getElementById('loader');
+        if (loader && !loader.dataset.dismissed) {
+            loader.dataset.dismissed = '1';
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 500);
+        }
+    };
+    const showLoaderError = (msg = 'Gagal memuat data') => {
+        const loader = document.getElementById('loader');
+        if (loader && !loader.dataset.dismissed) {
+            loader.innerHTML = `<i class="fas fa-exclamation-triangle text-yellow-400 text-4xl mb-4"></i><p class="text-yellow-300 font-bold">${msg}</p><p class="text-gray-500 text-sm mt-2 text-center px-8">Periksa Firebase Rules atau koneksi internet</p><button onclick="location.reload()" class="mt-6 px-6 py-2 bg-blue-600 rounded-xl text-sm font-bold hover:bg-blue-700 transition">Coba Lagi</button>`;
+        }
+    };
+
+    // ============================================================
+    //  INIT APP
+    // ============================================================
+    const initApp = () => {
+        const loaderTimeout = setTimeout(() => {
+            dismissLoader();
+            renderProducts([]);
+            showToast('Peringatan', 'Firebase lambat/tidak merespons.', 'warning');
+        }, 8000);
+
+        // Search handler
+        document.getElementById('globalSearch')?.addEventListener('input', (e) => applyFilters(e.target.value));
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) { overlay.style.display = 'none'; document.body.style.overflow = 'auto'; }
+            });
+        });
+
+        // ── Realtime: Settings (Banner & Promo Ticker)
+        onValue(ref(db, 'settings/banner'), (snap) => {
+            renderHeroBanner(snap.val());
+        });
+        onValue(ref(db, 'settings/promo_ticker'), (snap) => {
+            renderPromoTicker(snap.val());
+        });
+
+        // ── Realtime: Produk
+        onValue(ref(db, 'products'), (snap) => {
+            clearTimeout(loaderTimeout);
+            allProducts = [];
+            const data = snap.val();
+            if (data) Object.keys(data).forEach(key => allProducts.push({ id: key, ...data[key] }));
+            buildCategoryFilter();
+            applyFilters();
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) { const target = allProducts.find(p => p.id === productId); if (target) showDetail(target); }
+            dismissLoader();
+        }, (error) => {
+            clearTimeout(loaderTimeout);
+            showLoaderError('Akses database ditolak');
+            renderProducts([]);
+        });
+
+        // ── Realtime: Seller/Toko
+        onValue(ref(db, 'seller_applications'), (snap) => {
+            allSellers = [];
+            const data = snap.val();
+            if (data) Object.keys(data).forEach(key => { if (data[key].status === 'approved') allSellers.push({ uid: key, ...data[key] }); });
+            renderStoreChips();
+            const modal = document.getElementById('modalAllStores');
+            if (modal && modal.style.display === 'flex') renderAllStores();
+        });
+
+        // ── Auth State (Realtime)
+        onAuthStateChanged(auth, async (user) => {
+            const sellerBanner    = document.getElementById('sellerBanner');
+            const homeSellerCta   = document.getElementById('homeSellerCta');
+            const sellerCtaCard   = document.getElementById('sellerCtaCard');
+            const badgeContainer  = document.getElementById('roleBadgeContainer');
+
+            if (user) {
+                currentUser = user;
+
+                // Load user data REALTIME
+                onValue(ref(db, 'users/' + user.uid), (snapU) => {
+                    currentUserData = snapU.exists() ? snapU.val() : { role: 'buyer' };
+
+                    const role      = currentUserData?.role || 'buyer';
+                    const isAdmin   = role === 'admin';
+                    const isSeller  = role === 'seller';
+                    const isPending = currentUserData?.sellerStatus === 'pending';
+                    const hasApplied = currentUserData?.sellerStatus === 'approved' || currentUserData?.sellerStatus === 'pending' || isSeller;
+
+                    updateAuthHeader();
+
+                    // Role badge
+                    const roleLabel   = isAdmin ? 'Admin' : isSeller ? 'Seller' : 'Buyer';
+                    const badgeStyle  = isAdmin ? 'bg-red-500/20 text-red-400 border-red-500/40'
+                                     : isSeller ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                                     : 'bg-blue-500/20 text-blue-400 border-blue-500/40';
+                    if (badgeContainer) badgeContainer.innerHTML = `<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${badgeStyle}">${roleLabel} Tier</span>`;
+
+                    // ── LOGIKA ROLE DINAMIS ──────────────────────────────────
+                    // Cek apakah admin sudah daftar seller
+                    if (isAdmin) {
+                        get(ref(db, `seller_applications/${user.uid}`)).then(snapSA => {
+                            const sellerApp = snapSA.exists() ? snapSA.val() : null;
+                            const adminAlreadySeller = sellerApp && sellerApp.status === 'approved';
+
+                            if (sellerBanner) {
+                                sellerBanner.className = 'w-full mb-5 flex flex-col gap-3';
+                                sellerBanner.onclick   = null;
+                                if (adminAlreadySeller) {
+                                    // Admin + sudah daftar seller → 2 panel
+                                    sellerBanner.innerHTML = `
+                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-red-500/30 shadow-lg">
+                                            <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div><div><p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1">Master Control</p><h3 class="text-sm font-black text-white uppercase">Admin Panel</h3></div></div>
+                                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
+                                        </div>
+                                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-white/10 shadow-lg">
+                                            <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-400"></i></div><div><p class="text-[9px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1">Personal Store</p><h3 class="text-sm font-black text-white uppercase">Seller Dashboard</h3></div></div>
+                                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
+                                        </div>`;
+                                } else {
+                                    // Admin belum daftar seller → 1 panel + promosi daftar seller
+                                    sellerBanner.innerHTML = `
+                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-red-500/30 shadow-lg">
+                                            <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div><div><p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1">Master Control</p><h3 class="text-sm font-black text-white uppercase">Admin Panel</h3></div></div>
+                                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
+                                        </div>`;
+                                    // Tampilkan promosi daftar seller untuk admin
+                                    if (sellerCtaCard) sellerCtaCard.classList.remove('hidden');
+                                    if (homeSellerCta) homeSellerCta.classList.remove('hidden');
+                                }
+                            }
+                        });
+                        if (homeSellerCta && !hasApplied) homeSellerCta.classList.remove('hidden');
+                        if (sellerCtaCard && !hasApplied) sellerCtaCard.classList.remove('hidden');
+
+                    } else if (isSeller && sellerBanner) {
+                        // Seller → 1 dashboard
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-green-800/60 to-blue-800/40 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-green-500/30 mb-5';
+                        sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
+                        sellerBanner.innerHTML = `<div class="flex items-center gap-4 text-left"><div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div><div><p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1">✅ Seller Aktif</p><h3 class="text-base font-black text-white uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3></div></div><span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase">Panel →</span>`;
+                        if (homeSellerCta) homeSellerCta.classList.add('hidden');
+                        if (sellerCtaCard) sellerCtaCard.classList.add('hidden');
+
+                    } else if (isPending && sellerBanner) {
+                        // Pending → tunggu verifikasi
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-yellow-900/40 to-orange-900/30 p-5 rounded-[24px] flex items-center gap-4 border border-yellow-500/30 mb-5';
+                        sellerBanner.onclick   = null;
+                        sellerBanner.innerHTML = `<div class="w-11 h-11 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div><div class="flex-1 text-left"><p class="text-[10px] font-black uppercase text-yellow-300">⏳ Menunggu Verifikasi</p><p class="font-bold text-white text-sm">Pendaftaran Sedang Ditinjau Admin</p></div>`;
+                        if (homeSellerCta) homeSellerCta.classList.add('hidden');
+                        if (sellerCtaCard) sellerCtaCard.classList.add('hidden');
+
+                    } else if (sellerBanner) {
+                        // Buyer biasa → tampilkan promosi
+                        sellerBanner.innerHTML = '';
+                        sellerBanner.className = '';
+                        if (homeSellerCta) homeSellerCta.classList.remove('hidden');
+                        if (sellerCtaCard) sellerCtaCard.classList.remove('hidden');
+                    }
+
+                    refreshProfilePage();
+                });
+
+                document.getElementById('userNameText').textContent  = user.displayName || 'User';
+                document.getElementById('userEmailText').textContent = user.email;
+                const avatarEl = document.getElementById('profileAvatar');
+                if (avatarEl) avatarEl.textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+                const avatarTxtEl = document.getElementById('avatarText');
+                if (avatarTxtEl) avatarTxtEl.textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+                const created = user.metadata?.creationTime;
+                if (created) {
+                    const d  = new Date(created);
+                    const el = document.getElementById('statsMember');
+                    if (el) el.textContent = d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short' });
+                }
+
+            } else {
+                currentUser     = null;
+                currentUserData = null;
+                updateAuthHeader();
+                if (homeSellerCta) homeSellerCta.classList.remove('hidden');
+                if (sellerCtaCard) sellerCtaCard.classList.remove('hidden');
+                if (sellerBanner) { sellerBanner.innerHTML = ''; sellerBanner.className = ''; }
+                refreshProfilePage();
+            }
+        });
+
+        // Cek URL param: rate=orderId
+        const urlParams = new URLSearchParams(window.location.search);
+        const rateOrderId = urlParams.get('rate');
+        if (rateOrderId && currentUser) {
+            get(ref(db, `orders/${currentUser.uid}/${rateOrderId}`)).then(snap => {
+                if (snap.exists()) {
+                    const o = snap.val();
+                    if (!o.rated) openRatingModal(rateOrderId, o.productId, o.productName);
+                }
+            });
+        }
+    };
+
+    // ============================================================
+    //  SELLER APPLICATION FLOW
+    // ============================================================
+    window.goToSellerForm = () => {
+        if (!currentUser) { closeModal('modalBecomeSeller'); openModal('modalAuth'); showToast('Info', 'Login dulu untuk daftar jadi seller!', 'info'); return; }
+        get(ref(db, `seller_applications/${currentUser.uid}`)).then(snap => {
+            if (snap.exists()) {
+                const data = snap.val();
+                if (data.status === 'approved') { closeModal('modalBecomeSeller'); showToast('Info', 'Kamu sudah jadi seller aktif! 🎉', 'info'); return; }
+                if (data.status === 'pending')  { closeModal('modalBecomeSeller'); showToast('Info', 'Pendaftaran kamu sedang diproses admin. Sabar ya! ⏳', 'warning'); return; }
+            }
+            const ownerInput = document.getElementById('sf_ownerName');
+            if (ownerInput && currentUser.displayName) ownerInput.value = currentUser.displayName;
+            document.getElementById('sellerStep1').classList.add('hidden');
+            document.getElementById('sellerStep2').classList.remove('hidden');
+        });
+    };
+
+    window.backToSellerInfo = () => {
+        document.getElementById('sellerStep2').classList.add('hidden');
+        document.getElementById('sellerStep1').classList.remove('hidden');
+    };
+
+    window.submitSellerApplication = async () => {
+        if (!currentUser) return;
+        const storeName     = document.getElementById('sf_storeName').value.trim();
+        const storeDesc     = document.getElementById('sf_storeDesc').value.trim();
+        const category      = document.getElementById('sf_category').value;
+        const ownerName     = document.getElementById('sf_ownerName').value.trim();
+        const whatsapp      = document.getElementById('sf_whatsapp').value.trim();
+        const pulau         = document.getElementById('sf_pulau').value;
+        const provinsi      = document.getElementById('sf_provinsi').value;
+        const kabkota       = document.getElementById('sf_kabkota').value;
+        const kecamatan     = document.getElementById('sf_kecamatan').value;
+        const alamatlengkap = document.getElementById('sf_alamatlengkap').value.trim();
+        const experience    = document.getElementById('sf_experience').value;
+        const firstProd     = document.getElementById('sf_firstProduct').value.trim();
+        const notes         = document.getElementById('sf_notes').value.trim();
+        const agreed        = document.getElementById('sf_agree').checked;
+
+        if (!storeName)     return showToast('Error', 'Nama toko wajib diisi!', 'error');
+        if (!storeDesc)     return showToast('Error', 'Deskripsi toko wajib diisi!', 'error');
+        if (!category)      return showToast('Error', 'Pilih kategori produk!', 'error');
+        if (!ownerName)     return showToast('Error', 'Nama lengkap wajib diisi!', 'error');
+        if (!whatsapp)      return showToast('Error', 'Nomor WhatsApp wajib diisi!', 'error');
+        if (whatsapp.length < 9) return showToast('Error', 'Nomor WA tidak valid!', 'error');
+        if (!pulau)         return showToast('Error', 'Pilih pulau domisili!', 'error');
+        if (!provinsi)      return showToast('Error', 'Pilih provinsi!', 'error');
+        if (!kabkota)       return showToast('Error', 'Pilih Kabupaten/Kota!', 'error');
+        if (!kecamatan)     return showToast('Error', 'Pilih kecamatan!', 'error');
+        if (!alamatlengkap) return showToast('Error', 'Alamat lengkap wajib diisi!', 'error');
+        if (!agreed)        return showToast('Error', 'Setujui kebijakan seller terlebih dahulu!', 'error');
+
+        const btn = document.getElementById('btnSubmitSeller');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+        const applicationData = {
+            storeName, storeDesc, category,
+            ownerName,
+            whatsapp: `+62${whatsapp}`,
+            // Alamat privat (hanya admin)
+            pulau, provinsi, kabkota, kecamatan, alamatLengkap: alamatlengkap,
+            // Lokasi publik (hanya provinsi/kab)
+            city: `${provinsi} / ${kabkota}`,
+            experience, firstProduct: firstProd || '-', notes: notes || '-',
+            uid:          currentUser.uid,
+            email:        currentUser.email,
+            status:       'pending',
+            submittedAt:  Date.now(),
+            reviewedAt:   null,
+            rejectedReason: null
+        };
+
+        try {
+            // Realtime: simpan ke /seller_applications
+            await set(ref(db, `seller_applications/${currentUser.uid}`), applicationData);
+            // Realtime: update di /users
+            await update(ref(db, `users/${currentUser.uid}`), { sellerStatus: 'pending' });
+
+            document.getElementById('sellerStep2').classList.add('hidden');
+            document.getElementById('sellerStep3').classList.remove('hidden');
+
+            // Sembunyikan promosi dari profil & home setelah daftar
+            document.getElementById('homeSellerCta')?.classList.add('hidden');
+            document.getElementById('sellerCtaCard')?.classList.add('hidden');
+
+            refreshProfilePage();
+            showToast('Terkirim! 🎉', 'Pendaftaran seller berhasil dikirim!', 'success');
+        } catch (e) {
+            console.error(e);
+            showToast('Gagal', 'Gagal mengirim pendaftaran. Coba lagi!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Pendaftaran';
+        }
+    };
+
+    initApp();
+</script>
+</body>
+</html>
