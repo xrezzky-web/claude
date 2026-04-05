@@ -5,481 +5,693 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XREZZKY STORE | Premium Digital Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <style>
+        /* ── ROOT ── */
         :root {
-            --bg-dark: #05080f;
-            --surface: #0f172a;
-            --surface-light: #1e293b;
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
-            --accent: #f59e0b;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --glass: rgba(15, 23, 42, 0.8);
+            --bg:       #080c14;
+            --bg2:      #0d1220;
+            --surface:  #111827;
+            --surface2: #1a2235;
+            --border:   rgba(255,255,255,0.07);
+            --primary:  #7c3aed;
+            --primary2: #6d28d9;
+            --blue:     #3b82f6;
+            --neon:     rgba(124,58,237,0.6);
+            --neon-b:   rgba(59,130,246,0.5);
+            --text:     #f1f5f9;
+            --muted:    #64748b;
+            --glass:    rgba(13,18,32,0.85);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
         }
 
-        h1, h2, h3, .font-syne { font-family: 'Syne', sans-serif; }
+        h1, h2, h3, .syne { font-family: 'Syne', sans-serif; }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 10px; }
 
+        /* ── GLASS CARD ── */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 20px;
         }
 
-        .glow-blue { box-shadow: 0 0 20px var(--primary-glow); }
-        
+        /* ── GRADIENTS ── */
+        .grad-primary { background: linear-gradient(135deg, #7c3aed, #3b82f6); }
+        .grad-text    { background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glow         { box-shadow: 0 0 24px rgba(124,58,237,0.4); }
+        .glow-blue    { box-shadow: 0 0 24px rgba(59,130,246,0.4); }
+
+        /* ── LOADER ── */
         #loader {
-            position: fixed; inset: 0; background: var(--bg-dark);
+            position: fixed; inset: 0; background: var(--bg);
             z-index: 9999; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             transition: opacity 0.5s ease;
         }
         .spinner {
-            width: 50px; height: 50px; border: 4px solid var(--border);
-            border-top: 4px solid var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width: 48px; height: 48px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .product-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* ── HEADER ── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(8,12,20,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ── SEARCH ── */
+        .search-wrap {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 50px;
+            display: flex; align-items: center;
+            gap: 10px; padding: 0 16px;
+            transition: border-color .25s;
+        }
+        .search-wrap:focus-within { border-color: var(--primary); }
+        .search-wrap input {
+            background: none; border: none; outline: none;
+            color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif;
+            padding: 11px 0; width: 100%;
+        }
+        .search-wrap input::placeholder { color: var(--muted); }
+
+        /* ── CUSTOM INPUT ── */
+        .custom-input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 13px 16px;
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: .25s;
+        }
+        .custom-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+        .custom-input::placeholder { color: var(--muted); }
+        select.custom-input option { background: var(--surface); }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white; padding: 13px 28px;
+            border-radius: 12px; font-weight: 700;
+            font-size: 14px; border: none; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: opacity .2s, transform .15s;
+            display: inline-block; text-align: center;
+        }
+        .btn-primary:hover   { opacity: .88; }
+        .btn-primary:active  { transform: scale(.97); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(124,58,237,0.5);
+            color: #a78bfa;
+            padding: 13px 28px; border-radius: 12px;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            font-family: 'Inter', sans-serif; transition: .25s;
+        }
+        .btn-outline:hover { background: rgba(124,58,237,0.1); border-color: var(--primary); }
+
+        .btn-ghost {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 10px 20px; border-radius: 10px;
+            font-weight: 600; font-size: 13px; cursor: pointer;
+            font-family: 'Inter', sans-serif; transition: .2s;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+        /* ── NAV LINK ── */
+        .nav-link { color: var(--muted); font-size: 11px; font-weight: 700; background: none; border: none; cursor: pointer; transition: .2s; }
+        .nav-link.active { color: var(--primary); }
+        .nav-link i { font-size: 20px; display: block; margin-bottom: 2px; }
+
+        /* ── PRODUCT CARD ── */
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             cursor: pointer;
+            transition: transform .35s cubic-bezier(.175,.885,.32,1.275), border-color .25s, box-shadow .35s;
+            overflow: hidden;
         }
         .product-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            transform: translateY(-8px);
+            border-color: rgba(124,58,237,0.5);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.2);
         }
-        .product-img-container { position: relative; overflow: hidden; border-radius: 18px; }
-        .product-card:hover .product-img { transform: scale(1.1); }
-        .product-img { transition: transform 0.6s ease; width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .product-img-container { position: relative; overflow: hidden; }
+        .product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; transition: transform .6s ease; }
+        .product-card:hover .product-img { transform: scale(1.07); }
 
+        .badge-new   { background: #ef4444; color: white; padding: 2px 9px; border-radius: 20px; font-size: 9px; font-weight: 800; position: absolute; top: 10px; right: 10px; letter-spacing: .04em; }
+        .badge-limit { background: #f59e0b; color: white; padding: 2px 9px; border-radius: 20px; font-size: 9px; font-weight: 800; position: absolute; top: 10px; right: 10px; letter-spacing: .04em; }
+
+        /* ── CATEGORY FILTER ── */
+        .category-btn {
+            flex-shrink: 0; padding: 8px 20px;
+            border: 1px solid var(--border);
+            border-radius: 50px; font-size: 13px;
+            font-weight: 600; cursor: pointer;
+            color: var(--muted); background: var(--surface);
+            transition: .2s; white-space: nowrap;
+        }
+        .category-btn:hover { border-color: rgba(124,58,237,0.5); color: var(--text); }
+        .category-btn.active-cat {
+            background: linear-gradient(135deg,rgba(124,58,237,.2),rgba(59,130,246,.2));
+            border-color: rgba(124,58,237,0.6);
+            color: #a78bfa;
+        }
+
+        /* ── MODAL ── */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px); z-index: 1000;
-            display: none; align-items: center; justify-content: center; padding: 20px;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000; display: none;
+            align-items: center; justify-content: center;
+            padding: 20px;
         }
         .modal-content {
-            background: var(--surface);
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
             width: 100%; max-width: 600px;
             max-height: 90vh; overflow-y: auto;
-            border-radius: 28px; border: 1px solid var(--border);
-            position: relative; animation: slideUp 0.3s ease-out;
+            position: relative;
+            animation: slideUp .3s cubic-bezier(.175,.885,.32,1.275);
         }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(48px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .input-group { position: relative; margin-bottom: 20px; }
-        .custom-input {
-            width: 100%; background: #0a0f1a; border: 1px solid var(--border);
-            padding: 14px 18px; border-radius: 14px; color: white; transition: 0.3s;
-            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+        /* ── TOAST ── */
+        #toast {
+            position: fixed; top: 80px; right: 16px;
+            z-index: 9999;
+            transform: translateX(160%);
+            transition: transform .4s cubic-bezier(.175,.885,.32,1.275);
         }
-        .custom-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(59,130,246,0.2); }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white; padding: 14px 28px; border-radius: 14px;
-            font-weight: 700; transition: 0.3s; text-align: center; display: block;
-            cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+        .toast-inner {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 16px;
+            padding: 14px 18px;
+            display: flex; align-items: center;
+            gap: 14px; min-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.5);
         }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-primary:active { transform: scale(0.95); }
 
-        .nav-link { color: var(--text-dim); transition: 0.3s; font-size: 0.8rem; font-weight: 600; background: none; border: none; cursor: pointer; }
-        .nav-link.active { color: var(--primary); }
-
-        .badge-new { background: #ef4444; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
-        .badge-limit { background: #f59e0b; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
-
-        #fullImageView { z-index: 9999 !important; background-color: rgba(0, 0, 0, 0.95); }
-        #fullImageView img { animation: zoomIn 0.3s ease-out; }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-
+        /* ── SCROLLBARS ── */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
+        /* ── ANIMATIONS ── */
+        @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        .fade-in { animation: fadeIn .4s ease-out; }
+
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .promo-ticker { animation: ticker 20s linear infinite; }
+        .promo-ticker:hover { animation-play-state: paused; }
+
+        /* ── STAR RATING ── */
+        .star-input { display:flex; flex-direction:row-reverse; gap:6px; justify-content:flex-start; margin-bottom:16px; }
+        .star-input input { display:none; }
+        .star-input label { font-size:30px; color:#374151; cursor:pointer; transition:.15s; line-height:1; }
+        .star-input label:hover, .star-input label:hover ~ label, .star-input input:checked ~ label { color:#f59e0b; }
+
+        /* ── QTY ── */
+        .qty-btn {
+            background: var(--surface2); border: 1px solid var(--border);
+            color: var(--text); width: 36px; height: 36px;
+            border-radius: 10px; font-size: 18px; cursor: pointer;
+            transition: .2s; display: flex; align-items: center; justify-content: center;
+        }
+        .qty-btn:hover { background: rgba(124,58,237,.3); border-color: var(--primary); }
+
+        /* ── ADDR SELECT ── */
+        .addr-select {
+            width: 100%; background: var(--surface); border: 1px solid var(--border);
+            padding: 12px 16px; border-radius: 12px; color: var(--text);
+            font-family: 'Inter', sans-serif; font-size: 13px; appearance: none; cursor: pointer;
+        }
+        .addr-select:disabled { opacity: .4; cursor: not-allowed; }
+        .addr-select:focus { border-color: var(--primary); outline: none; }
+        .addr-select option { background: var(--surface); }
+
+        /* ── SECTION HIDDEN ── */
+        .page-view.hidden { display: none !important; }
+
+        /* ── HERO DECORATIONS ── */
+        .hero-glow-1 { position: absolute; top: -30%; left: -10%; width: 60%; height: 100%; background: radial-gradient(ellipse at center, rgba(124,58,237,.18) 0%, transparent 70%); pointer-events: none; }
+        .hero-glow-2 { position: absolute; bottom: -30%; right: -10%; width: 50%; height: 100%; background: radial-gradient(ellipse at center, rgba(59,130,246,.15) 0%, transparent 70%); pointer-events: none; }
+        .grid-overlay { position: absolute; inset: 0; opacity: .03; background-image: linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px); background-size: 40px 40px; pointer-events: none; }
+
+        /* ── TRUST CARD ── */
+        .trust-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: border-color .25s, transform .3s;
+        }
+        .trust-card:hover { border-color: rgba(124,58,237,.4); transform: translateY(-4px); }
+
+        /* ── STORE CHIP ── */
+        .store-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; transition: .25s;
+            min-width: 160px; flex-shrink: 0;
+        }
+        .store-chip:hover { border-color: rgba(124,58,237,.5); background: var(--surface2); }
+
+        /* ── INPUT GROUP ── */
+        .input-group { margin-bottom: 18px; }
+
+        /* ── LINE CLAMP ── */
         .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
         .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-        .trx-item {
-            background: var(--surface-light);
+        /* ── MENU ITEM ── */
+        .menu-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer; transition: .2s;
+            width: 100%;
+        }
+        .menu-item:hover { background: var(--surface2); border-color: rgba(124,58,237,.3); }
+
+        /* ── ORDER ITEM ── */
+        .order-item {
+            background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 16px;
+            padding: 18px 20px;
             margin-bottom: 12px;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
+        /* ── FULL IMAGE ── */
+        #fullImageView { z-index: 9999 !important; background: rgba(0,0,0,.96); }
+        #fullImageView img { animation: zoomIn .3s ease-out; }
+        @keyframes zoomIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .promo-ticker { animation: ticker 18s linear infinite; }
-        .promo-ticker:hover { animation-play-state: paused; }
+        /* ── DIVIDER ── */
+        .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
-        /* Star rating geser */
-        .star-input { display:flex; flex-direction:row-reverse; gap:6px; justify-content:flex-start; margin-bottom:16px; }
-        .star-input input { display:none; }
-        .star-input label { font-size:32px; color:#374151; cursor:pointer; transition:.15s; line-height:1; }
-        .star-input label:hover,
-        .star-input label:hover ~ label,
-        .star-input input:checked ~ label { color:#f59e0b; }
-
-        /* Qty counter */
-        .qty-btn { background: rgba(255,255,255,0.1); border:1px solid var(--border); color:white; width:36px; height:36px; border-radius:10px; font-size:18px; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; }
-        .qty-btn:hover { background: rgba(59,130,246,0.3); }
-
-        /* Address drill-down select */
-        .addr-select { width:100%; background:#0a0f1a; border:1px solid var(--border); padding:12px 16px; border-radius:12px; color:white; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; appearance:none; cursor:pointer; }
-        .addr-select:disabled { opacity:0.4; cursor:not-allowed; }
-        .addr-select:focus { border-color:var(--primary); outline:none; }
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .hide-mobile { display: none !important; }
+        }
+        @media (min-width: 769px) {
+            .show-mobile-only { display: none !important; }
+        }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-24 md:pb-0">
 
-    <!-- LOADER -->
+    <!-- ══ LOADER ══ -->
     <div id="loader">
-        <div class="spinner mb-4"></div>
-        <h2 class="text-2xl font-bold font-syne animate-pulse">XREZZKY</h2>
-        <p class="text-xs text-gray-500 mt-2 tracking-[0.3em] uppercase">Menyinkronkan dengan Firebase...</p>
+        <div class="spinner mb-5"></div>
+        <h2 class="text-xl font-bold syne tracking-wider animate-pulse">XREZZKY</h2>
+        <p class="text-xs text-slate-600 mt-2 tracking-[0.25em] uppercase">Menyinkronkan data...</p>
     </div>
 
-    <!-- BG GLOW -->
-    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full z-[-1]"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full z-[-1]"></div>
+    <!-- ══ BG AMBIENT ══ -->
+    <div class="fixed top-0 left-0 w-[500px] h-[500px] bg-violet-900/10 blur-[130px] rounded-full z-[-1] pointer-events-none"></div>
+    <div class="fixed bottom-0 right-0 w-[400px] h-[400px] bg-blue-900/10 blur-[130px] rounded-full z-[-1] pointer-events-none"></div>
 
-    <!-- HEADER -->
-    <header class="sticky top-0 z-[100] glass-card !rounded-none border-t-0 border-x-0 bg-opacity-90">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center glow-blue">
-                    <i class="fas fa-bolt text-white"></i>
+    <!-- ══ HEADER ══ -->
+    <header>
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center gap-4">
+
+            <!-- LOGO -->
+            <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigate('home')">
+                <div class="w-9 h-9 rounded-xl grad-primary flex items-center justify-center glow shrink-0">
+                    <i class="fas fa-bolt text-white text-sm"></i>
                 </div>
-                <span class="text-2xl font-extrabold font-syne hidden md:block">XREZZKY</span>
+                <span class="text-lg font-black syne tracking-tight hidden sm:block">XREZZKY</span>
             </div>
 
-            <div class="flex-1 max-w-xl mx-6 relative">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                <input type="text" id="globalSearch" placeholder="Cari skin, jasa, atau akun..." 
-                       class="custom-input !pl-12 !py-3 !rounded-full text-sm w-full">
+            <!-- SEARCH -->
+            <div class="flex-1 max-w-2xl mx-auto">
+                <div class="search-wrap">
+                    <i class="fas fa-search text-slate-600 text-sm shrink-0"></i>
+                    <input type="text" id="globalSearch" placeholder="Cari produk, skin, jasa digital...">
+                </div>
             </div>
 
-            <div id="authHeader" class="flex items-center gap-3"></div>
+            <!-- AUTH -->
+            <div id="authHeader" class="flex items-center gap-3 shrink-0"></div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 mt-8">
-        
-        <!-- HOME PAGE -->
+    <!-- ══ MAIN ══ -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 mt-8">
+
+        <!-- ════ HOME ════ -->
         <section id="page-home" class="page-view fade-in">
 
-            <!-- HERO BANNER (kosong — diisi dari admin panel via Firebase) -->
+            <!-- HERO BANNER (dari Firebase) -->
             <div id="heroBannerSection" class="mb-6"></div>
 
-            <!-- PROMO TICKER (kosong — diisi dari admin panel via Firebase) -->
+            <!-- PROMO TICKER (dari Firebase) -->
             <div id="promoTickerSection" class="mb-6"></div>
 
-            <!-- FITUR UNGGULAN -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-                <div class="glass-card p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fas fa-shield-alt text-blue-400"></i>
+            <!-- TRUST SECTION -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+                <div class="trust-card">
+                    <div class="w-12 h-12 rounded-2xl grad-primary flex items-center justify-center mx-auto mb-3 glow">
+                        <i class="fas fa-shield-halved text-white"></i>
                     </div>
-                    <div>
-                        <p class="text-xs font-extrabold">Transaksi Aman</p>
-                        <p class="text-[10px] text-gray-500">Sistem escrow & garansi</p>
-                    </div>
+                    <p class="font-bold text-sm mb-1">Aman & Terjamin</p>
+                    <p class="text-xs text-slate-500">Sistem verifikasi ketat</p>
                 </div>
-                <div class="glass-card p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fas fa-bolt text-green-400"></i>
+                <div class="trust-card">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-3 glow-blue">
+                        <i class="fas fa-bolt text-white"></i>
                     </div>
-                    <div>
-                        <p class="text-xs font-extrabold">Proses Cepat</p>
-                        <p class="text-[10px] text-gray-500">Pengiriman instan</p>
-                    </div>
+                    <p class="font-bold text-sm mb-1">Proses Instan</p>
+                    <p class="text-xs text-slate-500">Delivery cepat & responsif</p>
                 </div>
-                <div class="glass-card p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fas fa-headset text-purple-400"></i>
+                <div class="trust-card">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center mx-auto mb-3" style="box-shadow:0 0 20px rgba(16,185,129,.4)">
+                        <i class="fas fa-headset text-white"></i>
                     </div>
-                    <div>
-                        <p class="text-xs font-extrabold">CS 24/7</p>
-                        <p class="text-[10px] text-gray-500">Siap bantu kapanpun</p>
-                    </div>
+                    <p class="font-bold text-sm mb-1">CS 24/7</p>
+                    <p class="text-xs text-slate-500">Siap bantu kapanpun</p>
                 </div>
-                <div class="glass-card p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fas fa-star text-yellow-400"></i>
+                <div class="trust-card">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-600 flex items-center justify-center mx-auto mb-3" style="box-shadow:0 0 20px rgba(245,158,11,.4)">
+                        <i class="fas fa-star text-white"></i>
                     </div>
-                    <div>
-                        <p class="text-xs font-extrabold">Produk Premium</p>
-                        <p class="text-[10px] text-gray-500">Kualitas terjamin</p>
-                    </div>
+                    <p class="font-bold text-sm mb-1">Banyak Pilihan</p>
+                    <p class="text-xs text-slate-500">Ribuan produk digital</p>
                 </div>
             </div>
 
             <!-- TOKO SECTION -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-extrabold font-syne text-lg flex items-center gap-2"><i class="fas fa-store text-blue-400"></i> Semua Toko</h3>
-                    <button onclick="openModal('modalAllStores')" class="text-blue-400 text-xs font-bold hover:underline flex items-center gap-1">Lihat Semua <i class="fas fa-arrow-right"></i></button>
+            <div class="mb-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="text-lg font-black syne flex items-center gap-2">
+                            <span class="w-1 h-5 rounded-full grad-primary inline-block"></span>
+                            Toko Aktif
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Seller terverifikasi di XREZZKY</p>
+                    </div>
+                    <button onclick="openModal('modalAllStores')" class="btn-ghost text-xs flex items-center gap-1.5">
+                        Lihat Semua <i class="fas fa-arrow-right text-[10px]"></i>
+                    </button>
                 </div>
                 <div id="storeChips" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    <div class="animate-pulse glass-card h-16 w-44 rounded-2xl shrink-0"></div>
-                    <div class="animate-pulse glass-card h-16 w-44 rounded-2xl shrink-0"></div>
+                    <div class="animate-pulse store-chip h-16 w-44 rounded-2xl"></div>
+                    <div class="animate-pulse store-chip h-16 w-44 rounded-2xl"></div>
+                    <div class="animate-pulse store-chip h-16 w-44 rounded-2xl"></div>
                 </div>
             </div>
 
-            <!-- SELLER CTA BANNER (hidden kalau sudah seller/admin) -->
-            <div id="homeSellerCta" class="relative rounded-[28px] overflow-hidden mb-8 border border-blue-500/30 cursor-pointer hover:border-blue-400/60 transition group hidden" onclick="openModal('modalBecomeSeller')">
-                <div class="absolute inset-0 bg-gradient-to-r from-[#0d1f3c] to-[#0a1020]"></div>
-                <div class="absolute right-0 top-0 h-full w-1/3 bg-blue-600/10 blur-2xl"></div>
-                <div class="relative z-10 flex items-center justify-between p-6 md:p-8 gap-4">
+            <!-- SELLER CTA (hidden kalau sudah seller/admin) -->
+            <div id="homeSellerCta" class="relative rounded-2xl overflow-hidden mb-10 cursor-pointer group hidden" onclick="openModal('modalBecomeSeller')">
+                <div class="absolute inset-0 bg-gradient-to-r from-violet-950 via-violet-900/80 to-blue-950"></div>
+                <div class="hero-glow-1"></div>
+                <div class="grid-overlay"></div>
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-5">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/40 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-500/30 transition">
-                            <i class="fas fa-store text-blue-400 text-xl"></i>
+                        <div class="w-14 h-14 rounded-2xl grad-primary flex items-center justify-center shrink-0 glow group-hover:scale-105 transition">
+                            <i class="fas fa-store text-white text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-[11px] font-black uppercase tracking-widest text-blue-400 mb-1">Jadi Seller di XREZZKY</p>
-                            <h3 class="text-lg md:text-xl font-extrabold font-syne leading-tight">Buka Toko Kamu Sekarang</h3>
-                            <p class="text-gray-400 text-xs mt-1">Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif</p>
+                            <p class="text-[10px] font-black uppercase tracking-[.18em] text-violet-300 mb-1">Gabung Jadi Seller</p>
+                            <h3 class="text-xl font-black syne leading-tight text-white">Mulai Hasilkan Uang di XREZZKY</h3>
+                            <p class="text-slate-400 text-xs mt-1">Gratis daftar · Jangkau ribuan pembeli · Komisi kompetitif</p>
                         </div>
                     </div>
-                    <div class="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-sm transition whitespace-nowrap">
-                        Mulai <i class="fas fa-arrow-right ml-1"></i>
+                    <div class="shrink-0 btn-primary flex items-center gap-2 !py-3 !px-6 whitespace-nowrap group-hover:opacity-90 transition">
+                        Daftar Sekarang <i class="fas fa-arrow-right text-xs"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- CATEGORY FILTER (diisi dinamis dari Firebase) -->
-            <div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar" id="categoryFilter">
-                <div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn active-cat" data-cat="all">Semua</div>
+            <!-- CATEGORY FILTER -->
+            <div class="mb-5">
+                <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-2" id="categoryFilter">
+                    <div class="category-btn active-cat" data-cat="all">Semua</div>
+                </div>
             </div>
 
             <!-- PRODUCT GRID -->
-            <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4">
-                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-                <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
+            <div>
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="text-lg font-black syne flex items-center gap-2">
+                            <span class="w-1 h-5 rounded-full bg-blue-500 inline-block"></span>
+                            Produk Digital
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Temukan produk terbaik pilihan kamu</p>
+                    </div>
+                </div>
+                <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div class="animate-pulse bg-slate-900 rounded-2xl h-64 border border-white/5"></div>
+                    <div class="animate-pulse bg-slate-900 rounded-2xl h-64 border border-white/5"></div>
+                    <div class="animate-pulse bg-slate-900 rounded-2xl h-64 border border-white/5"></div>
+                    <div class="animate-pulse bg-slate-900 rounded-2xl h-64 border border-white/5"></div>
+                    <div class="animate-pulse bg-slate-900 rounded-2xl h-64 border border-white/5"></div>
+                </div>
             </div>
         </section>
 
-        <!-- ORDERS PAGE -->
+        <!-- ════ ORDERS ════ -->
         <section id="page-orders" class="page-view hidden fade-in">
             <div class="max-w-3xl mx-auto">
-                <h2 class="text-2xl font-extrabold font-syne mb-6">Riwayat Pesanan</h2>
+                <div class="mb-8">
+                    <h2 class="text-2xl font-black syne">Riwayat Pesanan</h2>
+                    <p class="text-slate-500 text-sm mt-1">Semua transaksi kamu tersimpan di sini</p>
+                </div>
                 <div id="ordersList">
-                    <div class="glass-card p-12 text-center text-gray-500">
-                        <i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i>
-                        <p class="font-bold">Belum ada pesanan</p>
-                        <p class="text-sm mt-1">Pesanan kamu akan muncul di sini setelah bertransaksi via WhatsApp</p>
-                        <button onclick="navigate('home')" class="btn-primary mt-4 !inline-block">Mulai Belanja</button>
+                    <div class="bg-slate-900 border border-white/5 rounded-2xl p-12 text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shopping-bag text-slate-600 text-2xl"></i>
+                        </div>
+                        <p class="font-bold text-slate-300 mb-1">Belum ada pesanan</p>
+                        <p class="text-sm text-slate-600 mb-5">Pesanan kamu akan muncul di sini setelah bertransaksi</p>
+                        <button onclick="navigate('home')" class="btn-primary !inline-block">Mulai Belanja</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PROFILE PAGE -->
+        <!-- ════ PROFILE ════ -->
         <section id="page-profile" class="page-view hidden fade-in">
-            <div class="max-w-3xl mx-auto">
+            <div class="max-w-2xl mx-auto">
 
-                <!-- NOT LOGGED IN STATE -->
+                <!-- NOT LOGGED IN -->
                 <div id="profileNotLoggedIn" class="hidden">
-                    <div class="glass-card p-12 text-center mb-5">
-                        <i class="fas fa-user-circle text-6xl text-gray-600 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Kamu Belum Login</h3>
-                        <p class="text-gray-400 text-sm mb-6">Login untuk akses profil, riwayat transaksi, dan fitur lainnya.</p>
-                        <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Login / Daftar</button>
+                    <div class="bg-slate-900 border border-white/5 rounded-2xl p-12 text-center mb-5">
+                        <div class="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-5">
+                            <i class="fas fa-user text-slate-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Belum Login</h3>
+                        <p class="text-slate-500 text-sm mb-6">Login untuk akses profil, pesanan, dan fitur lengkap lainnya</p>
+                        <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Masuk / Daftar</button>
                     </div>
-                    <div class="space-y-3">
-                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                    <div class="space-y-2">
+                        <button onclick="openModal('modalAbout')" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-cyan-500/15 flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div><span class="font-semibold text-sm">Tentang XREZZKY</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
-                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        <button onclick="openModal('modalPolicy')" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-orange-500/15 flex items-center justify-center"><i class="fas fa-file-contract text-orange-400 text-sm"></i></div><span class="font-semibold text-sm">Kebijakan & Persyaratan</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- LOGGED IN STATE -->
+                <!-- LOGGED IN -->
                 <div id="profileLoggedIn" class="hidden">
                     <!-- USER CARD -->
-                    <div class="glass-card p-8 mb-5">
-                        <div class="flex flex-col items-center">
-                            <div class="relative group mb-4">
-                                <div id="profileAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-500/30 shadow-2xl overflow-hidden">
-                                    <span id="avatarText">?</span>
-                                </div>
+                    <div class="relative overflow-hidden bg-gradient-to-br from-violet-950/80 to-blue-950/60 border border-white/8 rounded-2xl p-8 mb-4">
+                        <div class="hero-glow-1" style="opacity:.5"></div>
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <div id="profileAvatar" class="w-20 h-20 rounded-full grad-primary flex items-center justify-center text-3xl font-black border-4 border-white/10 mb-4 glow">
+                                <span id="avatarText">?</span>
                             </div>
-                            <h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
-                            <p id="userEmailText" class="text-gray-400 text-sm mb-3"></p>
+                            <h2 id="userNameText" class="text-xl font-black syne">Memuat...</h2>
+                            <p id="userEmailText" class="text-slate-400 text-sm mt-1 mb-3"></p>
                             <div id="roleBadgeContainer" class="mb-5"></div>
-                            <div class="grid grid-cols-2 gap-4 w-full">
-                                <div class="bg-white/5 p-4 rounded-2xl text-center">
-                                    <p class="text-xs text-gray-400 mb-1">Total Transaksi</p>
-                                    <p class="text-xl font-bold" id="statsTrx">0</p>
+                            <div class="grid grid-cols-2 gap-3 w-full max-w-xs">
+                                <div class="bg-white/5 rounded-xl p-3 text-center">
+                                    <p class="text-xs text-slate-500 mb-1">Transaksi</p>
+                                    <p class="text-lg font-black" id="statsTrx">0</p>
                                 </div>
-                                <div class="bg-white/5 p-4 rounded-2xl text-center">
-                                    <p class="text-xs text-gray-400 mb-1">Member Sejak</p>
-                                    <p class="text-sm font-bold text-blue-400" id="statsMember">-</p>
+                                <div class="bg-white/5 rounded-xl p-3 text-center">
+                                    <p class="text-xs text-slate-500 mb-1">Member Sejak</p>
+                                    <p class="text-sm font-bold text-violet-400" id="statsMember">-</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- DYNAMIC ROLE/SELLER BANNER -->
-                    <div id="sellerBanner" class="mb-5"></div>
+                    <!-- ROLE BANNER (diisi dinamis) -->
+                    <div id="sellerBanner" class="mb-4"></div>
 
-                    <!-- SELLER CTA CARD (promosi daftar seller — hilang jika sudah daftar) -->
-                    <div id="sellerCtaCard" class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group hidden" onclick="openModal('modalBecomeSeller')">
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-black font-syne">SELLER</div>
+                    <!-- SELLER CTA (hilang setelah daftar) -->
+                    <div id="sellerCtaCard" class="relative overflow-hidden rounded-2xl mb-4 border border-violet-500/30 cursor-pointer hover:border-violet-400/60 transition group hidden" onclick="openModal('modalBecomeSeller')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-violet-950/80 to-blue-950/60"></div>
                         <div class="relative z-10 p-5 flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-500/30 border border-blue-400/40 rounded-xl flex items-center justify-center shrink-0">
-                                <i class="fas fa-store text-blue-300 text-lg"></i>
+                            <div class="w-11 h-11 rounded-xl grad-primary flex items-center justify-center shrink-0 glow">
+                                <i class="fas fa-store text-white"></i>
                             </div>
                             <div class="flex-1">
-                                <p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5">Upgrade Akun</p>
-                                <p class="font-extrabold font-syne text-base">Jadilah Seller XREZZKY</p>
-                                <p class="text-gray-400 text-xs">Buka toko & jual produk digitalmu ke ribuan pembeli</p>
+                                <p class="text-[10px] font-black uppercase tracking-[.15em] text-violet-300 mb-0.5">Upgrade Akun</p>
+                                <p class="font-black text-sm">Jadilah Seller XREZZKY</p>
+                                <p class="text-slate-500 text-xs">Buka toko & jual produk digitalmu</p>
                             </div>
-                            <i class="fas fa-chevron-right text-blue-400 shrink-0"></i>
+                            <i class="fas fa-chevron-right text-violet-400 text-sm shrink-0"></i>
                         </div>
                     </div>
 
-                    <!-- MENU LIST -->
-                    <div class="space-y-3 mb-5">
-                        <button onclick="openEditProfile()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-edit text-blue-400"></i></div><span class="font-semibold">Ubah Profil & Sandi</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                    <!-- MENU -->
+                    <div class="space-y-2 mb-5">
+                        <button onclick="openEditProfile()" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center"><i class="fas fa-user-edit text-blue-400 text-sm"></i></div><span class="font-semibold text-sm">Ubah Profil & Sandi</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
-
-                        <button onclick="showTransactionHistory()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-history text-purple-400"></i></div><span class="font-semibold">Riwayat Pembelian</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        <button onclick="showTransactionHistory()" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-purple-500/15 flex items-center justify-center"><i class="fas fa-history text-purple-400 text-sm"></i></div><span class="font-semibold text-sm">Riwayat Pembelian</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
-
-                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        <button onclick="openModal('modalAbout')" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-cyan-500/15 flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div><span class="font-semibold text-sm">Tentang XREZZKY</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
-
-                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
-                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        <button onclick="openModal('modalPolicy')" class="menu-item">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-orange-500/15 flex items-center justify-center"><i class="fas fa-file-contract text-orange-400 text-sm"></i></div><span class="font-semibold text-sm">Kebijakan & Persyaratan</span></div>
+                            <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
-
-                        <button onclick="logoutUser()" class="w-full flex items-center justify-between p-5 glass-card border-red-500/20 hover:bg-red-500/10 transition rounded-2xl">
-                            <div class="flex items-center gap-4"><div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400"></i></div><span class="font-semibold text-red-400">Keluar dari Akun</span></div>
+                        <button onclick="logoutUser()" class="menu-item !border-red-500/15 hover:!bg-red-500/10 hover:!border-red-500/30">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-red-500/15 flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400 text-sm"></i></div><span class="font-semibold text-sm text-red-400">Keluar dari Akun</span></div>
                         </button>
                     </div>
 
-                    <p class="text-center text-[10px] text-gray-600 pb-2">XREZZKY STORE v2.0.0 · Made with ❤️</p>
+                    <p class="text-center text-[10px] text-slate-700 pb-2">XREZZKY STORE v2.0.0 · Made with ❤️</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- BOTTOM NAV -->
-    <nav class="fixed bottom-0 inset-x-0 z-[100] glass-card !rounded-none border-x-0 border-b-0 px-4 py-2 flex justify-around items-center md:hidden">
-        <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-1">
-            <i class="fas fa-home text-xl"></i>
-            <span>Beranda</span>
-        </button>
-        <button onclick="navigate('orders')" id="nav-orders" class="nav-link flex flex-col items-center gap-1">
-            <i class="fas fa-shopping-bag text-xl"></i>
-            <span>Pesanan</span>
-        </button>
-        <button onclick="navigate('profile')" id="nav-profile" class="nav-link flex flex-col items-center gap-1">
-            <i class="fas fa-user-circle text-xl"></i>
-            <span>Profil</span>
-        </button>
+    <!-- ══ BOTTOM NAV ══ -->
+    <nav class="fixed bottom-0 inset-x-0 z-[100] md:hidden" style="background:rgba(8,12,20,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);">
+        <div class="flex justify-around items-center px-4 py-3">
+            <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-0.5">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button onclick="navigate('orders')" id="nav-orders" class="nav-link flex flex-col items-center gap-0.5">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Pesanan</span>
+            </button>
+            <button onclick="navigate('profile')" id="nav-profile" class="nav-link flex flex-col items-center gap-0.5">
+                <i class="fas fa-user-circle"></i>
+                <span>Profil</span>
+            </button>
+        </div>
     </nav>
 
-    <!-- MODAL PRODUCT DETAIL -->
+    <!-- ══ MODAL: PRODUCT DETAIL ══ -->
     <div id="modalDetail" class="modal-overlay">
         <div class="modal-content !max-w-4xl p-0 overflow-hidden">
-            <div class="flex flex-col md:flex-row h-full">
-                <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative min-h-[280px]">
-                    <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-xl rounded-full flex items-center justify-center z-10 hover:bg-white/10 transition">
-                        <i class="fas fa-arrow-left"></i>
+            <div class="flex flex-col md:flex-row">
+                <!-- IMAGE -->
+                <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative min-h-[260px]">
+                    <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/60 rounded-full flex items-center justify-center z-10 hover:bg-white/10 transition backdrop-blur-sm">
+                        <i class="fas fa-arrow-left text-sm"></i>
                     </button>
-                    <img id="detImg" src="" onclick="expandImg(this.src)" class="max-h-[400px] w-full object-contain shadow-2xl cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
+                    <img id="detImg" src="" onclick="expandImg(this.src)" class="max-h-[380px] w-full object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
                 </div>
-                <div class="w-full md:w-1/2 p-8 overflow-y-auto">
-                    <div class="flex justify-between items-start mb-4">
-                        <span id="detCat" class="text-xs font-bold text-blue-500 uppercase tracking-widest">KATEGORI</span>
+                <!-- INFO -->
+                <div class="w-full md:w-1/2 p-7 overflow-y-auto">
+                    <div class="flex justify-between items-start mb-3">
+                        <span id="detCat" class="text-[10px] font-black uppercase tracking-widest text-violet-400 bg-violet-500/15 px-3 py-1 rounded-full">KATEGORI</span>
                         <div id="detRatingDisplay" class="flex items-center gap-1 text-sm"></div>
                     </div>
-                    <h2 id="detTitle" class="text-3xl font-extrabold mb-2 leading-tight">Nama Produk</h2>
-                    <p id="detPrice" class="text-2xl font-bold text-blue-400 mb-2">Rp 0</p>
-                    <p class="text-sm text-gray-500 mb-4">Stok: <span id="detStock" class="text-green-400 font-bold">-</span></p>
+                    <h2 id="detTitle" class="text-2xl font-black syne mb-2 leading-tight">Nama Produk</h2>
+                    <p id="detPrice" class="text-2xl font-black text-transparent bg-clip-text" style="background-image:linear-gradient(135deg,#a78bfa,#60a5fa)">Rp 0</p>
+                    <p class="text-sm text-slate-500 mt-1 mb-4">Stok: <span id="detStock" class="text-emerald-400 font-bold">-</span></p>
 
                     <!-- QTY -->
-                    <div class="flex items-center gap-4 mb-6">
-                        <p class="text-sm text-gray-400">Jumlah:</p>
+                    <div class="flex items-center gap-4 mb-5 bg-slate-900 rounded-xl p-3">
+                        <p class="text-sm text-slate-400 font-medium">Jumlah:</p>
                         <div class="flex items-center gap-3">
                             <button class="qty-btn" onclick="changeQty(-1)">−</button>
-                            <span id="detQty" class="text-lg font-bold w-8 text-center">1</span>
+                            <span id="detQty" class="text-lg font-black w-8 text-center">1</span>
                             <button class="qty-btn" onclick="changeQty(1)">+</button>
                         </div>
-                        <p class="text-sm font-bold text-blue-300 ml-auto">Total: <span id="detTotal">Rp 0</span></p>
+                        <p class="text-sm font-bold ml-auto">Total: <span id="detTotal" class="text-violet-400">Rp 0</span></p>
                     </div>
-                    
-                    <div id="detSellerCard" onclick="openStoreFromDetail()" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6 cursor-pointer hover:bg-white/10 transition">
-                        <div id="detSellerAvatar" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg shrink-0">S</div>
+
+                    <!-- SELLER CARD -->
+                    <div id="detSellerCard" onclick="openStoreFromDetail()" class="flex items-center gap-3 p-4 rounded-xl bg-slate-900 border border-white/5 mb-5 cursor-pointer hover:border-violet-500/40 transition">
+                        <div id="detSellerAvatar" class="w-11 h-11 rounded-full grad-primary flex items-center justify-center font-black text-base shrink-0">S</div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs text-gray-400">Penjual Terverifikasi ✅</p>
-                            <p id="detSellerName" class="font-bold line-clamp-1">XREZZKY Official</p>
-                            <p id="detStoreName" class="text-xs text-blue-400 font-semibold line-clamp-1"></p>
+                            <p class="text-[10px] text-slate-500">Penjual Terverifikasi ✅</p>
+                            <p id="detSellerName" class="font-bold text-sm line-clamp-1">XREZZKY Official</p>
+                            <p id="detStoreName" class="text-xs text-violet-400 font-semibold line-clamp-1"></p>
                         </div>
-                        <div class="flex items-center gap-1 text-blue-400 text-xs font-bold shrink-0">Lihat Toko <i class="fas fa-chevron-right ml-1"></i></div>
+                        <div class="flex items-center gap-1 text-violet-400 text-xs font-bold shrink-0">Lihat Toko <i class="fas fa-chevron-right ml-1 text-[10px]"></i></div>
                     </div>
 
-                    <div class="space-y-3 mb-6">
-                        <h4 class="font-bold border-l-4 border-blue-500 pl-3">Deskripsi Produk</h4>
-                        <p id="detDesc" class="text-gray-400 text-sm leading-relaxed">-</p>
+                    <!-- DESC -->
+                    <div class="mb-5">
+                        <h4 class="font-bold text-sm mb-2 flex items-center gap-2"><span class="w-1 h-4 rounded-full grad-primary inline-block"></span> Deskripsi</h4>
+                        <p id="detDesc" class="text-slate-400 text-sm leading-relaxed">-</p>
                     </div>
 
-                    <div id="detReviews" class="mb-6"></div>
+                    <!-- REVIEWS -->
+                    <div id="detReviews" class="mb-5"></div>
 
-                    <div class="flex gap-4">
-                        <button onclick="copyLink()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-white/10 transition" title="Salin Link">
-                            <i class="fas fa-share-alt"></i>
+                    <!-- ACTIONS -->
+                    <div class="flex gap-3">
+                        <button onclick="copyLink()" class="w-12 h-12 flex-shrink-0 bg-slate-800 border border-white/8 rounded-xl flex items-center justify-center hover:bg-slate-700 transition" title="Salin Link">
+                            <i class="fas fa-share-alt text-slate-400 text-sm"></i>
                         </button>
-                        <button onclick="handleBuyNow()" class="flex-1 btn-primary !rounded-2xl flex items-center justify-center gap-3">
-                            <i class="fas fa-shopping-cart"></i> Beli Sekarang
+                        <button onclick="handleBuyNow()" class="flex-1 btn-primary flex items-center justify-center gap-2 !rounded-xl">
+                            <i class="fas fa-shopping-cart text-sm"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
@@ -487,37 +699,42 @@
         </div>
     </div>
 
-    <!-- MODAL AUTH -->
+    <!-- ══ MODAL: AUTH ══ -->
     <div id="modalAuth" class="modal-overlay">
         <div class="modal-content !max-w-md p-8">
             <button onclick="closeModal('modalAuth')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-times text-sm"></i>
             </button>
 
-            <!-- LOGIN FORM -->
+            <!-- LOGIN -->
             <div id="loginForm">
-                <h2 class="text-3xl font-extrabold mb-2 font-syne">Selamat Datang</h2>
-                <p class="text-gray-400 text-sm mb-8">Masuk ke akun XREZZKY STORE kamu</p>
+                <div class="w-12 h-12 rounded-2xl grad-primary flex items-center justify-center mb-5 glow">
+                    <i class="fas fa-bolt text-white"></i>
+                </div>
+                <h2 class="text-2xl font-black syne mb-1">Selamat Datang</h2>
+                <p class="text-slate-500 text-sm mb-6">Masuk ke akun XREZZKY kamu</p>
                 <div class="input-group">
-                    <input type="email" id="authEmail" class="custom-input" placeholder="Alamat Email">
+                    <input type="email" id="authEmail" class="custom-input" placeholder="Alamat Email" onkeydown="if(event.key==='Enter')processLogin()">
                 </div>
                 <div class="input-group">
-                    <input type="password" id="authPass" class="custom-input" placeholder="Password">
+                    <input type="password" id="authPass" class="custom-input" placeholder="Password" onkeydown="if(event.key==='Enter')processLogin()">
                 </div>
                 <button onclick="processLogin()" class="btn-primary w-full mb-4">Masuk Sekarang</button>
-                <!-- LUPA SANDI -->
-                <p class="text-center text-sm mb-4">
-                    <span onclick="showForgotPassword()" class="text-yellow-400 font-bold cursor-pointer hover:underline">Lupa Sandi? (Reset 1×24 jam)</span>
+                <p class="text-center text-sm mb-3">
+                    <span onclick="showForgotPassword()" class="text-amber-400 text-xs font-semibold cursor-pointer hover:underline">Lupa sandi? Reset 1×24 jam</span>
                 </p>
-                <p class="text-center text-sm text-gray-500">
-                    Belum punya akun? <span onclick="toggleAuthForm('reg')" class="text-blue-400 font-bold cursor-pointer hover:underline">Daftar</span>
+                <p class="text-center text-sm text-slate-500">
+                    Belum punya akun? <span onclick="toggleAuthForm('reg')" class="text-violet-400 font-bold cursor-pointer hover:underline">Daftar</span>
                 </p>
             </div>
-            
-            <!-- REGISTER FORM -->
+
+            <!-- REGISTER -->
             <div id="regForm" class="hidden">
-                <h2 class="text-3xl font-extrabold mb-2 font-syne">Buat Akun</h2>
-                <p class="text-gray-400 text-sm mb-8">Daftar untuk mulai belanja produk premium</p>
+                <div class="w-12 h-12 rounded-2xl grad-primary flex items-center justify-center mb-5 glow">
+                    <i class="fas fa-user-plus text-white"></i>
+                </div>
+                <h2 class="text-2xl font-black syne mb-1">Buat Akun</h2>
+                <p class="text-slate-500 text-sm mb-6">Daftar gratis & mulai belanja sekarang</p>
                 <div class="input-group">
                     <input type="text" id="regName" class="custom-input" placeholder="Nama Lengkap">
                 </div>
@@ -527,232 +744,295 @@
                 <div class="input-group">
                     <input type="password" id="regPass" class="custom-input" placeholder="Password (min. 6 karakter)">
                 </div>
-                <button onclick="processRegister()" class="btn-primary w-full mb-6">Daftar Akun</button>
-                <p class="text-center text-sm text-gray-500">
-                    Sudah punya akun? <span onclick="toggleAuthForm('login')" class="text-blue-400 font-bold cursor-pointer hover:underline">Login</span>
+                <button onclick="processRegister()" class="btn-primary w-full mb-5">Daftar Akun</button>
+                <p class="text-center text-sm text-slate-500">
+                    Sudah punya akun? <span onclick="toggleAuthForm('login')" class="text-violet-400 font-bold cursor-pointer hover:underline">Masuk</span>
                 </p>
             </div>
 
-            <!-- FORGOT PASSWORD FORM -->
+            <!-- FORGOT -->
             <div id="forgotForm" class="hidden">
-                <h2 class="text-3xl font-extrabold mb-2 font-syne">Reset Sandi</h2>
-                <p class="text-gray-400 text-sm mb-6">Kami kirimkan link reset sandi ke email kamu. Link berlaku <strong class="text-yellow-300">1×24 jam</strong>.</p>
+                <div class="w-12 h-12 rounded-2xl bg-amber-600/20 border border-amber-500/30 flex items-center justify-center mb-5">
+                    <i class="fas fa-key text-amber-400"></i>
+                </div>
+                <h2 class="text-2xl font-black syne mb-1">Reset Sandi</h2>
+                <p class="text-slate-500 text-sm mb-2">Link reset akan dikirim ke emailmu</p>
+                <p class="text-xs text-amber-400 mb-6">⏱ Link berlaku <strong>1×24 jam</strong></p>
                 <div class="input-group">
-                    <input type="email" id="forgotEmail" class="custom-input" placeholder="Alamat Email terdaftar">
+                    <input type="email" id="forgotEmail" class="custom-input" placeholder="Email terdaftar">
                 </div>
                 <button onclick="processForgotPassword()" class="btn-primary w-full mb-4">Kirim Link Reset</button>
-                <p class="text-center text-sm text-gray-500">
-                    Ingat sandi? <span onclick="toggleAuthForm('login')" class="text-blue-400 font-bold cursor-pointer hover:underline">Kembali Login</span>
+                <p class="text-center text-sm text-slate-500">
+                    Ingat sandi? <span onclick="toggleAuthForm('login')" class="text-violet-400 font-bold cursor-pointer hover:underline">Kembali Masuk</span>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- MODAL EDIT PROFILE (Ubah Username + Ubah Sandi) -->
+    <!-- ══ MODAL: EDIT PROFILE ══ -->
     <div id="modalEditProfile" class="modal-overlay">
         <div class="modal-content !max-w-md p-8">
             <button onclick="closeModal('modalEditProfile')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-times text-sm"></i>
             </button>
-            <h2 class="text-2xl font-extrabold mb-6 font-syne">Ubah Profil</h2>
+            <h2 class="text-2xl font-black syne mb-6">Ubah Profil</h2>
 
-            <!-- UBAH USERNAME -->
-            <div class="mb-6">
-                <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Ubah Nama Tampilan</p>
+            <div class="mb-5">
+                <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-user text-xs"></i> Nama Tampilan</p>
                 <div class="input-group">
-                    <label class="text-xs text-gray-400 mb-2 block">Nama Baru</label>
-                    <input type="text" id="editName" class="custom-input" placeholder="Nama Lengkap">
+                    <label class="text-xs text-slate-500 mb-2 block">Nama Baru</label>
+                    <input type="text" id="editName" class="custom-input" placeholder="Nama lengkap kamu">
                 </div>
-                <button onclick="saveEditName()" class="btn-primary w-full mb-2">Simpan Nama</button>
+                <button onclick="saveEditName()" class="btn-primary w-full">Simpan Nama</button>
             </div>
 
-            <div class="border-t border-white/10 my-4"></div>
+            <hr class="divider">
 
-            <!-- UBAH SANDI -->
             <div>
-                <p class="text-xs font-black text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-lock"></i> Ubah Kata Sandi</p>
+                <p class="text-xs font-black text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-lock text-xs"></i> Ubah Kata Sandi</p>
                 <div class="input-group">
-                    <label class="text-xs text-gray-400 mb-2 block">Sandi Lama</label>
+                    <label class="text-xs text-slate-500 mb-2 block">Sandi Lama</label>
                     <input type="password" id="editOldPass" class="custom-input" placeholder="Sandi lama kamu">
                 </div>
                 <div class="input-group">
-                    <label class="text-xs text-gray-400 mb-2 block">Sandi Baru</label>
+                    <label class="text-xs text-slate-500 mb-2 block">Sandi Baru</label>
                     <input type="password" id="editNewPass" class="custom-input" placeholder="Sandi baru (min. 6 karakter)">
                 </div>
                 <div class="input-group">
-                    <label class="text-xs text-gray-400 mb-2 block">Konfirmasi Sandi Baru</label>
+                    <label class="text-xs text-slate-500 mb-2 block">Konfirmasi Sandi Baru</label>
                     <input type="password" id="editConfirmPass" class="custom-input" placeholder="Ulangi sandi baru">
                 </div>
-                <button onclick="saveEditPassword()" class="btn-primary w-full !bg-gradient-to-r !from-purple-600 !to-indigo-600">Ubah Kata Sandi</button>
+                <button onclick="saveEditPassword()" class="btn-primary w-full" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">Ubah Kata Sandi</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL SELLER PROFILE -->
+    <!-- ══ MODAL: SELLER MINI PROFILE ══ -->
     <div id="modalSeller" class="modal-overlay">
         <div class="modal-content !max-w-2xl p-0 overflow-hidden">
-            <div class="p-8 bg-gradient-to-b from-blue-600/20 to-transparent relative">
-                <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
-                    <i class="fas fa-times"></i>
-                </button>
+            <div class="p-8 bg-gradient-to-b from-violet-600/15 to-transparent relative">
+                <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
                 <div class="flex flex-col items-center">
-                    <div id="sBigAvatar" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold bg-blue-600 border-4 border-blue-500/30 shadow-2xl mb-4 text-white">S</div>
-                    <h2 id="sBigName" class="text-2xl font-extrabold font-syne mb-1 text-white">Nama Toko</h2>
-                    <p class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Verified Seller</p>
+                    <div id="sBigAvatar" class="w-20 h-20 rounded-full grad-primary flex items-center justify-center text-3xl font-black border-4 border-white/10 mb-4 glow">S</div>
+                    <h2 id="sBigName" class="text-xl font-black syne mb-0.5">Nama Toko</h2>
+                    <p class="text-violet-400 text-[10px] font-black uppercase tracking-[.2em] mb-5">✅ Verified Seller</p>
                     <div class="grid grid-cols-3 gap-3 w-full">
-                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p><p id="sTotalItem" class="text-sm font-bold text-white">0</p></div>
-                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p><p id="sTotalStock" class="text-sm font-bold text-green-400">0</p></div>
-                        <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p><p id="sTotalSold" class="text-sm font-bold text-orange-400">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Item</p><p id="sTotalItem" class="text-sm font-black">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Stok</p><p id="sTotalStock" class="text-sm font-black text-emerald-400">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Terjual</p><p id="sTotalSold" class="text-sm font-black text-orange-400">0</p></div>
                     </div>
                 </div>
             </div>
             <div class="p-6">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Koleksi Produk</h4>
-                <div id="sellerProductList" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                <h4 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-violet-500"></i> Koleksi Produk</h4>
+                <div id="sellerProductList" class="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
-            <div class="p-6 border-t border-white/5 bg-black/20">
-                <button onclick="closeModal('modalSeller')" class="btn-primary w-full !rounded-xl !py-3">Tutup Profil</button>
+            <div class="p-6 border-t border-white/5">
+                <button onclick="closeModal('modalSeller')" class="btn-primary w-full">Tutup</button>
             </div>
         </div>
     </div>
 
     <!-- FULL IMAGE VIEWER -->
     <div id="fullImageView" class="fixed inset-0 hidden items-center justify-center cursor-pointer" onclick="closeFullScreen()">
-        <button class="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition pointer-events-none">
-            <i class="fas fa-times"></i>
-        </button>
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-red-400 transition pointer-events-none"><i class="fas fa-times"></i></button>
         <img id="imgExpanded" src="" class="max-w-[95%] max-h-[95%] object-contain">
     </div>
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed top-24 right-4 z-[9999] transform translate-x-[150%] transition-transform duration-500">
-        <div class="glass-card !rounded-2xl p-4 flex items-center gap-4 min-w-[300px] border-l-4 border-l-blue-500">
-            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-500" id="toastIcon">
-                <i class="fas fa-info-circle"></i>
-            </div>
+    <!-- ══ TOAST ══ -->
+    <div id="toast">
+        <div class="toast-inner">
+            <div class="w-9 h-9 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 shrink-0" id="toastIcon"><i class="fas fa-info-circle text-sm"></i></div>
             <div>
-                <p class="font-bold text-sm" id="toastTitle">Berhasil</p>
-                <p class="text-xs text-gray-400" id="toastMsg">Pesan berhasil diproses.</p>
+                <p class="font-bold text-sm" id="toastTitle">-</p>
+                <p class="text-xs text-slate-500" id="toastMsg">-</p>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: TENTANG XREZZKY -->
+    <!-- ══ MODAL: TENTANG ══ -->
     <div id="modalAbout" class="modal-overlay">
         <div class="modal-content !max-w-2xl p-0 overflow-hidden">
-            <div class="relative p-8 bg-gradient-to-b from-blue-600/20 to-transparent">
-                <button onclick="closeModal('modalAbout')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-                <div class="flex items-center gap-4 mb-2">
-                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center glow-blue"><i class="fas fa-bolt text-white text-lg"></i></div>
+            <div class="relative p-8 bg-gradient-to-b from-violet-600/15 to-transparent">
+                <button onclick="closeModal('modalAbout')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl grad-primary flex items-center justify-center glow shrink-0"><i class="fas fa-bolt text-white"></i></div>
                     <div>
-                        <h2 class="text-2xl font-extrabold font-syne">XREZZKY OFFICIAL STORE</h2>
-                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p>
+                        <h2 class="text-xl font-black syne">XREZZKY OFFICIAL STORE</h2>
+                        <p class="text-violet-400 text-[10px] font-black uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p>
                     </div>
                 </div>
             </div>
-            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-5">
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Tentang Kami</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">XREZZKY OFFICIAL STORE adalah platform marketplace digital yang hadir untuk menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terpercaya.</p>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store text-xs"></i> Tentang Kami</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">XREZZKY OFFICIAL STORE adalah platform marketplace digital terpercaya yang menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terjamin. Kami hadir untuk menghadirkan pengalaman jual-beli digital terbaik di Indonesia.</p>
                 </div>
-                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-eye"></i> Visi</h3>
-                    <p class="text-gray-200 text-sm leading-relaxed font-medium">"Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia."</p>
+                <div class="bg-violet-500/10 border border-violet-500/20 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-violet-300 mb-2 flex items-center gap-2"><i class="fas fa-eye text-xs"></i> Visi</h3>
+                    <p class="text-slate-200 text-sm leading-relaxed">"Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia — tempat di mana setiap transaksi terasa mudah dan menyenangkan."</p>
                 </div>
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-bullseye"></i> Misi</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-blue-400 text-xs font-black">1</span></div><p class="text-gray-300 text-sm">Menyediakan platform yang <strong class="text-white">aman & terpercaya</strong> melalui sistem escrow dan verifikasi seller ketat.</p></div>
-                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-purple-400 text-xs font-black">2</span></div><p class="text-gray-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau pasar yang lebih luas.</p></div>
-                        <div class="flex items-start gap-3"><div class="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-green-400 text-xs font-black">3</span></div><p class="text-gray-300 text-sm">Menghadirkan <strong class="text-white">layanan pelanggan 24/7</strong> yang responsif dan solutif.</p></div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-bullseye text-xs"></i> Misi</h3>
+                    <div class="space-y-2.5">
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0 mt-0.5"><span class="text-blue-400 text-[10px] font-black">1</span></div><p class="text-slate-300 text-sm">Platform <strong class="text-white">aman & terpercaya</strong> dengan sistem verifikasi seller ketat dan garansi transaksi.</p></div>
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0 mt-0.5"><span class="text-purple-400 text-[10px] font-black">2</span></div><p class="text-slate-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau lebih banyak pembeli di seluruh Indonesia.</p></div>
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5"><span class="text-emerald-400 text-[10px] font-black">3</span></div><p class="text-slate-300 text-sm">Layanan pelanggan <strong class="text-white">24/7</strong> yang responsif dan solutif untuk setiap kebutuhan pengguna.</p></div>
+                        <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5"><span class="text-amber-400 text-[10px] font-black">4</span></div><p class="text-slate-300 text-sm">Terus berinovasi menghadirkan <strong class="text-white">teknologi terdepan</strong> untuk kemudahan ekosistem jual-beli digital.</p></div>
                     </div>
                 </div>
-                <button onclick="closeModal('modalAbout')" class="btn-primary w-full !rounded-xl">Tutup</button>
+                <button onclick="closeModal('modalAbout')" class="btn-primary w-full">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: KEBIJAKAN & PERSYARATAN -->
+    <!-- ══ MODAL: KEBIJAKAN ══ -->
     <div id="modalPolicy" class="modal-overlay">
         <div class="modal-content !max-w-2xl p-0 overflow-hidden">
-            <div class="relative p-8 bg-gradient-to-b from-orange-600/20 to-transparent">
-                <button onclick="closeModal('modalPolicy')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+            <div class="relative p-8 bg-gradient-to-b from-orange-600/15 to-transparent">
+                <button onclick="closeModal('modalPolicy')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-500/30"><i class="fas fa-file-contract text-orange-400 text-lg"></i></div>
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 shrink-0"><i class="fas fa-file-contract text-orange-400"></i></div>
                     <div>
-                        <h2 class="text-2xl font-extrabold font-syne">Kebijakan & Persyaratan</h2>
-                        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                        <h2 class="text-xl font-black syne">Kebijakan & Persyaratan</h2>
+                        <p class="text-orange-400 text-[10px] font-black uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
                     </div>
                 </div>
             </div>
-            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-5">
+
+                <!-- KETENTUAN UMUM -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-2"><i class="fas fa-scroll text-xs"></i> Ketentuan Umum</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">Dengan menggunakan layanan XREZZKY OFFICIAL STORE, kamu dianggap telah membaca, memahami, dan menyetujui seluruh ketentuan yang berlaku. Harap baca dengan seksama sebelum bertransaksi.</p>
+                </div>
+
+                <!-- KEBIJAKAN PEMBELI -->
                 <div class="bg-blue-500/5 border border-blue-500/15 rounded-2xl p-5">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Kebijakan Pembeli</h3>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Pembeli wajib melakukan pembayaran sesuai nominal yang disepakati.</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Komplain wajib disampaikan maksimal 1×24 jam setelah produk diterima.</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Refund hanya berlaku jika produk terbukti cacat atau tidak sesuai deskripsi.</li>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-user text-xs"></i> Kebijakan Pembeli</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0 text-xs"></i> Pembeli wajib melakukan pembayaran sesuai nominal yang telah disepakati, tanpa negosiasi setelah konfirmasi order.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0 text-xs"></i> Komplain atau klaim wajib disampaikan maksimal <strong class="text-white">1×24 jam</strong> setelah produk diterima.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0 text-xs"></i> Pembeli dilarang melakukan chargeback atau pembalikan dana tanpa persetujuan admin terlebih dahulu.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0 text-xs"></i> Refund atau pengembalian dana hanya berlaku jika produk terbukti cacat atau tidak sesuai deskripsi yang tertera.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0 text-xs"></i> Data pribadi pembeli dijaga kerahasiaannya dan tidak akan dibagikan ke pihak ketiga tanpa persetujuan.</li>
                     </ul>
                 </div>
-                <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-5">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-green-300 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Kebijakan Seller</h3>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib memastikan stok produk tersedia sebelum listing aktif.</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Dilarang menjual produk ilegal, bajakan, atau yang melanggar hak cipta.</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib merespons order maksimal 2 jam di jam operasional.</li>
+
+                <!-- KEBIJAKAN SELLER -->
+                <div class="bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-emerald-300 mb-3 flex items-center gap-2"><i class="fas fa-store text-xs"></i> Kebijakan Seller</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Seller wajib memastikan stok produk tersedia dan akurat sebelum listing aktif di marketplace.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Dilarang keras menjual produk ilegal, bajakan, atau yang melanggar hak kekayaan intelektual.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Seller wajib merespons setiap order maksimal <strong class="text-white">2 jam</strong> di jam operasional yang telah ditentukan.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Deskripsi produk harus akurat, jelas, dan tidak menyesatkan calon pembeli.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Pelanggaran berulang dapat mengakibatkan suspend akun atau banned permanen dari platform.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-1 shrink-0 text-xs"></i> Komisi platform sesuai yang telah disepakati pada saat pendaftaran seller.</li>
                     </ul>
                 </div>
-                <button onclick="closeModal('modalPolicy')" class="btn-primary w-full !rounded-xl">Tutup</button>
+
+                <!-- PRIVASI -->
+                <div class="bg-purple-500/5 border border-purple-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-300 mb-3 flex items-center gap-2"><i class="fas fa-lock text-xs"></i> Kebijakan Privasi</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0 text-xs"></i> Data yang dikumpulkan meliputi: nama, email, nomor WhatsApp, dan riwayat transaksi untuk keperluan layanan.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0 text-xs"></i> XREZZKY tidak menjual atau menyewakan data pengguna kepada pihak ketiga manapun.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0 text-xs"></i> Autentikasi menggunakan Firebase Auth dengan enkripsi standar industri yang aman.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0 text-xs"></i> Pengguna dapat meminta penghapusan akun dan seluruh data pribadi kapan saja melalui admin.</li>
+                    </ul>
+                </div>
+
+                <!-- LARANGAN -->
+                <div class="bg-red-500/5 border border-red-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-red-300 mb-3 flex items-center gap-2"><i class="fas fa-ban text-xs"></i> Hal yang Dilarang</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0 text-xs"></i> Penipuan, manipulasi harga, atau pemalsuan identitas dalam bentuk apapun.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0 text-xs"></i> Melakukan transaksi di luar platform untuk menghindari sistem keamanan XREZZKY.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0 text-xs"></i> Spam, pelecehan verbal, atau perilaku tidak pantas kepada sesama pengguna maupun admin.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0 text-xs"></i> Membuat akun ganda dengan tujuan manipulasi sistem, review palsu, atau penghindaran ban.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0 text-xs"></i> Menyebarkan konten berbahaya, virus, atau hal yang dapat merusak pengalaman pengguna lain.</li>
+                    </ul>
+                </div>
+
+                <!-- KONTAK -->
+                <div class="bg-slate-800/60 border border-white/8 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2"><i class="fas fa-headset text-xs"></i> Hubungi Kami</h3>
+                    <div class="space-y-3" id="contactSection">
+                        <!-- Diisi dari Firebase settings/contact, fallback ke default -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-green-500/15 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400 text-sm"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">WhatsApp Owner</p>
+                                <p class="text-sm font-bold" id="contactOwnerWa">088293064112</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400 text-sm"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">Email Support</p>
+                                <p class="text-sm font-bold" id="contactEmail">xrezzkystore.idn@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3" id="contactCsWrap">
+                            <div class="w-9 h-9 rounded-xl bg-purple-500/15 flex items-center justify-center shrink-0"><i class="fas fa-headset text-purple-400 text-sm"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">CS / Customer Service</p>
+                                <p class="text-sm font-bold text-slate-400 italic" id="contactCs">Segera hadir — pantau update kami</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-[10px] text-slate-700">Terakhir diperbarui: 2025 · XREZZKY OFFICIAL STORE</p>
+                <button onclick="closeModal('modalPolicy')" class="btn-primary w-full">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: DAFTAR JADI SELLER -->
+    <!-- ══ MODAL: DAFTAR SELLER ══ -->
     <div id="modalBecomeSeller" class="modal-overlay">
         <div class="modal-content !max-w-2xl p-0 overflow-hidden">
 
             <!-- STEP 1: INFO -->
             <div id="sellerStep1" class="p-8 relative">
-                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/30 rounded-2xl flex items-center justify-center"><i class="fas fa-store text-blue-400 text-2xl"></i></div>
+                    <div class="w-14 h-14 rounded-2xl grad-primary flex items-center justify-center glow shrink-0"><i class="fas fa-store text-white text-xl"></i></div>
                     <div>
-                        <h2 class="text-2xl font-extrabold font-syne">Daftar Jadi Seller</h2>
-                        <p class="text-blue-400 text-xs font-bold">Bergabung & mulai berjualan sekarang</p>
+                        <h2 class="text-2xl font-black syne">Daftar Jadi Seller</h2>
+                        <p class="text-violet-400 text-sm">Bergabung & mulai berjualan sekarang</p>
                     </div>
                 </div>
                 <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-green-400"></i><p class="text-sm">Gratis daftar, tanpa biaya pendaftaran</p></div>
-                    <div class="flex items-center gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-blue-400"></i><p class="text-sm">Kelola produk sendiri lewat Seller Dashboard</p></div>
-                    <div class="flex items-center gap-3 bg-purple-500/10 border border-purple-500/20 rounded-xl p-3"><i class="fas fa-check-circle text-purple-400"></i><p class="text-sm">Verifikasi admin dalam 1×24 jam</p></div>
+                    <div class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3.5"><i class="fas fa-check-circle text-emerald-400 text-sm shrink-0"></i><p class="text-sm">Gratis daftar, tanpa biaya pendaftaran apapun</p></div>
+                    <div class="flex items-center gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl p-3.5"><i class="fas fa-check-circle text-blue-400 text-sm shrink-0"></i><p class="text-sm">Kelola produk & pesanan lewat Seller Dashboard</p></div>
+                    <div class="flex items-center gap-3 bg-violet-500/10 border border-violet-500/20 rounded-xl p-3.5"><i class="fas fa-check-circle text-violet-400 text-sm shrink-0"></i><p class="text-sm">Verifikasi admin dalam <strong class="text-white">1×24 jam</strong></p></div>
                 </div>
-                <button onclick="goToSellerForm()" class="btn-primary w-full flex items-center justify-center gap-3"><i class="fas fa-arrow-right"></i> Isi Formulir Pendaftaran</button>
+                <button onclick="goToSellerForm()" class="btn-primary w-full flex items-center justify-center gap-2">
+                    <i class="fas fa-arrow-right text-sm"></i> Isi Formulir Pendaftaran
+                </button>
             </div>
 
             <!-- STEP 2: FORM -->
             <div id="sellerStep2" class="hidden relative">
-                <div class="p-6 border-b border-white/5 flex items-center gap-4">
-                    <button onclick="backToSellerInfo()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-arrow-left"></i></button>
-                    <h2 class="text-xl font-extrabold font-syne">Formulir Pendaftaran Seller</h2>
+                <div class="p-6 border-b border-white/5 flex items-center gap-3">
+                    <button onclick="backToSellerInfo()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-arrow-left text-sm"></i></button>
+                    <h2 class="text-lg font-black syne">Formulir Pendaftaran Seller</h2>
                 </div>
 
-                <div class="px-8 pb-8 overflow-y-auto max-h-[75vh] custom-scrollbar space-y-4 mt-4">
+                <div class="px-8 pb-8 overflow-y-auto max-h-[72vh] custom-scrollbar space-y-4 mt-5">
 
                     <!-- DATA TOKO -->
                     <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Data Toko</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store text-xs"></i> Data Toko</p>
                         <div class="space-y-3">
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Nama Toko <span class="text-red-400">*</span></label><input id="sf_storeName" type="text" class="custom-input" placeholder="Contoh: RezzkySkins Store"></div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Deskripsi Toko <span class="text-red-400">*</span></label><textarea id="sf_storeDesc" class="custom-input" style="height:90px;resize:none" placeholder="Ceritakan tentang toko kamu..."></textarea></div>
                             <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Toko <span class="text-red-400">*</span></label>
-                                <input id="sf_storeName" type="text" class="custom-input" placeholder="Contoh: RezzkySkins Store">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Deskripsi Toko <span class="text-red-400">*</span></label>
-                                <textarea id="sf_storeDesc" class="custom-input !h-24 resize-none" placeholder="Ceritakan tentang toko kamu..."></textarea>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Kategori Produk Utama <span class="text-red-400">*</span></label>
-                                <select id="sf_category" class="custom-input appearance-none cursor-pointer">
+                                <label class="text-xs text-slate-500 mb-1.5 block">Kategori Produk <span class="text-red-400">*</span></label>
+                                <select id="sf_category" class="custom-input">
                                     <option value="" disabled selected>-- Pilih Kategori --</option>
                                     <option value="Game Mobile">Game Mobile (skin, akun, dll)</option>
                                     <option value="Premium Apps">Premium Apps & Software</option>
@@ -765,36 +1045,29 @@
                         </div>
                     </div>
 
-                    <div class="border-t border-white/5"></div>
+                    <hr class="divider">
 
                     <!-- DATA PRIBADI -->
                     <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Data Pribadi Pemilik</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-user text-xs"></i> Data Pribadi Pemilik</p>
                         <div class="space-y-3">
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="sf_ownerName" type="text" class="custom-input" placeholder="Nama sesuai KTP"></div>
                             <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label>
-                                <input id="sf_ownerName" type="text" class="custom-input" placeholder="Nama sesuai KTP">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Nomor WhatsApp Aktif <span class="text-red-400">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span>
-                                    <input id="sf_whatsapp" type="tel" class="custom-input !pl-12" placeholder="8123456789">
-                                </div>
-                                <p class="text-[10px] text-gray-600 mt-1">Digunakan admin untuk verifikasi & koordinasi.</p>
+                                <label class="text-xs text-slate-500 mb-1.5 block">Nomor WhatsApp <span class="text-red-400">*</span></label>
+                                <div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold">+62</span><input id="sf_whatsapp" type="tel" class="custom-input !pl-12" placeholder="8123456789"></div>
+                                <p class="text-[10px] text-slate-600 mt-1">Untuk verifikasi & koordinasi oleh admin.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="border-t border-white/5"></div>
+                    <hr class="divider">
 
-                    <!-- ALAMAT LENGKAP (Drill-down) -->
+                    <!-- ALAMAT -->
                     <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-green-400 mb-1 flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> Alamat Lengkap Toko</p>
-                        <p class="text-[10px] text-gray-500 mb-3">Hanya Pulau → Provinsi → Kab/Kota yang tampil ke publik. Kecamatan & alamat lengkap hanya untuk keperluan admin.</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-1 flex items-center gap-2"><i class="fas fa-map-marker-alt text-xs"></i> Alamat Lengkap Toko</p>
+                        <p class="text-[10px] text-slate-500 mb-3">Hanya Provinsi/Kab yang tampil ke publik. Detail alamat hanya untuk admin.</p>
                         <div class="space-y-3">
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Pulau <span class="text-red-400">*</span></label>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Pulau <span class="text-red-400">*</span></label>
                                 <select id="sf_pulau" class="addr-select" onchange="loadProvinsi(this.value)">
                                     <option value="" disabled selected>-- Pilih Pulau --</option>
                                     <option value="Jawa">Jawa</option>
@@ -806,155 +1079,130 @@
                                     <option value="Papua">Papua</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Provinsi <span class="text-red-400">*</span></label>
-                                <select id="sf_provinsi" class="addr-select" disabled onchange="loadKabKota(this.value)">
-                                    <option value="" disabled selected>-- Pilih Provinsi dulu --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Kabupaten / Kota <span class="text-red-400">*</span></label>
-                                <select id="sf_kabkota" class="addr-select" disabled onchange="loadKecamatan(this.value)">
-                                    <option value="" disabled selected>-- Pilih Provinsi dulu --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Kecamatan <span class="text-red-400">*</span></label>
-                                <select id="sf_kecamatan" class="addr-select" disabled>
-                                    <option value="" disabled selected>-- Pilih Kab/Kota dulu --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Alamat Lengkap <span class="text-red-400">*</span></label>
-                                <textarea id="sf_alamatlengkap" class="custom-input !h-20 resize-none" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan..."></textarea>
-                                <p class="text-[10px] text-gray-600 mt-1">Hanya diketahui admin, tidak ditampilkan ke publik.</p>
-                            </div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Provinsi <span class="text-red-400">*</span></label><select id="sf_provinsi" class="addr-select" disabled onchange="loadKabKota(this.value)"><option value="" disabled selected>-- Pilih Pulau dulu --</option></select></div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Kabupaten / Kota <span class="text-red-400">*</span></label><select id="sf_kabkota" class="addr-select" disabled onchange="loadKecamatan(this.value)"><option value="" disabled selected>-- Pilih Provinsi dulu --</option></select></div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Kecamatan <span class="text-red-400">*</span></label><select id="sf_kecamatan" class="addr-select" disabled><option value="" disabled selected>-- Pilih Kab/Kota dulu --</option></select></div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Alamat Lengkap <span class="text-red-400">*</span></label><textarea id="sf_alamatlengkap" class="custom-input" style="height:72px;resize:none" placeholder="Jalan, nomor rumah, RT/RW, kelurahan..."></textarea><p class="text-[10px] text-slate-600 mt-1">Hanya diketahui admin, tidak tampil ke publik.</p></div>
                         </div>
                     </div>
 
-                    <div class="border-t border-white/5"></div>
+                    <hr class="divider">
 
                     <!-- PENGALAMAN -->
                     <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3 flex items-center gap-2"><i class="fas fa-star"></i> Pengalaman Jualan</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-3 flex items-center gap-2"><i class="fas fa-star text-xs"></i> Pengalaman Jualan</p>
                         <div class="space-y-3">
                             <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Sudah pernah jualan digital sebelumnya?</label>
-                                <select id="sf_experience" class="custom-input appearance-none cursor-pointer">
+                                <label class="text-xs text-slate-500 mb-1.5 block">Pengalaman sebelumnya</label>
+                                <select id="sf_experience" class="custom-input">
                                     <option value="Belum pernah">Belum pernah, ini pertama kali</option>
                                     <option value="Pernah, informal">Pernah, tapi masih informal (WA, IG, dll)</option>
-                                    <option value="Pernah, marketplace lain">Pernah di marketplace lain (Tokopedia, dll)</option>
+                                    <option value="Pernah, marketplace lain">Pernah di marketplace lain</option>
                                     <option value="Sudah berpengalaman">Sudah cukup berpengalaman</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Perkiraan produk pertama yang akan dijual</label>
-                                <input id="sf_firstProduct" type="text" class="custom-input" placeholder="Contoh: Skin ML Epic, Akun FF, dll">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400 mb-1.5 block">Pesan untuk Admin (opsional)</label>
-                                <textarea id="sf_notes" class="custom-input !h-20 resize-none" placeholder="Ada pertanyaan untuk admin?"></textarea>
-                            </div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Produk pertama yang akan dijual</label><input id="sf_firstProduct" type="text" class="custom-input" placeholder="Contoh: Skin ML Epic, Akun FF, dll"></div>
+                            <div><label class="text-xs text-slate-500 mb-1.5 block">Pesan untuk Admin (opsional)</label><textarea id="sf_notes" class="custom-input" style="height:72px;resize:none" placeholder="Ada pertanyaan untuk admin?"></textarea></div>
                         </div>
                     </div>
 
                     <!-- AGREE -->
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-4 flex items-start gap-3">
-                        <input type="checkbox" id="sf_agree" class="mt-1 w-4 h-4 accent-blue-500 cursor-pointer shrink-0">
-                        <label for="sf_agree" class="text-xs text-gray-300 cursor-pointer leading-relaxed">
-                            Saya menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 font-bold underline cursor-pointer">Kebijakan & Persyaratan Seller</span> XREZZKY OFFICIAL STORE dan menjamin semua data yang saya isi adalah benar.
+                    <div class="bg-white/3 border border-white/8 rounded-xl p-4 flex items-start gap-3">
+                        <input type="checkbox" id="sf_agree" class="mt-1 w-4 h-4 accent-violet-500 cursor-pointer shrink-0">
+                        <label for="sf_agree" class="text-xs text-slate-400 cursor-pointer leading-relaxed">
+                            Saya menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-violet-400 font-bold underline cursor-pointer">Kebijakan & Persyaratan Seller</span> XREZZKY OFFICIAL STORE dan menjamin semua data yang saya isi adalah benar.
                         </label>
                     </div>
 
-                    <button onclick="submitSellerApplication()" id="btnSubmitSeller"
-                        class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg">
-                        <i class="fas fa-paper-plane"></i> Kirim Pendaftaran
+                    <button onclick="submitSellerApplication()" id="btnSubmitSeller" class="btn-primary w-full flex items-center justify-center gap-2">
+                        <i class="fas fa-paper-plane text-sm"></i> Kirim Pendaftaran
                     </button>
-                    <p class="text-center text-[10px] text-gray-600">Setelah dikirim, admin akan memverifikasi data kamu dalam 1×24 jam.</p>
+                    <p class="text-center text-[10px] text-slate-600">Admin akan memverifikasi dalam 1×24 jam setelah pendaftaran dikirim.</p>
                 </div>
             </div>
 
             <!-- STEP 3: SUCCESS -->
             <div id="sellerStep3" class="hidden p-10 text-center">
-                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-                <div class="w-20 h-20 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-check text-green-400 text-3xl"></i>
+                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+                <div class="w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-5" style="box-shadow:0 0 30px rgba(16,185,129,.25)">
+                    <i class="fas fa-check text-emerald-400 text-3xl"></i>
                 </div>
-                <h3 class="text-2xl font-extrabold font-syne mb-2">Pendaftaran Terkirim! 🎉</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">Data kamu sudah masuk ke sistem admin. Proses verifikasi membutuhkan waktu <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp setelah disetujui.</p>
-                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6 text-left">
-                    <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-2">Status Aplikasi</p>
+                <h3 class="text-2xl font-black syne mb-2">Pendaftaran Terkirim! 🎉</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-5">Data kamu sudah masuk ke sistem admin. Verifikasi membutuhkan waktu <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp setelah disetujui.</p>
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-5 text-left">
+                    <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2">Status Aplikasi</p>
                     <div class="flex items-center gap-3">
-                        <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse"></div>
-                        <span class="text-sm font-bold text-yellow-300">Menunggu Verifikasi Admin</span>
+                        <div class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-bold text-amber-300">Menunggu Verifikasi Admin</span>
                     </div>
                 </div>
-                <button onclick="closeModal('modalBecomeSeller')" class="btn-primary w-full !rounded-xl">Kembali ke Beranda</button>
+                <button onclick="closeModal('modalBecomeSeller')" class="btn-primary w-full">Kembali ke Beranda</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: HALAMAN TOKO LENGKAP -->
+    <!-- ══ MODAL: HALAMAN TOKO ══ -->
     <div id="modalStorePage" class="modal-overlay">
         <div class="modal-content !max-w-3xl p-0 overflow-hidden">
-            <div class="relative p-7 bg-gradient-to-b from-blue-600/20 to-transparent">
-                <button onclick="closeModal('modalStorePage')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+            <div class="relative p-7 bg-gradient-to-b from-violet-600/15 to-transparent">
+                <button onclick="closeModal('modalStorePage')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
                 <div class="flex flex-col items-center">
-                    <div id="spAvatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-3xl font-bold border-4 border-blue-500/30 shadow-2xl mb-4">S</div>
-                    <h2 id="spStoreName" class="text-2xl font-extrabold font-syne mb-0.5 text-center">Nama Toko</h2>
-                    <p id="spOwnerName" class="text-gray-400 text-xs mb-1">oleh -</p>
-                    <span class="text-[10px] text-blue-400 font-black uppercase tracking-[0.2em] mb-2">✅ Verified Seller</span>
-                    <p id="spCity" class="text-gray-500 text-xs mb-3"></p>
+                    <div id="spAvatar" class="w-20 h-20 rounded-full grad-primary flex items-center justify-center text-3xl font-black border-4 border-white/10 mb-4 glow">S</div>
+                    <h2 id="spStoreName" class="text-2xl font-black syne mb-0.5 text-center">Nama Toko</h2>
+                    <p id="spOwnerName" class="text-slate-400 text-xs mb-1">oleh -</p>
+                    <span class="text-[10px] text-violet-400 font-black uppercase tracking-[.2em] mb-2">✅ Verified Seller</span>
+                    <p id="spCity" class="text-slate-500 text-xs mb-3"></p>
                     <div id="spOverallRating" class="flex items-center gap-2 mb-4 bg-white/5 px-4 py-2 rounded-full"></div>
-                    <p id="spDesc" class="text-gray-400 text-sm text-center max-w-md mb-5 leading-relaxed">-</p>
+                    <p id="spDesc" class="text-slate-400 text-sm text-center max-w-md mb-5 leading-relaxed">-</p>
                     <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
-                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p><p id="spTotalItem" class="text-sm font-bold">0</p></div>
-                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p><p id="spTotalStock" class="text-sm font-bold text-green-400">0</p></div>
-                        <div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center"><p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p><p id="spTotalSold" class="text-sm font-bold text-orange-400">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Total Item</p><p id="spTotalItem" class="text-sm font-black">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Total Stok</p><p id="spTotalStock" class="text-sm font-black text-emerald-400">0</p></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center"><p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Terjual</p><p id="spTotalSold" class="text-sm font-black text-orange-400">0</p></div>
                     </div>
                 </div>
             </div>
-            <div class="px-6 pb-6">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Semua Produk Toko</h4>
-                <div id="spProductList" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar"></div>
+            <div class="px-6 pb-5">
+                <h4 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-violet-500 text-xs"></i> Semua Produk</h4>
+                <div id="spProductList" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar"></div>
             </div>
-            <div class="px-6 pb-6 border-t border-white/5 pt-4">
-                <button onclick="closeModal('modalStorePage')" class="btn-primary w-full !rounded-xl !py-3">Tutup</button>
+            <div class="px-6 pb-6 pt-4 border-t border-white/5">
+                <button onclick="closeModal('modalStorePage')" class="btn-primary w-full">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: SEMUA TOKO -->
+    <!-- ══ MODAL: SEMUA TOKO ══ -->
     <div id="modalAllStores" class="modal-overlay">
         <div class="modal-content !max-w-3xl p-0 overflow-hidden">
             <div class="p-6 border-b border-white/5">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-extrabold font-syne flex items-center gap-2"><i class="fas fa-store text-blue-400"></i> Semua Toko</h2>
-                    <button onclick="closeModal('modalAllStores')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
+                    <h2 class="text-xl font-black syne flex items-center gap-2"><i class="fas fa-store text-violet-400 text-base"></i> Semua Toko</h2>
+                    <button onclick="closeModal('modalAllStores')" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
                 </div>
-                <div class="relative">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                    <input id="storeSearchInput" type="text" placeholder="Cari nama toko atau kategori..." class="custom-input !pl-11 !py-3 !rounded-2xl" oninput="filterStores(this.value)">
+                <div class="search-wrap">
+                    <i class="fas fa-search text-slate-600 text-sm shrink-0"></i>
+                    <input id="storeSearchInput" type="text" placeholder="Cari nama toko atau kategori..." oninput="filterStores(this.value)">
                 </div>
             </div>
-            <div id="allStoreGrid" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[65vh] overflow-y-auto custom-scrollbar"></div>
+            <div id="allStoreGrid" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto custom-scrollbar"></div>
         </div>
     </div>
 
-    <!-- MODAL: RATING -->
+    <!-- ══ MODAL: RATING ══ -->
     <div id="modalRating" class="modal-overlay">
         <div class="modal-content !max-w-sm p-8">
-            <button onclick="closeModal('modalRating')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-            <h2 class="text-xl font-extrabold font-syne mb-1">Beri Rating</h2>
-            <p id="ratingProdName" class="text-gray-400 text-sm mb-5 line-clamp-1">Produk</p>
+            <button onclick="closeModal('modalRating')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center mb-4"><i class="fas fa-star text-amber-400"></i></div>
+            <h2 class="text-xl font-black syne mb-1">Beri Rating</h2>
+            <p id="ratingProdName" class="text-slate-500 text-sm mb-5 line-clamp-1">Produk</p>
             <div class="star-input" id="starInputGroup">
-                <input type="radio" id="star5" name="rating_stars" value="5"><label for="star5" title="5">★</label>
-                <input type="radio" id="star4" name="rating_stars" value="4"><label for="star4" title="4">★</label>
-                <input type="radio" id="star3" name="rating_stars" value="3"><label for="star3" title="3">★</label>
-                <input type="radio" id="star2" name="rating_stars" value="2"><label for="star2" title="2">★</label>
-                <input type="radio" id="star1" name="rating_stars" value="1"><label for="star1" title="1">★</label>
+                <input type="radio" id="star5" name="rating_stars" value="5"><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating_stars" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating_stars" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating_stars" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating_stars" value="1"><label for="star1">★</label>
             </div>
-            <textarea id="ratingComment" class="custom-input mb-5" style="height:90px;resize:none" placeholder="Tulis ulasan kamu (opsional)..."></textarea>
+            <textarea id="ratingComment" class="custom-input mb-5" style="height:88px;resize:none" placeholder="Tulis ulasan kamu (opsional)..."></textarea>
             <button onclick="submitRating()" class="btn-primary w-full">Kirim Rating ⭐</button>
         </div>
     </div>
@@ -1120,7 +1368,7 @@
     window.showToast = (title, msg, type = 'success') => {
         const toast  = document.getElementById('toast');
         const icon   = document.getElementById('toastIcon');
-        const border = toast.querySelector('.glass-card');
+        const border = toast.querySelector('.toast-inner');
         document.getElementById('toastTitle').textContent = title;
         document.getElementById('toastMsg').textContent   = msg;
         const colorMap = {
@@ -1130,8 +1378,8 @@
             warning: { border: 'border-l-yellow-500', bg: 'bg-yellow-500/20', text: 'text-yellow-400', fa: 'fa-exclamation-circle' },
         };
         const c = colorMap[type] || colorMap.info;
-        border.className = border.className.replace(/border-l-\S+/, c.border);
-        icon.className = `w-10 h-10 ${c.bg} rounded-full flex items-center justify-center ${c.text}`;
+        border.style.borderLeftColor = c.border === 'border-l-green-500' ? '#22c55e' : c.border === 'border-l-red-500' ? '#ef4444' : c.border === 'border-l-yellow-500' ? '#f59e0b' : '#3b82f6';
+        icon.className = `w-9 h-9 ${c.bg} rounded-full flex items-center justify-center ${c.text} shrink-0`;
         icon.innerHTML = `<i class="fas ${c.fa}"></i>`;
         toast.classList.remove('translate-x-[150%]');
         if (toastTimer) clearTimeout(toastTimer);
@@ -1319,7 +1567,7 @@
         if (!grid) return;
         grid.innerHTML = '';
         if (list.length === 0) {
-            grid.innerHTML = `<div class="col-span-full glass-card p-12 text-center text-gray-500"><i class="fas fa-box-open text-5xl mb-4 opacity-30"></i><p class="font-bold">Belum ada produk</p><p class="text-sm mt-1">Produk akan muncul di sini setelah ditambahkan seller</p></div>`;
+            grid.innerHTML = `<div class="col-span-full bg-slate-900 border border-white/5 rounded-2xl p-12 text-center text-slate-600"><i class="fas fa-box-open text-5xl mb-4 opacity-20"></i><p class="font-bold text-slate-400">Belum ada produk</p><p class="text-sm mt-1">Produk akan muncul di sini setelah ditambahkan seller</p></div>`;
             return;
         }
         list.forEach(p => {
@@ -1329,20 +1577,22 @@
             card.className = 'product-card p-4';
             card.onclick   = () => showDetail(p);
             card.innerHTML = `
-                <div class="product-img-container mb-3">
-                    <img src="${p.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}"
+                <div class="product-img-container">
+                    <img src="${p.images?.[0] || 'https://placehold.co/400x400/111827/7c3aed?text=No+Img'}"
                          class="product-img"
-                         onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">
+                         onerror="this.src='https://placehold.co/400x400/111827/7c3aed?text=No+Img'">
                     ${out ? '<span class="badge-limit" style="background:#6b7280">Habis</span>' : ''}
                     ${low && !out ? '<span class="badge-limit">Limit</span>' : ''}
                     ${!low && !out && p.isNew ? '<span class="badge-new">NEW</span>' : ''}
                 </div>
-                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">${p.category || 'Digital'}</p>
-                <h3 class="font-bold text-sm mb-2 line-clamp-2">${p.name || 'Produk'}</h3>
-                ${p.rating ? `<div class="mb-2">${makeStarsHtml(p.rating, p.ratingCount)}</div>` : ''}
-                <div class="flex items-center justify-between">
-                    <p class="font-extrabold text-blue-400">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
-                    ${p.sold ? `<span class="text-[10px] text-gray-500">${p.sold} terjual</span>` : ''}
+                <div class="p-3">
+                    <p class="text-[10px] text-violet-400 font-bold uppercase tracking-wider mb-1">${p.category || 'Digital'}</p>
+                    <h3 class="font-bold text-sm mb-2 line-clamp-2 leading-snug">${p.name || 'Produk'}</h3>
+                    ${p.rating ? `<div class="mb-2">${makeStarsHtml(p.rating, p.ratingCount)}</div>` : ''}
+                    <div class="flex items-center justify-between">
+                        <p class="font-extrabold text-sm" style="background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
+                        ${p.sold ? `<span class="text-[10px] text-slate-600">${p.sold} terjual</span>` : ''}
+                    </div>
                 </div>`;
             grid.appendChild(card);
         });
@@ -1374,10 +1624,10 @@
 
         const container = document.getElementById('categoryFilter');
         if (!container) return;
-        container.innerHTML = `<div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn active-cat" data-cat="all">Semua</div>`;
+        container.innerHTML = `<div class="category-btn active-cat" data-cat="all">Semua</div>`;
         cats.forEach(cat => {
             const btn = document.createElement('div');
-            btn.className = 'flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer category-btn';
+            btn.className = 'category-btn';
             btn.dataset.cat = cat;
             btn.textContent = cat;
             container.appendChild(btn);
@@ -1385,8 +1635,8 @@
         // Bind click
         container.querySelectorAll('.category-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                container.querySelectorAll('.category-btn').forEach(b => { b.classList.remove('active-cat','bg-blue-500/10','border-blue-500'); });
-                btn.classList.add('active-cat','bg-blue-500/10','border-blue-500');
+                container.querySelectorAll('.category-btn').forEach(b => { b.classList.remove('active-cat'); });
+                btn.classList.add('active-cat');
                 currentFilter = btn.dataset.cat;
                 applyFilters();
             });
@@ -1402,9 +1652,9 @@
         if (!data || !data.enabled) { sec.innerHTML = ''; return; }
         sec.innerHTML = `
         <div class="relative rounded-[32px] overflow-hidden mb-0" style="min-height:260px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f3c] to-[#05080f]"></div>
-            <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-blue-600/20 blur-[80px] rounded-full"></div>
-            <div class="absolute bottom-[-40%] left-[20%] w-[40%] h-[150%] bg-purple-600/15 blur-[80px] rounded-full"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0d0a1f] via-[#120d2a] to-[#08080f]"></div>
+            <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-violet-600/20 blur-[80px] rounded-full"></div>
+            <div class="absolute bottom-[-40%] left-[20%] w-[40%] h-[150%] bg-blue-600/15 blur-[80px] rounded-full"></div>
             <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:32px 32px;"></div>
             <div class="relative z-10 px-8 py-10 md:px-14 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="flex-1">
@@ -1423,15 +1673,15 @@
                 </div>
                 <div class="flex flex-row md:flex-col gap-3 shrink-0">
                     <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p id="bannerStatProduk" class="text-2xl font-extrabold text-blue-400">-</p>
+                        <p id="bannerStatProduk" class="text-2xl font-extrabold" style="color:#a78bfa">-</p>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p>
                     </div>
                     <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p id="bannerStatPelanggan" class="text-2xl font-extrabold text-green-400">-</p>
+                        <p id="bannerStatPelanggan" class="text-2xl font-extrabold" style="color:#34d399">-</p>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pelanggan</p>
                     </div>
                     <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p id="bannerStatRating" class="text-2xl font-extrabold text-yellow-400">-</p>
+                        <p id="bannerStatRating" class="text-2xl font-extrabold" style="color:#fbbf24">-</p>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p>
                     </div>
                 </div>
@@ -1674,7 +1924,7 @@
             const low = Number(p.stock) > 0 && Number(p.stock) < 5;
             const out = Number(p.stock) <= 0;
             const item = document.createElement('div');
-            item.className = 'bg-white/5 border border-white/5 rounded-xl p-2 cursor-pointer hover:border-blue-500/50 transition';
+            item.className = 'bg-white/4 border border-white/6 rounded-xl p-2 cursor-pointer hover:border-violet-500/40 transition';
             item.onclick = () => { closeModal('modalStorePage'); showDetail(p); };
             item.innerHTML = `<div class="relative overflow-hidden rounded-lg mb-1.5" style="aspect-ratio:1/1"><img src="${p.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">${out ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-gray-600 text-white px-1.5 py-0.5 rounded-full">Habis</span>' : ''}${low ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-amber-500 text-white px-1.5 py-0.5 rounded-full">Limit</span>' : ''}</div><p class="text-[10px] text-blue-400 font-bold uppercase mb-0.5">${p.category || '-'}</p><p class="text-[11px] font-bold line-clamp-1 mb-1">${p.name}</p><div class="flex justify-between items-center"><p class="text-[11px] font-extrabold">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>${p.rating ? `<span style="color:#f59e0b" class="text-[10px] font-bold">★ ${p.rating}</span>` : ''}</div>`;
             list.appendChild(item);
@@ -1688,9 +1938,9 @@
         if (allSellers.length === 0) { el.innerHTML = `<p class="text-gray-500 text-sm py-3 px-2">Belum ada toko aktif</p>`; return; }
         allSellers.forEach(s => {
             const chip = document.createElement('div');
-            chip.className = 'shrink-0 glass-card px-4 py-3 flex items-center gap-3 cursor-pointer hover:border-blue-500 transition min-w-[160px] rounded-2xl';
+            chip.className = 'store-chip';
             chip.onclick = () => { renderStorePage(s); openModal('modalStorePage'); };
-            chip.innerHTML = `<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-sm shrink-0">${(s.storeName || 'S').charAt(0).toUpperCase()}</div><div class="min-w-0"><p class="text-xs font-bold line-clamp-1">${s.storeName || '-'}</p><p class="text-[10px] text-gray-500">${s.category || 'Digital'}</p></div>`;
+            chip.innerHTML = `<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0" style="background:linear-gradient(135deg,#7c3aed,#3b82f6)">${(s.storeName || 'S').charAt(0).toUpperCase()}</div><div class="min-w-0"><p class="text-xs font-bold line-clamp-1">${s.storeName || '-'}</p><p class="text-[10px] text-slate-500">${s.category || 'Digital'}</p></div>`;
             el.appendChild(chip);
         });
     };
@@ -1708,7 +1958,7 @@
             const avg = allR.length > 0 ? (allR.reduce((a,b)=>a+b,0)/allR.length).toFixed(1) : null;
             const publicLoc = s.provinsi && s.kabkota ? `${s.provinsi} / ${s.kabkota}` : (s.city || '');
             const card = document.createElement('div');
-            card.className = 'glass-card p-5 cursor-pointer hover:border-blue-500 transition rounded-2xl';
+            card.className = 'bg-slate-900 border border-white/5 p-5 cursor-pointer hover:border-violet-500/50 transition rounded-2xl';
             card.onclick = () => { renderStorePage(s); openModal('modalStorePage'); };
             card.innerHTML = `<div class="flex items-center gap-3 mb-3"><div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xl font-bold shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div><div class="flex-1 min-w-0"><p class="font-extrabold font-syne line-clamp-1 text-sm">${s.storeName||'-'}</p><p class="text-[10px] text-blue-400 font-bold uppercase">${s.category||'General'}</p></div><span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold shrink-0">✅ Verified</span></div><p class="text-gray-400 text-xs leading-relaxed line-clamp-2 mb-3">${s.storeDesc||'-'}</p>${publicLoc ? `<p class="text-[10px] text-gray-500 mb-2">📍 ${publicLoc}</p>` : ''}${avg ? `<div class="flex items-center gap-1 mb-3"><span style="color:#f59e0b">★</span><span class="text-xs font-bold">${avg}</span><span class="text-[10px] text-gray-500">(${totRc} ulasan)</span></div>` : ''}<div class="grid grid-cols-3 gap-2 text-center"><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold">${prods.length}</p><p class="text-[9px] text-gray-500">Produk</p></div><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold text-green-400">${totStk}</p><p class="text-[9px] text-gray-500">Stok</p></div><div class="bg-white/5 rounded-xl py-1.5 flex items-center justify-center"><span class="text-xs font-bold text-blue-400">Lihat →</span></div></div>`;
             grid.appendChild(card);
@@ -1786,7 +2036,7 @@
                 const st = statusMap[o.status] || statusMap.pending;
                 const dt = new Date(o.createdAt).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'});
                 const div = document.createElement('div');
-                div.className = 'glass-card p-5 mb-3 rounded-2xl';
+                div.className = 'order-item';
                 div.innerHTML = `
                     <div class="flex items-start justify-between mb-3 gap-3">
                         <div class="flex-1 min-w-0">
@@ -1828,14 +2078,14 @@
                 <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
                     <div class="text-right hidden sm:block leading-none">
                         <p class="text-xs font-bold">${currentUser.displayName || 'User'}</p>
-                        <p class="text-[9px] ${cls} font-black uppercase">${label} Tier</p>
+                        <p class="text-[9px] ${cls} font-black uppercase">${label}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold border-2 border-white/10 text-sm">
+                    <div class="w-9 h-9 rounded-xl grad-primary flex items-center justify-center font-black text-sm border border-white/10 glow" style="background:linear-gradient(135deg,#7c3aed,#3b82f6)">
                         ${(currentUser.displayName || 'U').charAt(0).toUpperCase()}
                     </div>
                 </div>`;
         } else {
-            authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm"><i class="fas fa-sign-in-alt mr-2"></i>Masuk</button>`;
+            authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-5 !text-sm flex items-center gap-2"><i class="fas fa-sign-in-alt"></i> Masuk</button>`;
         }
     };
 
@@ -1962,7 +2212,7 @@
                     const badgeStyle  = isAdmin ? 'bg-red-500/20 text-red-400 border-red-500/40'
                                      : isSeller ? 'bg-green-500/20 text-green-400 border-green-500/40'
                                      : 'bg-blue-500/20 text-blue-400 border-blue-500/40';
-                    if (badgeContainer) badgeContainer.innerHTML = `<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${badgeStyle}">${roleLabel} Tier</span>`;
+                    if (badgeContainer) badgeContainer.innerHTML = `<span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${badgeStyle}">${roleLabel}</span>`;
 
                     // ── LOGIKA ROLE DINAMIS ──────────────────────────────────
                     // Cek apakah admin sudah daftar seller
@@ -1972,23 +2222,23 @@
                             const adminAlreadySeller = sellerApp && sellerApp.status === 'approved';
 
                             if (sellerBanner) {
-                                sellerBanner.className = 'w-full mb-5 flex flex-col gap-3';
+                                sellerBanner.className = 'mb-4 flex flex-col gap-3';
                                 sellerBanner.onclick   = null;
                                 if (adminAlreadySeller) {
                                     // Admin + sudah daftar seller → 2 panel
                                     sellerBanner.innerHTML = `
-                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-red-500/30 shadow-lg">
+                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-900/80 to-red-950/60 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-red-500/30">
                                             <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div><div><p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1">Master Control</p><h3 class="text-sm font-black text-white uppercase">Admin Panel</h3></div></div>
                                             <i class="fas fa-chevron-right text-white/40 text-xs"></i>
                                         </div>
-                                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-white/10 shadow-lg">
+                                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-violet-900/80 to-blue-950/60 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-violet-500/30">
                                             <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-400"></i></div><div><p class="text-[9px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1">Personal Store</p><h3 class="text-sm font-black text-white uppercase">Seller Dashboard</h3></div></div>
                                             <i class="fas fa-chevron-right text-white/40 text-xs"></i>
                                         </div>`;
                                 } else {
                                     // Admin belum daftar seller → 1 panel + promosi daftar seller
                                     sellerBanner.innerHTML = `
-                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-red-500/30 shadow-lg">
+                                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-900/80 to-red-950/60 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-red-500/30">
                                             <div class="flex items-center gap-4 text-left"><div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div><div><p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1">Master Control</p><h3 class="text-sm font-black text-white uppercase">Admin Panel</h3></div></div>
                                             <i class="fas fa-chevron-right text-white/40 text-xs"></i>
                                         </div>`;
@@ -2003,7 +2253,7 @@
 
                     } else if (isSeller && sellerBanner) {
                         // Seller → 1 dashboard
-                        sellerBanner.className = 'w-full bg-gradient-to-r from-green-800/60 to-blue-800/40 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-green-500/30 mb-5';
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-emerald-900/60 to-blue-950/40 p-5 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-emerald-500/30 mb-4';
                         sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
                         sellerBanner.innerHTML = `<div class="flex items-center gap-4 text-left"><div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div><div><p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1">✅ Seller Aktif</p><h3 class="text-base font-black text-white uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3></div></div><span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase">Panel →</span>`;
                         if (homeSellerCta) homeSellerCta.classList.add('hidden');
@@ -2011,7 +2261,7 @@
 
                     } else if (isPending && sellerBanner) {
                         // Pending → tunggu verifikasi
-                        sellerBanner.className = 'w-full bg-gradient-to-r from-yellow-900/40 to-orange-900/30 p-5 rounded-[24px] flex items-center gap-4 border border-yellow-500/30 mb-5';
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-amber-900/30 to-orange-950/20 p-5 rounded-2xl flex items-center gap-4 border border-amber-500/25 mb-4';
                         sellerBanner.onclick   = null;
                         sellerBanner.innerHTML = `<div class="w-11 h-11 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div><div class="flex-1 text-left"><p class="text-[10px] font-black uppercase text-yellow-300">⏳ Menunggu Verifikasi</p><p class="font-bold text-white text-sm">Pendaftaran Sedang Ditinjau Admin</p></div>`;
                         if (homeSellerCta) homeSellerCta.classList.add('hidden');
@@ -2164,5 +2414,6 @@
 
     initApp();
 </script>
+
 </body>
 </html>
