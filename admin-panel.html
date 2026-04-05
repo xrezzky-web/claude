@@ -106,7 +106,7 @@ select.inp option{background:var(--s1)}
   <div style="width:100%;max-width:360px" class="card">
     <div class="mb-4">
       <label class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">Email Admin</label>
-      <input id="lockEmail" type="email" class="inp" placeholder="xrezzkystore.idn@gmail.com">
+      <input id="lockEmail" type="email" class="inp" placeholder="Email akun admin kamu">
     </div>
     <div class="mb-5">
       <label class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">Password</label>
@@ -605,8 +605,6 @@ const auth = getAuth(app);
 const db   = getDatabase(app);
 
 // ─── CONSTANTS ───
-const ADMIN_EMAIL = 'xrezzkystore.idn@gmail.com';
-const ADMIN_PHONE = '088293064112';
 const DEFAULT_CODE = '088293064112';
 
 // ─── STATE ───
@@ -649,8 +647,8 @@ window.doAdminLogin = async () => {
     const errEl = $('lockErr');
     errEl.classList.add('hidden');
 
-    if (email !== ADMIN_EMAIL) {
-        errEl.textContent = 'Hanya email admin yang terdaftar yang bisa masuk.';
+    if (!email || !pass) {
+        errEl.textContent = 'Email dan password wajib diisi!';
         errEl.classList.remove('hidden');
         return;
     }
@@ -668,25 +666,22 @@ window.doLogout = () => {
 };
 
 onAuthStateChanged(auth, async (user) => {
-    if (user && user.email === ADMIN_EMAIL) {
+    if (user) {
+        // Cek role dari Firebase — hanya role 'admin' yang boleh masuk
+        const snap = await get(ref(db, `users/${user.uid}`));
+        if (!snap.exists() || snap.val().role !== 'admin') {
+            toast('Akses Ditolak', 'Akun ini tidak memiliki role admin!', 'error');
+            setTimeout(() => signOut(auth), 1500);
+            return;
+        }
         adminUser = user;
         $('lockScreen').style.display = 'none';
-        $('adminName').textContent    = user.displayName || 'Admin';
-        $('adminAvatar').textContent  = (user.displayName||'A').charAt(0).toUpperCase();
+        $('adminName').textContent    = user.displayName || snap.val().name || 'Admin';
+        $('adminAvatar').textContent  = (user.displayName || snap.val().name || 'A').charAt(0).toUpperCase();
         $('dashDate').textContent     = new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-
-        // Verify role in DB
-        const snap = await get(ref(db,`users/${user.uid}`));
-        if (!snap.exists() || snap.val().role !== 'admin') {
-            toast('Akses Ditolak','Role bukan admin!','error');
-            signOut(auth); return;
-        }
         initAdminData();
-    } else if (user && user.email !== ADMIN_EMAIL) {
-        toast('Akses Ditolak','Akun ini bukan admin!','error');
-        signOut(auth);
     }
-    // else: stay on lock screen
+    // else: tetap di lock screen
 });
 
 // ─── INIT DATA ───
