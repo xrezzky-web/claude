@@ -179,11 +179,11 @@ select.inp option{background:var(--s1)}
     </div>
 
     <!-- STAT CARDS -->
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
       <div class="stat-card stat-blue">
-        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total User</p>
-        <p class="text-3xl font-extrabold syne text-blue-400" id="st-users">-</p>
-        <p class="text-[10px] text-slate-600 mt-1">Terdaftar di Auth</p>
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Pelanggan</p>
+        <p class="text-3xl font-extrabold syne text-blue-400" id="st-pelanggan">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Login, bukan admin</p>
       </div>
       <div class="stat-card stat-green">
         <p class="text-xs text-slate-500 font-bold uppercase mb-1">Produk Aktif</p>
@@ -195,15 +195,32 @@ select.inp option{background:var(--s1)}
         <p class="text-3xl font-extrabold syne text-yellow-400" id="st-stores">-</p>
         <p class="text-[10px] text-slate-600 mt-1">Seller approved</p>
       </div>
+      <div class="stat-card stat-purple">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Order</p>
+        <p class="text-3xl font-extrabold syne text-purple-400" id="st-orders">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Semua transaksi</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div class="stat-card stat-red">
         <p class="text-xs text-slate-500 font-bold uppercase mb-1">Pending Seller</p>
         <p class="text-3xl font-extrabold syne text-red-400" id="st-pending">-</p>
         <p class="text-[10px] text-slate-600 mt-1">Menunggu review</p>
       </div>
-      <div class="stat-card stat-purple">
-        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Order</p>
-        <p class="text-3xl font-extrabold syne text-purple-400" id="st-orders">-</p>
-        <p class="text-[10px] text-slate-600 mt-1">Semua transaksi</p>
+      <div class="stat-card" style="border-color:rgba(251,191,36,.2);background:rgba(251,191,36,.05)">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Rating Global</p>
+        <p class="text-3xl font-extrabold syne text-yellow-300" id="st-rating">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Rata-rata semua produk</p>
+      </div>
+      <div class="stat-card" style="border-color:rgba(168,85,247,.2);background:rgba(168,85,247,.05)">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Ulasan</p>
+        <p class="text-3xl font-extrabold syne text-purple-300" id="st-reviews">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Dari semua produk</p>
+      </div>
+      <div class="stat-card" style="border-color:rgba(34,211,238,.2);background:rgba(34,211,238,.05)">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Terjual</p>
+        <p class="text-3xl font-extrabold syne text-cyan-300" id="st-sold">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Unit produk terjual</p>
       </div>
     </div>
 
@@ -254,6 +271,7 @@ select.inp option{background:var(--s1)}
       <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-image text-blue-400"></i> Hero Banner</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
+          <p class="text-xs text-yellow-400 font-bold mb-3">⚠️ Banner kosong — isi untuk ditampilkan di marketplace</p>
           <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Judul Utama (XREZZKY)</label>
           <input id="cfg_title1" type="text" class="inp mb-3" placeholder="XREZZKY">
           <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Subjudul (OFFICIAL STORE)</label>
@@ -284,7 +302,7 @@ select.inp option{background:var(--s1)}
     <!-- PROMO TICKER -->
     <div class="card mb-5">
       <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-bullhorn text-yellow-400"></i> Promo Ticker</h3>
-      <p class="text-xs text-slate-500 mb-3">Setiap baris = 1 teks promo yang bergulir di marketplace</p>
+      <p class="text-xs text-slate-500 mb-3">Setiap baris = 1 teks promo yang bergulir di marketplace. <span class="text-yellow-400 font-bold">Contoh: ✨ Flash Sale skin ML hingga 50% OFF · 🎮 Gratis ongkir pembelian pertama</span></p>
       <div id="tickerList" class="space-y-2 mb-3"></div>
       <div class="flex gap-2">
         <input id="newTicker" type="text" class="inp flex-1" placeholder="✨ Tambah teks promo baru...">
@@ -346,9 +364,10 @@ select.inp option{background:var(--s1)}
     <h1 class="text-2xl font-extrabold syne mb-5">Kategori & Label</h1>
     <div class="card mb-5">
       <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-list text-blue-400"></i> Kategori Aktif</h3>
+      <p class="text-xs text-yellow-400 font-bold mb-3">Contoh kategori: Game Mobile · Premium Apps · E-Voucher · Akun Sosmed · Jasa Digital</p>
       <div id="catList" class="flex flex-wrap gap-2 mb-4"></div>
       <div class="flex gap-2">
-        <input id="newCat" type="text" class="inp flex-1" placeholder="Nama kategori baru...">
+        <input id="newCat" type="text" class="inp flex-1" placeholder="Contoh: Game Mobile, E-Voucher, Jasa Digital...">
         <button onclick="addCategory()" class="btn btn-blue"><i class="fas fa-plus"></i></button>
       </div>
       <button onclick="saveCfg('categories')" class="btn btn-blue mt-3"><i class="fas fa-save"></i> Simpan Kategori</button>
@@ -758,16 +777,53 @@ const logAction = (action, detail, color='blue', icon='circle-info') => {
 // ─── STATS ───
 const updateStats = () => {
     const prods    = Object.keys(allProducts).length;
-    const users    = Object.keys(allUsers).length;
     const approved = Object.values(allSellers).filter(s=>s.status==='approved').length;
     const pending  = Object.values(allSellers).filter(s=>s.status==='pending').length;
-    let   orders   = 0;
+
+    // Pelanggan = semua user yang bukan admin (buyer + seller)
+    const pelanggan = Object.values(allUsers).filter(u => u.role !== 'admin').length;
+
+    // Total order
+    let orders = 0;
     Object.values(allOrders).forEach(u => orders += Object.keys(u||{}).length);
-    $('st-users').textContent    = users;
-    $('st-products').textContent = prods;
-    $('st-stores').textContent   = approved;
-    $('st-pending').textContent  = pending;
-    $('st-orders').textContent   = orders;
+
+    // Rating global & total ulasan & total terjual dari semua produk
+    let ratingSum = 0, ratingCount = 0, totalReviews = 0, totalSold = 0;
+    Object.values(allProducts).forEach(p => {
+        if (p.rating && p.ratingCount) {
+            ratingSum   += parseFloat(p.rating) * Number(p.ratingCount);
+            ratingCount += Number(p.ratingCount);
+            totalReviews += Number(p.ratingCount);
+        }
+        totalSold += Number(p.sold || 0);
+    });
+    const globalRating = ratingCount > 0 ? (ratingSum / ratingCount).toFixed(1) : '-';
+
+    // Update DOM
+    $('st-pelanggan').textContent = pelanggan;
+    $('st-products').textContent  = prods;
+    $('st-stores').textContent    = approved;
+    $('st-pending').textContent   = pending;
+    $('st-orders').textContent    = orders;
+    $('st-rating').textContent    = globalRating !== '-' ? `${globalRating}★` : '-';
+    $('st-reviews').textContent   = totalReviews;
+    $('st-sold').textContent      = totalSold;
+
+    // Update badge pending di sidebar
+    const pb = $('pendingBadge');
+    if (pb) { pb.textContent = pending; pb.classList.toggle('hidden', pending === 0); }
+
+    // Simpan stat global ke Firebase biar bisa dipakai marketplace
+    update(ref(db, 'settings/globalStats'), {
+        totalPelanggan: pelanggan,
+        totalProduk:    prods,
+        totalToko:      approved,
+        totalOrder:     orders,
+        ratingGlobal:   globalRating,
+        totalUlasan:    totalReviews,
+        totalTerjual:   totalSold,
+        updatedAt:      Date.now()
+    }).catch(()=>{});
 };
 
 // ─── SECTION NAV ───
@@ -817,45 +873,107 @@ const renderDashProducts = () => {
 
 // ─── ANALYTICS ───
 const renderAnalytics = () => {
-    // User distribution
-    const el=$('userDistChart');
-    const buyers=Object.values(allUsers).filter(u=>u.role==='buyer'||!u.role).length;
-    const sellers=Object.values(allUsers).filter(u=>u.role==='seller').length;
-    const admins=Object.values(allUsers).filter(u=>u.role==='admin').length;
-    const total=Object.keys(allUsers).length||1;
-    el.innerHTML=`
+    // ── Distribusi User (Pelanggan = bukan admin) ──
+    const el    = $('userDistChart');
+    const buyers   = Object.values(allUsers).filter(u => u.role === 'buyer' || !u.role).length;
+    const sellers  = Object.values(allUsers).filter(u => u.role === 'seller').length;
+    const admins   = Object.values(allUsers).filter(u => u.role === 'admin').length;
+    const pelanggan = buyers + sellers; // semua yang login, bukan admin
+    const total  = Object.keys(allUsers).length || 1;
+
+    el.innerHTML = `
         <div class="space-y-3">
-            <div><div class="flex justify-between text-xs mb-1"><span class="text-blue-400 font-bold">Pembeli</span><span>${buyers}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width:${Math.round(buyers/total*100)}%"></div></div></div>
-            <div><div class="flex justify-between text-xs mb-1"><span class="text-green-400 font-bold">Seller</span><span>${sellers}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:${Math.round(sellers/total*100)}%"></div></div></div>
-            <div><div class="flex justify-between text-xs mb-1"><span class="text-red-400 font-bold">Admin</span><span>${admins}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-red-500 rounded-full" style="width:${Math.round(admins/total*100)}%"></div></div></div>
+            <div>
+                <div class="flex justify-between text-xs mb-1">
+                    <span class="text-blue-400 font-bold">Pembeli (Buyer)</span>
+                    <span class="font-bold">${buyers}</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500 rounded-full transition-all" style="width:${Math.round(buyers/total*100)}%"></div>
+                </div>
+            </div>
+            <div>
+                <div class="flex justify-between text-xs mb-1">
+                    <span class="text-green-400 font-bold">Seller Aktif</span>
+                    <span class="font-bold">${sellers}</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full transition-all" style="width:${Math.round(sellers/total*100)}%"></div>
+                </div>
+            </div>
+            <div>
+                <div class="flex justify-between text-xs mb-1">
+                    <span class="text-red-400 font-bold">Admin</span>
+                    <span class="font-bold">${admins}</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 rounded-full transition-all" style="width:${Math.round(admins/total*100)}%"></div>
+                </div>
+            </div>
         </div>
-        <p class="text-[10px] text-slate-600 mt-4 text-center">Total ${total} user terdaftar di database</p>`;
+        <div class="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center">
+            <p class="text-blue-300 font-extrabold text-lg syne">${pelanggan}</p>
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Total Pelanggan (non-admin)</p>
+        </div>
+        <p class="text-[10px] text-slate-600 mt-2 text-center">Total ${total} akun terdaftar di database</p>`;
 
-    // Top rated products
-    const trEl=$('topRatedList');
-    const sorted=Object.entries(allProducts).filter(([,p])=>p.rating).sort(([,a],[,b])=>parseFloat(b.rating)-parseFloat(a.rating)).slice(0,5);
-    if(sorted.length===0){trEl.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Belum ada rating</p>';return;}
-    trEl.innerHTML='';
-    sorted.forEach(([id,p],i)=>{
-        const div=document.createElement('div');
-        div.className='flex items-center gap-3 p-2 rounded-xl mb-1.5 bg-white/3';
-        div.innerHTML=`<span class="text-lg font-extrabold syne text-slate-600 w-6 shrink-0">${i+1}</span><div class="flex-1 min-w-0"><p class="text-xs font-bold truncate">${p.name}</p></div><span class="text-yellow-400 text-xs font-bold">★ ${p.rating} <span class="text-slate-600">(${p.ratingCount||0})</span></span>`;
-        trEl.appendChild(div);
-    });
+    // ── Top Rated Products ──
+    const trEl   = $('topRatedList');
+    const sorted = Object.entries(allProducts)
+        .filter(([,p]) => p.rating)
+        .sort(([,a],[,b]) => parseFloat(b.rating) - parseFloat(a.rating))
+        .slice(0, 5);
+    if (sorted.length === 0) {
+        trEl.innerHTML = '<p class="text-slate-600 text-xs text-center py-4">Belum ada produk yang dirating</p>';
+    } else {
+        trEl.innerHTML = '';
+        sorted.forEach(([id,p], i) => {
+            const seller = Object.values(allSellers).find(s => s.uid === p.sellerId);
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-3 p-2 rounded-xl mb-1.5 bg-white/3 hover:bg-white/5 transition';
+            div.innerHTML = `
+                <span class="text-base font-extrabold syne text-slate-600 w-5 shrink-0">${i+1}</span>
+                <img src="${p.images?.[0]||'https://placehold.co/32x32/0f172a/3b82f6?text=P'}" class="w-8 h-8 rounded-lg object-cover shrink-0">
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold truncate">${p.name}</p>
+                    <p class="text-[9px] text-slate-500">${seller?.storeName||'XREZZKY'} · ${p.ratingCount||0} ulasan</p>
+                </div>
+                <span class="text-yellow-400 text-xs font-bold shrink-0">★ ${p.rating}</span>`;
+            trEl.appendChild(div);
+        });
+    }
 
-    // Store performance
-    const spEl=$('storePerf');
-    const storeList=Object.values(allSellers).filter(s=>s.status==='approved');
-    if(storeList.length===0){spEl.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Belum ada toko aktif</p>';return;}
-    spEl.innerHTML=`<table class="tbl"><thead><tr><th>Toko</th><th>Produk</th><th>Stok Total</th><th>Rating Toko</th><th>Kota</th></tr></thead><tbody>${
-        storeList.map(s=>{
-            const prods=Object.values(allProducts).filter(p=>p.sellerId===s.uid);
-            const stk=prods.reduce((a,p)=>a+Number(p.stock||0),0);
-            const rvs=prods.filter(p=>p.rating);
-            const avg=rvs.length>0?(rvs.reduce((a,p)=>a+parseFloat(p.rating),0)/rvs.length).toFixed(1):'-';
-            return `<tr><td class="font-bold">${s.storeName||'-'}</td><td>${prods.length}</td><td>${stk}</td><td>${avg!=='-'?`<span class="text-yellow-400 font-bold">★ ${avg}</span>`:'-'}</td><td class="text-slate-500">${s.city||'-'}</td></tr>`;
+    // ── Store Performance ──
+    const spEl      = $('storePerf');
+    const storeList = Object.values(allSellers).filter(s => s.status === 'approved');
+    if (storeList.length === 0) {
+        spEl.innerHTML = '<p class="text-slate-600 text-xs text-center py-4">Belum ada toko aktif</p>';
+        return;
+    }
+    spEl.innerHTML = `<div class="overflow-x-auto"><table class="tbl"><thead><tr>
+        <th>Toko</th><th>Produk</th><th>Stok</th><th>Terjual</th><th>Rating</th><th>Ulasan</th><th>Lokasi</th>
+    </tr></thead><tbody>${
+        storeList.map(s => {
+            const prods  = Object.values(allProducts).filter(p => p.sellerId === s.uid);
+            const stk    = prods.reduce((a,p) => a + Number(p.stock||0), 0);
+            const sold   = prods.reduce((a,p) => a + Number(p.sold||0), 0);
+            const ulasan = prods.reduce((a,p) => a + Number(p.ratingCount||0), 0);
+            const rvs    = prods.filter(p => p.rating && p.ratingCount);
+            let   rSum   = 0, rCnt = 0;
+            rvs.forEach(p => { rSum += parseFloat(p.rating)*p.ratingCount; rCnt += p.ratingCount; });
+            const avg    = rCnt > 0 ? (rSum/rCnt).toFixed(1) : '-';
+            const pubLoc = s.provinsi && s.kabkota ? \`\${s.provinsi} / \${s.kabkota}\` : (s.city||'-');
+            return \`<tr>
+                <td><p class="font-bold text-xs">\${s.storeName||'-'}</p><p class="text-[9px] text-slate-500">\${s.ownerName||''}</p></td>
+                <td>\${prods.length}</td>
+                <td>\${stk}</td>
+                <td class="text-cyan-400 font-bold">\${sold}</td>
+                <td>\${avg!=='-'?\`<span class="text-yellow-400 font-bold">★ \${avg}</span>\`:'-'}</td>
+                <td class="text-purple-300">\${ulasan}</td>
+                <td class="text-slate-500 text-xs">\${pubLoc}</td>
+            </tr>\`;
         }).join('')
-    }</tbody></table>`;
+    }</tbody></table></div>`;
 };
 
 // ─── PRODUCTS ───
@@ -1211,25 +1329,25 @@ window.saveAdminCode = async () => {
 // ─── SITE CONFIG ───
 const loadConfigToForm = () => {
     const c=siteConfig;
-    $('cfg_title1').value   = c.heroTitle1||'XREZZKY';
-    $('cfg_title2').value   = c.heroTitle2||'OFFICIAL STORE';
-    $('cfg_tagline').value  = c.tagline||'Platform jual-beli produk digital paling aman & terpercaya.';
-    $('cfg_badges').value   = (c.trustBadges||['TERJAMIN','TRUSTED','#1 MARKETPLACE']).join(', ');
-    $('cfg_stat1n').value   = c.stat1n||'500+';
-    $('cfg_stat1l').value   = c.stat1l||'Produk';
-    $('cfg_stat2n').value   = c.stat2n||'2K+';
-    $('cfg_stat2l').value   = c.stat2l||'Pembeli';
-    $('cfg_stat3n').value   = c.stat3n||'4.9★';
-    $('cfg_stat3l').value   = c.stat3l||'Rating';
-    $('cfg_ctaLabel').value = c.ctaLabel||'Jadi Seller di XREZZKY';
-    $('cfg_ctaTitle').value = c.ctaTitle||'Buka Toko Kamu Sekarang';
-    $('cfg_ctaDesc').value  = c.ctaDesc||'Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif';
-    $('cfg_ctaBtn').value   = c.ctaBtn||'Mulai';
-    $('cfg_adminWa').value  = c.adminWa||'6281234567890';
-    $('cfg_trustBadges').value=(c.trustBadges||['TERJAMIN','TRUSTED','#1 MARKETPLACE']).join(', ');
+    $('cfg_title1').value   = c.heroTitle1||'';
+    $('cfg_title2').value   = c.heroTitle2||'';
+    $('cfg_tagline').value  = c.tagline||'';
+    $('cfg_badges').value   = c.trustBadges ? c.trustBadges.join(', ') : '';
+    $('cfg_stat1n').value   = c.stat1n||'';
+    $('cfg_stat1l').value   = c.stat1l||'';
+    $('cfg_stat2n').value   = c.stat2n||'';
+    $('cfg_stat2l').value   = c.stat2l||'';
+    $('cfg_stat3n').value   = c.stat3n||'';
+    $('cfg_stat3l').value   = c.stat3l||'';
+    $('cfg_ctaLabel').value = c.ctaLabel||'';
+    $('cfg_ctaTitle').value = c.ctaTitle||'';
+    $('cfg_ctaDesc').value  = c.ctaDesc||'';
+    $('cfg_ctaBtn').value   = c.ctaBtn||'';
+    $('cfg_adminWa').value  = c.adminWa||'';
+    $('cfg_trustBadges').value = c.trustBadges ? c.trustBadges.join(', ') : '';
 
     // Ticker
-    tickerItems = c.tickerItems||['✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat','🎮 Gratis ongkir untuk pembelian pertama kamu','🔐 Semua transaksi dijamin aman & bergaransi','💎 Member Premium dapat akses early bird produk baru'];
+    tickerItems = c.tickerItems||[];
     renderTickerList();
 
     // Features
@@ -1242,7 +1360,7 @@ const loadConfigToForm = () => {
     renderFeatureList();
 
     // Categories
-    categories = c.categories||['Game Mobile','Premium Apps','E-Voucher','Akun Sosmed','Jasa Digital'];
+    categories = c.categories||[];
     renderCatList();
 };
 
