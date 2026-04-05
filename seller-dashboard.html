@@ -102,7 +102,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+    import { getDatabase, ref, onValue, set, push, update, remove, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCAx7IrTxMKZVzr_joabmtObr_gneXi0EE",
@@ -146,6 +146,18 @@
                 window.location.href = 'index.html';
                 return;
             }
+
+            // Cek role dari Firebase — hanya seller atau admin yang boleh masuk
+            const snapUser = await get(ref(db, 'users/' + user.uid));
+            const userData = snapUser.exists() ? snapUser.val() : {};
+            const role = userData.role || 'buyer';
+
+            if (role !== 'seller' && role !== 'admin') {
+                alert('Akses ditolak! Kamu belum terdaftar sebagai seller.');
+                window.location.href = 'index.html';
+                return;
+            }
+
             currentUser = user;
 
             // Load Seller Info
@@ -344,4 +356,4 @@
     loadSellerData();
 </script>
 </body>
-  </html>
+</html>
