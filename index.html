@@ -1362,11 +1362,16 @@
     };
 
     // ============================================================
-    //  CATEGORY FILTER (Dinamis dari Firebase)
+    //  CATEGORY FILTER (Realtime dari Firebase admin/config/site)
     // ============================================================
-    const buildCategoryFilter = () => {
-        // Kumpulkan semua kategori unik dari produk
-        const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    let adminCategories = []; // kategori yang dibuat admin
+
+    const buildCategoryFilter = (adminCats = []) => {
+        // Prioritas: kategori dari admin. Kalau kosong, fallback dari produk
+        const cats = adminCats.length > 0
+            ? adminCats
+            : [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+
         const container = document.getElementById('categoryFilter');
         if (!container) return;
         container.innerHTML = `<div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn active-cat" data-cat="all">Semua</div>`;
@@ -1417,9 +1422,18 @@
                     </div>
                 </div>
                 <div class="flex flex-row md:flex-col gap-3 shrink-0">
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p id="statProduk" class="text-2xl font-extrabold text-blue-400">${data.statProduk || '500+'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p></div>
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p class="text-2xl font-extrabold text-green-400">${data.statPembeli || '2K+'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pembeli</p></div>
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]"><p class="text-2xl font-extrabold text-yellow-400">${data.statRating || '4.9★'}</p><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p></div>
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                        <p id="bannerStatProduk" class="text-2xl font-extrabold text-blue-400">-</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                        <p id="bannerStatPelanggan" class="text-2xl font-extrabold text-green-400">-</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pelanggan</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                        <p id="bannerStatRating" class="text-2xl font-extrabold text-yellow-400">-</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -1864,11 +1878,33 @@
         });
 
         // ── Realtime: Settings (Banner & Promo Ticker)
+        // ── Realtime: Settings Banner
         onValue(ref(db, 'settings/banner'), (snap) => {
             renderHeroBanner(snap.val());
         });
+
+        // ── Realtime: Promo Ticker
         onValue(ref(db, 'settings/promo_ticker'), (snap) => {
             renderPromoTicker(snap.val());
+        });
+
+        // ── Realtime: Global Stats (dari admin panel) → update banner & teks
+        onValue(ref(db, 'settings/globalStats'), (snap) => {
+            const gs = snap.val() || {};
+            // Update stat di hero banner (realtime dari data nyata)
+            const elProduk    = document.getElementById('bannerStatProduk');
+            const elPelanggan = document.getElementById('bannerStatPelanggan');
+            const elRating    = document.getElementById('bannerStatRating');
+            if (elProduk)    elProduk.textContent    = gs.totalProduk    || allProducts.length || '-';
+            if (elPelanggan) elPelanggan.textContent = gs.totalPelanggan  ? gs.totalPelanggan + '+' : '-';
+            if (elRating)    elRating.textContent    = gs.ratingGlobal && gs.ratingGlobal !== '-' ? gs.ratingGlobal + '★' : '-';
+        });
+
+        // ── Realtime: Kategori dari admin panel
+        onValue(ref(db, 'admin/config/site'), (snap) => {
+            const cfg = snap.val() || {};
+            adminCategories = cfg.categories || [];
+            buildCategoryFilter(adminCategories);
         });
 
         // ── Realtime: Produk
@@ -1877,7 +1913,7 @@
             allProducts = [];
             const data = snap.val();
             if (data) Object.keys(data).forEach(key => allProducts.push({ id: key, ...data[key] }));
-            buildCategoryFilter();
+            buildCategoryFilter(adminCategories);
             applyFilters();
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
