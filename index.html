@@ -11,19 +11,18 @@
     <style>
         /* ── ROOT ── */
         :root {
-            --bg:       #080c14;
-            --bg2:      #0d1220;
-            --surface:  #111827;
-            --surface2: #1a2235;
-            --border:   rgba(255,255,255,0.07);
-            --primary:  #7c3aed;
-            --primary2: #6d28d9;
-            --blue:     #3b82f6;
-            --neon:     rgba(124,58,237,0.6);
-            --neon-b:   rgba(59,130,246,0.5);
-            --text:     #f1f5f9;
-            --muted:    #64748b;
-            --glass:    rgba(13,18,32,0.85);
+            --bg:      #06080f;
+            --bg2:     #0b0f1c;
+            --surface: #0f1523;
+            --s2:      #161d2e;
+            --s3:      #1c2540;
+            --border:  rgba(255,255,255,0.06);
+            --border2: rgba(255,255,255,0.1);
+            --p1:      #8b5cf6;
+            --p2:      #3b82f6;
+            --text:    #e2e8f0;
+            --muted:   #475569;
+            --muted2:  #64748b;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -34,28 +33,30 @@
             color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3, .syne { font-family: 'Syne', sans-serif; }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 10px; }
 
         /* ── GLASS CARD ── */
         .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(11,15,28,0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             border-radius: 20px;
         }
 
         /* ── GRADIENTS ── */
-        .grad-primary { background: linear-gradient(135deg, #7c3aed, #3b82f6); }
-        .grad-text    { background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .glow         { box-shadow: 0 0 24px rgba(124,58,237,0.4); }
-        .glow-blue    { box-shadow: 0 0 24px rgba(59,130,246,0.4); }
+        .grad-primary { background: linear-gradient(135deg, #8b5cf6, #3b82f6); }
+        .grad-text    { background: linear-gradient(135deg, #c4b5fd, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glow         { box-shadow: 0 0 28px rgba(139,92,246,0.35); }
+        .glow-blue    { box-shadow: 0 0 28px rgba(59,130,246,0.35); }
+        .glow-green   { box-shadow: 0 0 28px rgba(16,185,129,0.35); }
 
         /* ── LOADER ── */
         #loader {
@@ -67,7 +68,7 @@
         .spinner {
             width: 48px; height: 48px;
             border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
+            border-top: 3px solid rgba(139,92,246,1);
             border-radius: 50%;
             animation: spin 0.9s linear infinite;
         }
@@ -76,32 +77,32 @@
         /* ── HEADER ── */
         header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(8,12,20,0.9);
+            background: rgba(6,8,15,0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
 
         /* ── SEARCH ── */
         .search-wrap {
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
             border-radius: 50px;
             display: flex; align-items: center;
             gap: 10px; padding: 0 16px;
             transition: border-color .25s;
         }
-        .search-wrap:focus-within { border-color: var(--primary); }
+        .search-wrap:focus-within { border-color: rgba(139,92,246,1); }
         .search-wrap input {
             background: none; border: none; outline: none;
             color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif;
             padding: 11px 0; width: 100%;
         }
-        .search-wrap input::placeholder { color: var(--muted); }
+        .search-wrap input::placeholder { color: #475569; }
 
         /* ── CUSTOM INPUT ── */
         .custom-input {
             width: 100%;
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
             padding: 13px 16px;
             border-radius: 12px;
@@ -110,68 +111,83 @@
             font-size: 14px;
             transition: .25s;
         }
-        .custom-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
-        .custom-input::placeholder { color: var(--muted); }
-        select.custom-input option { background: var(--surface); }
+        .custom-input:focus { border-color: rgba(139,92,246,.6); outline: none; box-shadow: 0 0 0 3px rgba(139,92,246,.12); }
+        .custom-input::placeholder { color: #475569; }
+        select.custom-input option { background: var(--s2); }
 
         /* ── BUTTONS ── */
         .btn-primary {
-            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
             color: white; padding: 13px 28px;
             border-radius: 12px; font-weight: 700;
             font-size: 14px; border: none; cursor: pointer;
             font-family: 'Inter', sans-serif;
-            transition: opacity .2s, transform .15s;
+            transition: all .2s ease;
             display: inline-block; text-align: center;
+            box-shadow: 0 4px 20px rgba(139,92,246,0.3);
+            position: relative; overflow: hidden;
         }
-        .btn-primary:hover   { opacity: .88; }
-        .btn-primary:active  { transform: scale(.97); }
+        .btn-primary::before {
+            content:''; position:absolute; inset:0;
+            background: linear-gradient(135deg,rgba(255,255,255,.1),transparent);
+            opacity:0; transition:.2s;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(139,92,246,0.45); }
+        .btn-primary:hover::before { opacity:1; }
+        .btn-primary:active { transform: scale(.97); }
 
         .btn-outline {
             background: transparent;
-            border: 1px solid rgba(124,58,237,0.5);
-            color: #a78bfa;
+            border: 1px solid rgba(139,92,246,0.4);
+            color: #c4b5fd;
             padding: 13px 28px; border-radius: 12px;
-            font-weight: 700; font-size: 14px; cursor: pointer;
+            font-weight: 600; font-size: 14px; cursor: pointer;
             font-family: 'Inter', sans-serif; transition: .25s;
         }
-        .btn-outline:hover { background: rgba(124,58,237,0.1); border-color: var(--primary); }
+        .btn-outline:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.7); color: #ddd6fe; }
 
         .btn-ghost {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.04);
             border: 1px solid var(--border);
-            color: var(--muted);
-            padding: 10px 20px; border-radius: 10px;
+            color: var(--muted2);
+            padding: 9px 18px; border-radius: 10px;
             font-weight: 600; font-size: 13px; cursor: pointer;
             font-family: 'Inter', sans-serif; transition: .2s;
         }
-        .btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); border-color: var(--border2); }
 
         /* ── NAV LINK ── */
-        .nav-link { color: var(--muted); font-size: 11px; font-weight: 700; background: none; border: none; cursor: pointer; transition: .2s; }
-        .nav-link.active { color: var(--primary); }
-        .nav-link i { font-size: 20px; display: block; margin-bottom: 2px; }
+        .nav-link { color: #475569; font-size: 10px; font-weight: 700; letter-spacing:.02em; background: none; border: none; cursor: pointer; transition: .2s; }
+        .nav-link.active { color: #a78bfa; }
+        .nav-link i { font-size: 21px; display: block; margin-bottom: 3px; }
 
         /* ── PRODUCT CARD ── */
         .product-card {
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: transform .35s cubic-bezier(.175,.885,.32,1.275), border-color .25s, box-shadow .35s;
+            transition: transform .3s cubic-bezier(.34,1.56,.64,1), border-color .25s, box-shadow .3s;
             overflow: hidden;
+            position: relative;
+        }
+        .product-card::before {
+            content:''; position:absolute; inset:0; z-index:1;
+            background: linear-gradient(135deg,rgba(139,92,246,.05),transparent);
+            opacity:0; transition:.3s;
         }
         .product-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(124,58,237,0.5);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.2);
+            transform: translateY(-10px) scale(1.01);
+            border-color: rgba(139,92,246,0.45);
+            box-shadow: 0 20px 50px rgba(0,0,0,.6), 0 0 0 1px rgba(139,92,246,.15), 0 0 40px rgba(139,92,246,.08);
         }
+        .product-card:hover::before { opacity:1; }
         .product-img-container { position: relative; overflow: hidden; }
-        .product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; transition: transform .6s ease; }
-        .product-card:hover .product-img { transform: scale(1.07); }
+        .product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; transition: transform .5s ease; }
+        .product-card:hover .product-img { transform: scale(1.08); }
 
-        .badge-new   { background: #ef4444; color: white; padding: 2px 9px; border-radius: 20px; font-size: 9px; font-weight: 800; position: absolute; top: 10px; right: 10px; letter-spacing: .04em; }
-        .badge-limit { background: #f59e0b; color: white; padding: 2px 9px; border-radius: 20px; font-size: 9px; font-weight: 800; position: absolute; top: 10px; right: 10px; letter-spacing: .04em; }
+        .badge-new   { background: linear-gradient(135deg,#ef4444,#dc2626); color:white; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; position:absolute; top:10px; right:10px; letter-spacing:.06em; box-shadow:0 2px 8px rgba(239,68,68,.5); }
+        .badge-limit { background: linear-gradient(135deg,#f59e0b,#d97706); color:white; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; position:absolute; top:10px; right:10px; letter-spacing:.06em; box-shadow:0 2px 8px rgba(245,158,11,.5); }
 
         /* ── CATEGORY FILTER ── */
         .category-btn {
@@ -179,123 +195,149 @@
             border: 1px solid var(--border);
             border-radius: 50px; font-size: 13px;
             font-weight: 600; cursor: pointer;
-            color: var(--muted); background: var(--surface);
+            color: var(--muted2); background: var(--s2);
             transition: .2s; white-space: nowrap;
         }
-        .category-btn:hover { border-color: rgba(124,58,237,0.5); color: var(--text); }
+        .category-btn:hover { border-color: rgba(139,92,246,0.4); color: var(--text); background: var(--s2); }
         .category-btn.active-cat {
-            background: linear-gradient(135deg,rgba(124,58,237,.2),rgba(59,130,246,.2));
-            border-color: rgba(124,58,237,0.6);
-            color: #a78bfa;
+            background: linear-gradient(135deg,rgba(139,92,246,.15),rgba(59,130,246,.12));
+            border-color: rgba(139,92,246,0.5);
+            color: #c4b5fd;
+            box-shadow: 0 0 16px rgba(139,92,246,.12);
         }
 
         /* ── MODAL ── */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(16px);
             z-index: 1000; display: none;
             align-items: center; justify-content: center;
-            padding: 20px;
+            padding: 16px;
         }
         .modal-content {
             background: var(--bg2);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border2);
             border-radius: 24px;
             width: 100%; max-width: 600px;
             max-height: 90vh; overflow-y: auto;
             position: relative;
-            animation: slideUp .3s cubic-bezier(.175,.885,.32,1.275);
+            animation: slideUp .35s cubic-bezier(.34,1.56,.64,1);
+            box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.04);
         }
-        @keyframes slideUp { from { transform: translateY(48px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(56px) scale(.96); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 
         /* ── TOAST ── */
         #toast {
             position: fixed; top: 80px; right: 16px;
             z-index: 9999;
             transform: translateX(160%);
-            transition: transform .4s cubic-bezier(.175,.885,.32,1.275);
+            transition: transform .4s cubic-bezier(.34,1.56,.64,1);
         }
         .toast-inner {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--primary);
+            background: var(--s2);
+            border: 1px solid var(--border2);
+            border-left: 4px solid #8b5cf6;
             border-radius: 16px;
             padding: 14px 18px;
             display: flex; align-items: center;
             gap: 14px; min-width: 300px;
-            box-shadow: 0 8px 32px rgba(0,0,0,.5);
+            box-shadow: 0 12px 40px rgba(0,0,0,.6), 0 0 20px rgba(139,92,246,.1);
         }
 
         /* ── SCROLLBARS ── */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(139,92,246,.5); border-radius: 4px; }
 
         /* ── ANIMATIONS ── */
-        @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        .fade-in { animation: fadeIn .4s ease-out; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        .fade-in { animation: fadeIn .45s ease-out; }
 
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .promo-ticker { animation: ticker 20s linear infinite; }
+        .promo-ticker { animation: ticker 22s linear infinite; }
         .promo-ticker:hover { animation-play-state: paused; }
 
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        @keyframes pulse-glow { 0%,100%{opacity:.5} 50%{opacity:1} }
+
         /* ── STAR RATING ── */
-        .star-input { display:flex; flex-direction:row-reverse; gap:6px; justify-content:flex-start; margin-bottom:16px; }
+        .star-input { display:flex; flex-direction:row-reverse; gap:8px; justify-content:flex-start; margin-bottom:16px; }
         .star-input input { display:none; }
-        .star-input label { font-size:30px; color:#374151; cursor:pointer; transition:.15s; line-height:1; }
-        .star-input label:hover, .star-input label:hover ~ label, .star-input input:checked ~ label { color:#f59e0b; }
+        .star-input label { font-size:32px; color:#1e293b; cursor:pointer; transition:.15s; line-height:1; text-shadow:0 0 0 transparent; }
+        .star-input label:hover, .star-input label:hover ~ label, .star-input input:checked ~ label { color:#f59e0b; text-shadow:0 0 12px rgba(245,158,11,.5); }
 
         /* ── QTY ── */
         .qty-btn {
-            background: var(--surface2); border: 1px solid var(--border);
+            background: var(--s3); border: 1px solid var(--border2);
             color: var(--text); width: 36px; height: 36px;
-            border-radius: 10px; font-size: 18px; cursor: pointer;
+            border-radius: 10px; font-size: 20px; font-weight: 300; cursor: pointer;
             transition: .2s; display: flex; align-items: center; justify-content: center;
         }
-        .qty-btn:hover { background: rgba(124,58,237,.3); border-color: var(--primary); }
+        .qty-btn:hover { background: rgba(139,92,246,.25); border-color: rgba(139,92,246,.6); color: #c4b5fd; }
 
         /* ── ADDR SELECT ── */
         .addr-select {
-            width: 100%; background: var(--surface); border: 1px solid var(--border);
+            width: 100%; background: var(--s2); border: 1px solid var(--border);
             padding: 12px 16px; border-radius: 12px; color: var(--text);
             font-family: 'Inter', sans-serif; font-size: 13px; appearance: none; cursor: pointer;
+            transition:.2s;
         }
-        .addr-select:disabled { opacity: .4; cursor: not-allowed; }
-        .addr-select:focus { border-color: var(--primary); outline: none; }
-        .addr-select option { background: var(--surface); }
+        .addr-select:disabled { opacity: .35; cursor: not-allowed; }
+        .addr-select:focus { border-color: rgba(139,92,246,.6); outline: none; box-shadow:0 0 0 3px rgba(139,92,246,.12); }
+        .addr-select option { background: var(--s2); }
 
         /* ── SECTION HIDDEN ── */
         .page-view.hidden { display: none !important; }
 
         /* ── HERO DECORATIONS ── */
-        .hero-glow-1 { position: absolute; top: -30%; left: -10%; width: 60%; height: 100%; background: radial-gradient(ellipse at center, rgba(124,58,237,.18) 0%, transparent 70%); pointer-events: none; }
-        .hero-glow-2 { position: absolute; bottom: -30%; right: -10%; width: 50%; height: 100%; background: radial-gradient(ellipse at center, rgba(59,130,246,.15) 0%, transparent 70%); pointer-events: none; }
-        .grid-overlay { position: absolute; inset: 0; opacity: .03; background-image: linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px); background-size: 40px 40px; pointer-events: none; }
+        .hero-glow-1 { position:absolute; top:-40%; left:-15%; width:70%; height:130%; background:radial-gradient(ellipse at 40% 50%,rgba(139,92,246,.2) 0%,transparent 65%); pointer-events:none; }
+        .hero-glow-2 { position:absolute; bottom:-40%; right:-10%; width:60%; height:120%; background:radial-gradient(ellipse at 60% 50%,rgba(59,130,246,.15) 0%,transparent 65%); pointer-events:none; }
+        .grid-overlay { position:absolute; inset:0; opacity:.025; background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px); background-size:44px 44px; pointer-events:none; }
 
         /* ── TRUST CARD ── */
         .trust-card {
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px 24px;
+            border-radius: 20px;
+            padding: 28px 20px;
             text-align: center;
-            transition: border-color .25s, transform .3s;
+            transition: border-color .3s, transform .3s, box-shadow .3s;
+            position: relative; overflow: hidden;
         }
-        .trust-card:hover { border-color: rgba(124,58,237,.4); transform: translateY(-4px); }
+        .trust-card::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(139,92,246,.04),transparent); opacity:0; transition:.3s; }
+        .trust-card:hover { border-color: rgba(139,92,246,.35); transform: translateY(-6px); box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 20px rgba(139,92,246,.08); }
+        .trust-card:hover::after { opacity:1; }
+
+        /* ── CS CARD ── */
+        .cs-card {
+            background: linear-gradient(135deg, var(--s2), var(--s3));
+            border: 1px solid rgba(139,92,246,.25);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: .3s;
+            position: relative; overflow: hidden;
+        }
+        .cs-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(139,92,246,.08),transparent); }
+        .cs-card:hover { border-color: rgba(139,92,246,.5); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 20px rgba(139,92,246,.12); }
+
+        /* ── RATING DISPLAY ── */
+        .rating-star { color: #f59e0b; }
+        .rating-star.empty { color: #1e293b; }
 
         /* ── STORE CHIP ── */
         .store-chip {
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 12px 16px;
             display: flex; align-items: center; gap: 12px;
             cursor: pointer; transition: .25s;
-            min-width: 160px; flex-shrink: 0;
+            min-width: 168px; flex-shrink: 0;
         }
-        .store-chip:hover { border-color: rgba(124,58,237,.5); background: var(--surface2); }
+        .store-chip:hover { border-color: rgba(139,92,246,.45); background: var(--s2); box-shadow:0 4px 20px rgba(0,0,0,.3); }
 
         /* ── INPUT GROUP ── */
         .input-group { margin-bottom: 18px; }
@@ -307,48 +349,64 @@
         /* ── MENU ITEM ── */
         .menu-item {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 20px;
-            background: var(--surface);
+            padding: 15px 18px;
+            background: var(--s2);
             border: 1px solid var(--border);
             border-radius: 14px;
             cursor: pointer; transition: .2s;
             width: 100%;
         }
-        .menu-item:hover { background: var(--surface2); border-color: rgba(124,58,237,.3); }
+        .menu-item:hover { background: var(--s2); border-color: rgba(139,92,246,.25); }
 
         /* ── ORDER ITEM ── */
         .order-item {
-            background: var(--surface);
+            background: var(--s2);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 18px 20px;
             margin-bottom: 12px;
+            transition: border-color .2s;
         }
+        .order-item:hover { border-color: var(--border2); }
 
         /* ── FULL IMAGE ── */
-        #fullImageView { z-index: 9999 !important; background: rgba(0,0,0,.96); }
+        #fullImageView { z-index: 9999 !important; background: rgba(0,0,0,.97); }
         #fullImageView img { animation: zoomIn .3s ease-out; }
-        @keyframes zoomIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* ── DIVIDER ── */
         .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
+        /* ── CHIP TAG ── */
+        .chip { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.04em; }
+        .chip-purple { background:rgba(139,92,246,.15); border:1px solid rgba(139,92,246,.3); color:#c4b5fd; }
+        .chip-green  { background:rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.3); color:#6ee7b7; }
+        .chip-blue   { background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.3); color:#93c5fd; }
+        .chip-amber  { background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3); color:#fcd34d; }
+        .chip-red    { background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.3); color:#fca5a5; }
+
         /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            .hide-mobile { display: none !important; }
-        }
-        @media (min-width: 769px) {
-            .show-mobile-only { display: none !important; }
-        }
+        @media (max-width: 768px) { .hide-mobile { display: none !important; } }
+        @media (min-width: 769px) { .show-mobile-only { display: none !important; } }
     </style>
 </head>
 <body class="pb-24 md:pb-0">
 
     <!-- ══ LOADER ══ -->
     <div id="loader">
-        <div class="spinner mb-5"></div>
-        <h2 class="text-xl font-bold syne tracking-wider animate-pulse">XREZZKY</h2>
-        <p class="text-xs text-slate-600 mt-2 tracking-[0.25em] uppercase">Menyinkronkan data...</p>
+        <div class="relative mb-6">
+            <div class="w-16 h-16 rounded-2xl grad-primary flex items-center justify-center" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);box-shadow:0 0 40px rgba(139,92,246,.5)">
+                <i class="fas fa-bolt text-white text-2xl"></i>
+            </div>
+            <div class="absolute -inset-2 rounded-3xl border-2 border-violet-500/20 animate-ping" style="animation-duration:2s"></div>
+        </div>
+        <h2 class="text-2xl font-black syne tracking-widest mb-2" style="background:linear-gradient(135deg,#c4b5fd,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">XREZZKY</h2>
+        <p class="text-xs text-slate-600 tracking-[0.3em] uppercase">Memuat marketplace...</p>
+        <div class="mt-5 flex gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-bounce" style="animation-delay:0s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style="animation-delay:.15s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce" style="animation-delay:.3s"></span>
+        </div>
     </div>
 
     <!-- ══ BG AMBIENT ══ -->
@@ -357,14 +415,17 @@
 
     <!-- ══ HEADER ══ -->
     <header>
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center gap-4">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3.5 flex items-center gap-4">
 
             <!-- LOGO -->
             <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigate('home')">
-                <div class="w-9 h-9 rounded-xl grad-primary flex items-center justify-center glow shrink-0">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 glow" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">
                     <i class="fas fa-bolt text-white text-sm"></i>
                 </div>
-                <span class="text-lg font-black syne tracking-tight hidden sm:block">XREZZKY</span>
+                <div class="hidden sm:block">
+                    <span class="text-base font-black syne tracking-tight leading-none block" style="background:linear-gradient(135deg,#c4b5fd,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">XREZZKY</span>
+                    <span class="text-[8px] text-slate-600 font-bold uppercase tracking-[.2em]">STORE</span>
+                </div>
             </div>
 
             <!-- SEARCH -->
@@ -394,34 +455,44 @@
 
             <!-- TRUST SECTION -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
-                <div class="trust-card">
-                    <div class="w-12 h-12 rounded-2xl grad-primary flex items-center justify-center mx-auto mb-3 glow">
-                        <i class="fas fa-shield-halved text-white"></i>
+                <div class="trust-card group">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 glow transition group-hover:scale-110" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">
+                        <i class="fas fa-shield-halved text-white text-lg"></i>
                     </div>
-                    <p class="font-bold text-sm mb-1">Aman & Terjamin</p>
-                    <p class="text-xs text-slate-500">Sistem verifikasi ketat</p>
+                    <p class="font-bold text-sm mb-1 text-slate-200">Aman & Terjamin</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">Sistem verifikasi seller ketat</p>
                 </div>
-                <div class="trust-card">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-3 glow-blue">
-                        <i class="fas fa-bolt text-white"></i>
+                <div class="trust-card group">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 glow-blue transition group-hover:scale-110" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">
+                        <i class="fas fa-bolt text-white text-lg"></i>
                     </div>
-                    <p class="font-bold text-sm mb-1">Proses Instan</p>
-                    <p class="text-xs text-slate-500">Delivery cepat & responsif</p>
+                    <p class="font-bold text-sm mb-1 text-slate-200">Proses Instan</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">Delivery cepat & responsif</p>
                 </div>
-                <div class="trust-card">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center mx-auto mb-3" style="box-shadow:0 0 20px rgba(16,185,129,.4)">
-                        <i class="fas fa-headset text-white"></i>
+                <div class="trust-card group">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition group-hover:scale-110 glow-green" style="background:linear-gradient(135deg,#10b981,#059669)">
+                        <i class="fas fa-headset text-white text-lg"></i>
                     </div>
-                    <p class="font-bold text-sm mb-1">CS 24/7</p>
-                    <p class="text-xs text-slate-500">Siap bantu kapanpun</p>
+                    <p class="font-bold text-sm mb-1 text-slate-200">CS 24/7</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">Siap bantu kapanpun</p>
                 </div>
-                <div class="trust-card">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-600 flex items-center justify-center mx-auto mb-3" style="box-shadow:0 0 20px rgba(245,158,11,.4)">
-                        <i class="fas fa-star text-white"></i>
+                <div class="trust-card group">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition group-hover:scale-110" style="background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 0 24px rgba(245,158,11,.35)">
+                        <i class="fas fa-star text-white text-lg"></i>
                     </div>
-                    <p class="font-bold text-sm mb-1">Banyak Pilihan</p>
-                    <p class="text-xs text-slate-500">Ribuan produk digital</p>
+                    <p class="font-bold text-sm mb-1 text-slate-200">Banyak Pilihan</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">Ribuan produk digital</p>
                 </div>
+            </div>
+
+            <!-- CS FLOATING BUTTON (bottom right, mobile) -->
+            <div class="fixed bottom-24 right-4 z-50 md:bottom-8" id="csFloatBtn">
+                <a href="https://wa.me/6285822558353" target="_blank" id="csWaLink"
+                   class="flex items-center gap-2.5 bg-green-600 hover:bg-green-500 text-white px-4 py-3 rounded-2xl shadow-lg shadow-green-900/40 transition font-bold text-sm"
+                   style="box-shadow:0 4px 20px rgba(22,163,74,.5)">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    <span class="hidden sm:block">Hubungi CS</span>
+                </a>
             </div>
 
             <!-- TOKO SECTION -->
@@ -429,10 +500,10 @@
                 <div class="flex items-center justify-between mb-5">
                     <div>
                         <h3 class="text-lg font-black syne flex items-center gap-2">
-                            <span class="w-1 h-5 rounded-full grad-primary inline-block"></span>
+                            <span class="w-0.5 h-5 rounded-full inline-block" style="background:linear-gradient(to bottom,#8b5cf6,#3b82f6)"></span>
                             Toko Aktif
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Seller terverifikasi di XREZZKY</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Seller terverifikasi di XREZZKY</p>
                     </div>
                     <button onclick="openModal('modalAllStores')" class="btn-ghost text-xs flex items-center gap-1.5">
                         Lihat Semua <i class="fas fa-arrow-right text-[10px]"></i>
@@ -479,10 +550,10 @@
                 <div class="flex items-center justify-between mb-5">
                     <div>
                         <h3 class="text-lg font-black syne flex items-center gap-2">
-                            <span class="w-1 h-5 rounded-full bg-blue-500 inline-block"></span>
+                            <span class="w-0.5 h-5 rounded-full inline-block" style="background:linear-gradient(to bottom,#3b82f6,#8b5cf6)"></span>
                             Produk Digital
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Temukan produk terbaik pilihan kamu</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Temukan produk terbaik pilihan kamu</p>
                     </div>
                 </div>
                 <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -530,6 +601,10 @@
                         <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Masuk / Daftar</button>
                     </div>
                     <div class="space-y-2">
+                        <a id="guestCsLink" href="https://wa.me/6285822558353" target="_blank" class="menu-item !border-green-500/15 hover:!bg-green-500/8 hover:!border-green-500/30">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-green-500/15 flex items-center justify-center"><i class="fab fa-whatsapp text-green-400 text-sm"></i></div><span class="font-semibold text-sm text-green-400">Hubungi CS / Bantuan</span></div>
+                            <i class="fas fa-arrow-up-right-from-square text-green-600 text-xs"></i>
+                        </a>
                         <button onclick="openModal('modalAbout')" class="menu-item">
                             <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-cyan-500/15 flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div><span class="font-semibold text-sm">Tentang XREZZKY</span></div>
                             <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
@@ -603,6 +678,10 @@
                             <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-orange-500/15 flex items-center justify-center"><i class="fas fa-file-contract text-orange-400 text-sm"></i></div><span class="font-semibold text-sm">Kebijakan & Persyaratan</span></div>
                             <i class="fas fa-chevron-right text-slate-700 text-xs"></i>
                         </button>
+                        <a id="profileCsLink" href="https://wa.me/6285822558353" target="_blank" class="menu-item !border-green-500/15 hover:!bg-green-500/8 hover:!border-green-500/30">
+                            <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-green-500/15 flex items-center justify-center"><i class="fab fa-whatsapp text-green-400 text-sm"></i></div><span class="font-semibold text-sm text-green-400">Hubungi CS / Bantuan</span></div>
+                            <i class="fas fa-arrow-up-right-from-square text-green-600 text-xs"></i>
+                        </a>
                         <button onclick="logoutUser()" class="menu-item !border-red-500/15 hover:!bg-red-500/10 hover:!border-red-500/30">
                             <div class="flex items-center gap-4"><div class="w-9 h-9 rounded-xl bg-red-500/15 flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400 text-sm"></i></div><span class="font-semibold text-sm text-red-400">Keluar dari Akun</span></div>
                         </button>
@@ -616,8 +695,8 @@
     </main>
 
     <!-- ══ BOTTOM NAV ══ -->
-    <nav class="fixed bottom-0 inset-x-0 z-[100] md:hidden" style="background:rgba(8,12,20,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);">
-        <div class="flex justify-around items-center px-4 py-3">
+    <nav class="fixed bottom-0 inset-x-0 z-[100] md:hidden" style="background:rgba(6,8,15,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.05);">
+        <div class="flex justify-around items-center px-2 py-2">
             <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-0.5">
                 <i class="fas fa-home"></i>
                 <span>Beranda</span>
@@ -960,26 +1039,27 @@
                 <div class="bg-slate-800/60 border border-white/8 rounded-2xl p-5">
                     <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2"><i class="fas fa-headset text-xs"></i> Hubungi Kami</h3>
                     <div class="space-y-3" id="contactSection">
-                        <!-- Diisi dari Firebase settings/contact, fallback ke default -->
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-green-500/15 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400 text-sm"></i></div>
-                            <div>
-                                <p class="text-[10px] text-slate-500 uppercase font-bold">WhatsApp Owner</p>
-                                <p class="text-sm font-bold" id="contactOwnerWa">088293064112</p>
+                        <a href="https://wa.me/6285822558353" target="_blank" id="contactOwnerWaLink" class="flex items-center gap-3 p-3 rounded-xl bg-green-500/8 border border-green-500/20 hover:border-green-500/40 transition cursor-pointer block">
+                            <div class="w-9 h-9 rounded-xl bg-green-500/20 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">WhatsApp Owner</p>
+                                <p class="text-sm font-bold text-green-300" id="contactOwnerWa">+62 858-2255-8353</p>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400 text-sm"></i></div>
-                            <div>
-                                <p class="text-[10px] text-slate-500 uppercase font-bold">Email Support</p>
-                                <p class="text-sm font-bold" id="contactEmail">xrezzkystore.idn@gmail.com</p>
+                            <i class="fas fa-arrow-up-right-from-square text-green-600 text-xs"></i>
+                        </a>
+                        <a href="mailto:xrezzkystore.idn@gmail.com" id="contactEmailLink" class="flex items-center gap-3 p-3 rounded-xl bg-blue-500/8 border border-blue-500/20 hover:border-blue-500/40 transition cursor-pointer block">
+                            <div class="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Email Support</p>
+                                <p class="text-sm font-bold text-blue-300" id="contactEmail">xrezzkystore.idn@gmail.com</p>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-3" id="contactCsWrap">
-                            <div class="w-9 h-9 rounded-xl bg-purple-500/15 flex items-center justify-center shrink-0"><i class="fas fa-headset text-purple-400 text-sm"></i></div>
-                            <div>
-                                <p class="text-[10px] text-slate-500 uppercase font-bold">CS / Customer Service</p>
-                                <p class="text-sm font-bold text-slate-400 italic" id="contactCs">Segera hadir — pantau update kami</p>
+                            <i class="fas fa-arrow-up-right-from-square text-blue-600 text-xs"></i>
+                        </a>
+                        <div id="contactCsWrap" class="flex items-center gap-3 p-3 rounded-xl bg-purple-500/8 border border-purple-500/20">
+                            <div class="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0"><i class="fas fa-headset text-purple-400"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Customer Service</p>
+                                <p class="text-sm font-bold text-purple-300" id="contactCs">Segera hadir</p>
                             </div>
                         </div>
                     </div>
@@ -1207,7 +1287,7 @@
         </div>
     </div>
 
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { 
         getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
@@ -1557,9 +1637,14 @@
     // ============================================================
     const makeStarsHtml = (rating, count) => {
         if (!rating) return '';
+        const r = parseFloat(rating);
+        const rounded = Math.round(r);
         let s = '';
-        for (let i = 1; i <= 5; i++) s += `<span style="color:${i<=Math.round(parseFloat(rating))?'#f59e0b':'#374151'}">★</span>`;
-        return `<span class="flex items-center gap-1 text-sm">${s}<span class="text-gray-400 text-xs ml-1">(${count||0})</span></span>`;
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rounded) s += `<span style="color:#f59e0b;text-shadow:0 0 8px rgba(245,158,11,.4)">★</span>`;
+            else              s += `<span style="color:#1e293b">★</span>`;
+        }
+        return `<span class="flex items-center gap-0.5 text-sm">${s}<span class="text-slate-500 text-xs ml-1.5">${r.toFixed(1)} (${count||0})</span></span>`;
     };
 
     const renderProducts = (list) => {
@@ -2150,6 +2235,31 @@
             if (elRating)    elRating.textContent    = gs.ratingGlobal && gs.ratingGlobal !== '-' ? gs.ratingGlobal + '★' : '-';
         });
 
+        // ── Realtime: Kontak (CS / Owner WA / Email) dari Firebase ──
+        const DEFAULT_CS_NUM = '6285822558353';
+        onValue(ref(db, 'settings/contact'), (snap) => {
+            const c = snap.val() || {};
+            const ownerWaEl   = document.getElementById('contactOwnerWa');
+            const ownerWaLink = document.getElementById('contactOwnerWaLink');
+            const emailEl     = document.getElementById('contactEmail');
+            const emailLink   = document.getElementById('contactEmailLink');
+            const csEl        = document.getElementById('contactCs');
+            const csRaw       = c.cs || '';
+            const csNum       = csRaw.replace(/[^0-9]/g,'') || DEFAULT_CS_NUM;
+            const csHref      = 'https://wa.me/' + csNum;
+            const ownerRaw    = c.ownerWa || '+62 858-2255-8353';
+            const ownerNum    = ownerRaw.replace(/[^0-9]/g,'') || DEFAULT_CS_NUM;
+            if (ownerWaEl)   ownerWaEl.textContent = ownerRaw;
+            if (ownerWaLink) ownerWaLink.href       = 'https://wa.me/' + ownerNum;
+            if (emailEl)     emailEl.textContent    = c.email || 'xrezzkystore.idn@gmail.com';
+            if (emailLink)   emailLink.href         = 'mailto:' + (c.email || 'xrezzkystore.idn@gmail.com');
+            if (csEl)        csEl.textContent       = csRaw || 'Segera hadir';
+            ['csWaLink','profileCsLink','guestCsLink'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.href = csHref;
+            });
+        });
+
         // ── Realtime: Kategori dari admin panel
         onValue(ref(db, 'admin/config/site'), (snap) => {
             const cfg = snap.val() || {};
@@ -2406,14 +2516,4 @@
             showToast('Terkirim! 🎉', 'Pendaftaran seller berhasil dikirim!', 'success');
         } catch (e) {
             console.error(e);
-            showToast('Gagal', 'Gagal mengirim pendaftaran. Coba lagi!', 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Pendaftaran';
-        }
-    };
-
-    initApp();
-</script>
-
-</body>
-</html>
+            showToast('G
