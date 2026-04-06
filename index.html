@@ -385,6 +385,29 @@
         .chip-amber  { background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3); color:#fcd34d; }
         .chip-red    { background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.3); color:#fca5a5; }
 
+        /* ── ANNOUNCEMENT BOARD ── */
+        .ann-board {
+            border-radius: 18px;
+            padding: 16px 20px;
+            display: flex; align-items: flex-start; gap: 14px;
+            border: 1px solid;
+            animation: fadeIn .4s ease-out;
+            position: relative; overflow: hidden;
+        }
+        .ann-board::before {
+            content:''; position:absolute; inset:0;
+            background: linear-gradient(135deg,rgba(255,255,255,.03),transparent);
+            pointer-events:none;
+        }
+        .ann-info    { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.25); }
+        .ann-warning { background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.25); }
+        .ann-success { background:rgba(16,185,129,.08); border-color:rgba(16,185,129,.25); }
+        .ann-error   { background:rgba(239,68,68,.08);  border-color:rgba(239,68,68,.25);  }
+        .ann-icon-info    { background:rgba(59,130,246,.2);  color:#60a5fa; }
+        .ann-icon-warning { background:rgba(245,158,11,.2);  color:#fbbf24; }
+        .ann-icon-success { background:rgba(16,185,129,.2);  color:#34d399; }
+        .ann-icon-error   { background:rgba(239,68,68,.2);   color:#f87171; }
+
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) { .hide-mobile { display: none !important; } }
         @media (min-width: 769px) { .show-mobile-only { display: none !important; } }
@@ -452,6 +475,9 @@
 
             <!-- PROMO TICKER (dari Firebase) -->
             <div id="promoTickerSection" class="mb-6"></div>
+
+            <!-- PAPAN INFORMASI (muncul hanya jika ada dari Firebase) -->
+            <div id="announcementBoard" class="mb-6"></div>
 
             <!-- TRUST SECTION -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
@@ -574,7 +600,7 @@
                     <p class="text-slate-500 text-sm mt-1">Semua transaksi kamu tersimpan di sini</p>
                 </div>
                 <div id="ordersList">
-                    <div class="bg-slate-900 border border-white/5 rounded-2xl p-12 text-center">
+                    <div class="p-12 text-center" style="background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:18px">
                         <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-shopping-bag text-slate-600 text-2xl"></i>
                         </div>
@@ -1047,11 +1073,11 @@
                             </div>
                             <i class="fas fa-arrow-up-right-from-square text-green-600 text-xs"></i>
                         </a>
-                        <a href="mailto:xrezzkystore.idn@gmail.com" id="contactEmailLink" class="flex items-center gap-3 p-3 rounded-xl bg-blue-500/8 border border-blue-500/20 hover:border-blue-500/40 transition cursor-pointer block">
+                        <a href="/cdn-cgi/l/email-protection#413933243b3b2a3832352e33246f28252f01262c20282d6f222e2c" id="contactEmailLink" class="flex items-center gap-3 p-3 rounded-xl bg-blue-500/8 border border-blue-500/20 hover:border-blue-500/40 transition cursor-pointer block">
                             <div class="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400"></i></div>
                             <div class="flex-1">
                                 <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Email Support</p>
-                                <p class="text-sm font-bold text-blue-300" id="contactEmail">xrezzkystore.idn@gmail.com</p>
+                                <p class="text-sm font-bold text-blue-300" id="contactEmail"><span class="__cf_email__" data-cfemail="235b51465959485a50574c51460d4a474d63444e424a4f0d404c4e">[email&#160;protected]</span></p>
                             </div>
                             <i class="fas fa-arrow-up-right-from-square text-blue-600 text-xs"></i>
                         </a>
@@ -1287,7 +1313,7 @@
         </div>
     </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { 
         getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
@@ -1458,7 +1484,7 @@
             warning: { border: 'border-l-yellow-500', bg: 'bg-yellow-500/20', text: 'text-yellow-400', fa: 'fa-exclamation-circle' },
         };
         const c = colorMap[type] || colorMap.info;
-        border.style.borderLeftColor = c.border === 'border-l-green-500' ? '#22c55e' : c.border === 'border-l-red-500' ? '#ef4444' : c.border === 'border-l-yellow-500' ? '#f59e0b' : '#3b82f6';
+        
         icon.className = `w-9 h-9 ${c.bg} rounded-full flex items-center justify-center ${c.text} shrink-0`;
         icon.innerHTML = `<i class="fas ${c.fa}"></i>`;
         toast.classList.remove('translate-x-[150%]');
@@ -1652,7 +1678,7 @@
         if (!grid) return;
         grid.innerHTML = '';
         if (list.length === 0) {
-            grid.innerHTML = `<div class="col-span-full bg-slate-900 border border-white/5 rounded-2xl p-12 text-center text-slate-600"><i class="fas fa-box-open text-5xl mb-4 opacity-20"></i><p class="font-bold text-slate-400">Belum ada produk</p><p class="text-sm mt-1">Produk akan muncul di sini setelah ditambahkan seller</p></div>`;
+            grid.innerHTML = `<div class="col-span-full p-14 text-center" style="background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:18px"><div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style="background:rgba(255,255,255,.04)"><i class="fas fa-box-open text-2xl text-slate-600"></i></div><p class="font-bold text-slate-400 mb-1">Belum ada produk</p><p class="text-sm text-slate-600">Produk akan muncul di sini setelah ditambahkan seller</p></div>`;
             return;
         }
         list.forEach(p => {
@@ -1731,6 +1757,52 @@
     // ============================================================
     //  HERO BANNER & PROMO TICKER (dari Firebase /settings)
     // ============================================================
+    // ──────────────────────────────────────────────────────────────
+    //  PAPAN INFORMASI (Announcement Board)
+    // ──────────────────────────────────────────────────────────────
+    const renderAnnouncementBoard = (data) => {
+        const sec = document.getElementById('announcementBoard');
+        if (!sec) return;
+        sec.innerHTML = '';
+
+        if (!data) return; // kosong, tidak tampil
+
+        const typeMap = {
+            info:    { board:'ann-info',    icon:'ann-icon-info',    fa:'fa-info-circle',         label:'Info' },
+            warning: { board:'ann-warning', icon:'ann-icon-warning', fa:'fa-exclamation-triangle', label:'Peringatan' },
+            success: { board:'ann-success', icon:'ann-icon-success', fa:'fa-check-circle',         label:'Pengumuman' },
+            error:   { board:'ann-error',   icon:'ann-icon-error',   fa:'fa-radiation',            label:'Penting' },
+        };
+
+        // Ambil semua pengumuman, sort terbaru dulu, filter target 'all' dan 'buyer'
+        const items = Object.values(data)
+            .filter(a => a.target === 'all' || a.target === 'buyer')
+            .sort((a,b) => b.createdAt - a.createdAt)
+            .slice(0, 3); // max 3 pengumuman
+
+        if (items.length === 0) return;
+
+        items.forEach((ann) => {
+            const t   = typeMap[ann.type] || typeMap.info;
+            const dt  = new Date(ann.createdAt).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+            const div = document.createElement('div');
+            div.className = `ann-board ${t.board} mb-3`;
+            div.innerHTML = `
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${t.icon}">
+                    <i class="fas ${t.fa} text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <p class="font-black text-sm">${ann.title}</p>
+                        <span class="text-[9px] font-black uppercase tracking-widest ${t.icon.replace('ann-icon-','text-').replace('info','blue-400').replace('warning','amber-400').replace('success','emerald-400').replace('error','red-400')} opacity-70">${t.label}</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">${ann.body}</p>
+                    <p class="text-[10px] text-slate-600 mt-1.5">${dt}</p>
+                </div>`;
+            sec.appendChild(div);
+        });
+    };
+
     const renderHeroBanner = (data) => {
         const sec = document.getElementById('heroBannerSection');
         if (!sec) return;
@@ -1743,17 +1815,17 @@
             <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:32px 32px;"></div>
             <div class="relative z-10 px-8 py-10 md:px-14 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-4 flex-wrap">
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-blue-300 bg-blue-500/15 border border-blue-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-shield-alt text-blue-400"></i> TERJAMIN</span>
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-green-300 bg-green-500/15 border border-green-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-check-circle text-green-400"></i> TRUSTED</span>
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-yellow-300 bg-yellow-500/15 border border-yellow-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-star text-yellow-400"></i> #1 MARKETPLACE</span>
+                    <div class="flex items-center gap-2 mb-4 flex-wrap">
+                        <span class="chip chip-blue"><i class="fas fa-shield-halved"></i> TERJAMIN</span>
+                        <span class="chip chip-green"><i class="fas fa-check-circle"></i> TRUSTED</span>
+                        <span class="chip chip-amber"><i class="fas fa-star"></i> #1 MARKETPLACE</span>
                     </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold font-syne leading-tight mb-1">${data.title || 'XREZZKY'}</h1>
-                    <h2 class="text-xl md:text-3xl font-extrabold font-syne text-blue-400 mb-4">${data.subtitle || 'OFFICIAL STORE'}</h2>
-                    <p class="text-gray-300 text-sm md:text-base mb-6 max-w-md leading-relaxed">${data.tagline || 'Platform jual-beli produk digital paling aman & terpercaya.'}</p>
+                    <h1 class="text-3xl md:text-5xl font-black syne leading-tight mb-1" style="background:linear-gradient(135deg,#f1f5f9,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${data.title || 'XREZZKY'}</h1>
+                    <h2 class="text-xl md:text-2xl font-extrabold syne mb-4" style="color:#93c5fd">${data.subtitle || 'OFFICIAL STORE'}</h2>
+                    <p class="text-slate-400 text-sm md:text-base mb-6 max-w-md leading-relaxed">${data.tagline || 'Platform jual-beli produk digital paling aman & terpercaya.'}</p>
                     <div class="flex gap-3 flex-wrap">
-                        <button onclick="document.getElementById('mainProductGrid').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-900/40"><i class="fas fa-bolt"></i> Belanja Sekarang</button>
-                        <button onclick="openModal('modalAbout')" class="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur rounded-xl font-bold text-sm transition border border-white/10"><i class="fas fa-info-circle"></i> Tentang Kami</button>
+                        <button onclick="document.getElementById('mainProductGrid').scrollIntoView({behavior:'smooth'})" class="btn-primary flex items-center gap-2 !py-3 !px-6"><i class="fas fa-bolt text-sm"></i> Belanja Sekarang</button>
+                        <button onclick="openModal('modalAbout')" class="btn-outline flex items-center gap-2 !py-3 !px-5"><i class="fas fa-info-circle text-sm"></i> Tentang Kami</button>
                     </div>
                 </div>
                 <div class="flex flex-row md:flex-col gap-3 shrink-0">
@@ -1779,13 +1851,13 @@
         if (!sec) return;
         if (!data || !data.enabled || !data.items || data.items.length === 0) { sec.innerHTML = ''; return; }
         const doubled = [...data.items, ...data.items];
-        const spans = doubled.map(t => `<span class="text-sm font-semibold text-gray-200">${t}</span>`).join('');
+        const spans = doubled.map(t => `<span class="text-sm text-slate-300 font-medium">${t}</span>`).join('');
         sec.innerHTML = `
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-white/10 py-3 px-4">
+        <div class="relative overflow-hidden rounded-2xl border border-white/8 py-2.5 px-4" style="background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(59,130,246,.06))">
             <div class="flex items-center gap-3">
-                <span class="shrink-0 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">🔥 PROMO</span>
+                <span class="shrink-0 text-[9px] font-black uppercase tracking-[.15em] px-2.5 py-1 rounded-lg text-amber-300" style="background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.25)">🔥 PROMO</span>
                 <div class="overflow-hidden flex-1">
-                    <div class="promo-ticker flex gap-10 whitespace-nowrap">${spans}</div>
+                    <div class="promo-ticker flex gap-12 whitespace-nowrap">${spans}</div>
                 </div>
             </div>
         </div>`;
@@ -1809,12 +1881,28 @@
             const snap = await get(ref(db, `products/${productId}/reviews`));
             if (!snap.exists()) { el.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada ulasan untuk produk ini.</p>`; return; }
             const reviews = snap.val();
-            let h = `<div class="mb-3"><h4 class="font-bold border-l-4 border-blue-500 pl-3 text-sm mb-3">Ulasan Pembeli</h4>`;
+            let h = `<div class="mb-3">
+                <h4 class="font-bold text-sm mb-3 flex items-center gap-2">
+                    <span class="w-0.5 h-4 rounded-full inline-block" style="background:linear-gradient(to bottom,#f59e0b,#d97706)"></span>
+                    Ulasan Pembeli
+                </h4>`;
             Object.values(reviews).slice(0, 5).forEach(r => {
                 let s = '';
-                for (let i = 1; i <= 5; i++) s += `<span style="color:${i<=r.stars?'#f59e0b':'#374151'}">★</span>`;
+                for (let i = 1; i <= 5; i++) s += `<span style="color:${i<=r.stars?'#f59e0b':'#1e293b'}">${i<=r.stars?'★':'★'}</span>`;
                 const dt = new Date(r.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-                h += `<div class="bg-white/5 rounded-xl p-3 mb-2"><div class="flex items-center justify-between mb-1"><p class="text-xs font-bold">${r.userName || 'User'}</p><div class="flex items-center gap-1">${s}<span class="text-[9px] text-gray-500 ml-1">${dt}</span></div></div>${r.comment ? `<p class="text-xs text-gray-400 leading-relaxed">${r.comment}</p>` : ''}</div>`;
+                h += `<div class="rounded-xl p-3.5 mb-2" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                    <div class="flex items-start justify-between mb-1.5 gap-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">${(r.userName||'U').charAt(0).toUpperCase()}</div>
+                            <p class="text-xs font-bold">${r.userName || 'User'}</p>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <span class="text-sm">${s}</span>
+                            <span class="text-[9px] text-slate-600 ml-1">${dt}</span>
+                        </div>
+                    </div>
+                    ${r.comment ? `<p class="text-xs text-slate-400 leading-relaxed pl-8">${r.comment}</p>` : ''}
+                </div>`;
             });
             h += `</div>`;
             el.innerHTML = h;
@@ -1826,7 +1914,7 @@
         currentQty = 1;
         document.getElementById('detImg').src = product.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img';
         document.getElementById('detTitle').textContent  = product.name || '-';
-        document.getElementById('detPrice').textContent  = `Rp ${Number(product.price || 0).toLocaleString('id-ID')}`;
+        document.getElementById('detPrice').innerHTML = `<span style='background:linear-gradient(135deg,#c4b5fd,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:22px;font-weight:900'>Rp ${Number(product.price || 0).toLocaleString('id-ID')}</span>`;
         document.getElementById('detDesc').textContent   = product.description || 'Tidak ada deskripsi.';
         document.getElementById('detCat').textContent    = product.category || 'Digital Asset';
         document.getElementById('detStock').textContent  = product.stock ?? '-';
@@ -1840,7 +1928,7 @@
         document.getElementById('detSellerName').textContent   = sellerName;
         document.getElementById('detStoreName').textContent    = storeName ? `🏪 ${storeName}` : '';
         document.getElementById('detSellerAvatar').textContent = (storeName || sellerName).charAt(0).toUpperCase();
-        document.getElementById('detReviews').innerHTML = `<p class="text-xs text-gray-500">Memuat ulasan...</p>`;
+        document.getElementById('detReviews').innerHTML = `<div class='flex items-center gap-2 text-xs text-slate-600'><div class='w-3 h-3 rounded-full border border-violet-500 border-t-transparent animate-spin'></div>Memuat ulasan...</div>`;
         loadProductReviews(product.id);
         openModal('modalDetail');
     };
@@ -2009,7 +2097,7 @@
             const low = Number(p.stock) > 0 && Number(p.stock) < 5;
             const out = Number(p.stock) <= 0;
             const item = document.createElement('div');
-            item.className = 'bg-white/4 border border-white/6 rounded-xl p-2 cursor-pointer hover:border-violet-500/40 transition';
+            item.className = 'rounded-xl p-2 cursor-pointer hover:border-violet-500/40 transition'; item.style.cssText='background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px';
             item.onclick = () => { closeModal('modalStorePage'); showDetail(p); };
             item.innerHTML = `<div class="relative overflow-hidden rounded-lg mb-1.5" style="aspect-ratio:1/1"><img src="${p.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">${out ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-gray-600 text-white px-1.5 py-0.5 rounded-full">Habis</span>' : ''}${low ? '<span class="absolute top-1 right-1 text-[9px] font-black bg-amber-500 text-white px-1.5 py-0.5 rounded-full">Limit</span>' : ''}</div><p class="text-[10px] text-blue-400 font-bold uppercase mb-0.5">${p.category || '-'}</p><p class="text-[11px] font-bold line-clamp-1 mb-1">${p.name}</p><div class="flex justify-between items-center"><p class="text-[11px] font-extrabold">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>${p.rating ? `<span style="color:#f59e0b" class="text-[10px] font-bold">★ ${p.rating}</span>` : ''}</div>`;
             list.appendChild(item);
@@ -2043,7 +2131,7 @@
             const avg = allR.length > 0 ? (allR.reduce((a,b)=>a+b,0)/allR.length).toFixed(1) : null;
             const publicLoc = s.provinsi && s.kabkota ? `${s.provinsi} / ${s.kabkota}` : (s.city || '');
             const card = document.createElement('div');
-            card.className = 'bg-slate-900 border border-white/5 p-5 cursor-pointer hover:border-violet-500/50 transition rounded-2xl';
+            card.className = 'p-5 cursor-pointer hover:border-violet-500/40 transition rounded-2xl'; card.style.cssText='background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:18px';
             card.onclick = () => { renderStorePage(s); openModal('modalStorePage'); };
             card.innerHTML = `<div class="flex items-center gap-3 mb-3"><div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xl font-bold shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div><div class="flex-1 min-w-0"><p class="font-extrabold font-syne line-clamp-1 text-sm">${s.storeName||'-'}</p><p class="text-[10px] text-blue-400 font-bold uppercase">${s.category||'General'}</p></div><span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold shrink-0">✅ Verified</span></div><p class="text-gray-400 text-xs leading-relaxed line-clamp-2 mb-3">${s.storeDesc||'-'}</p>${publicLoc ? `<p class="text-[10px] text-gray-500 mb-2">📍 ${publicLoc}</p>` : ''}${avg ? `<div class="flex items-center gap-1 mb-3"><span style="color:#f59e0b">★</span><span class="text-xs font-bold">${avg}</span><span class="text-[10px] text-gray-500">(${totRc} ulasan)</span></div>` : ''}<div class="grid grid-cols-3 gap-2 text-center"><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold">${prods.length}</p><p class="text-[9px] text-gray-500">Produk</p></div><div class="bg-white/5 rounded-xl py-1.5"><p class="text-xs font-bold text-green-400">${totStk}</p><p class="text-[9px] text-gray-500">Stok</p></div><div class="bg-white/5 rounded-xl py-1.5 flex items-center justify-center"><span class="text-xs font-bold text-blue-400">Lihat →</span></div></div>`;
             grid.appendChild(card);
@@ -2096,14 +2184,14 @@
         const el = document.getElementById('ordersList');
         if (!el) return;
         if (!currentUser) {
-            el.innerHTML = `<div class="glass-card p-12 text-center text-gray-500"><i class="fas fa-lock text-4xl mb-4 opacity-30"></i><p class="font-bold">Login dulu untuk lihat pesanan</p><button onclick="openModal('modalAuth')" class="btn-primary !inline-block mt-4">Login</button></div>`;
+            el.innerHTML = `<div class="p-12 text-center" style="background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:18px"><i class="fas fa-lock text-4xl mb-4 opacity-30"></i><p class="font-bold">Login dulu untuk lihat pesanan</p><button onclick="openModal('modalAuth')" class="btn-primary !inline-block mt-4">Login</button></div>`;
             return;
         }
         // Realtime listener pesanan
         onValue(ref(db, `orders/${currentUser.uid}`), (snap) => {
             el.innerHTML = '';
             if (!snap.exists()) {
-                el.innerHTML = `<div class="glass-card p-12 text-center text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p class="font-bold">Belum ada pesanan</p><p class="text-sm mt-1">Pesanan muncul di sini setelah kamu memesan via WhatsApp.</p><button onclick="navigate('home')" class="btn-primary !inline-block mt-4">Mulai Belanja</button></div>`;
+                el.innerHTML = `<div class="p-12 text-center" style="background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:18px"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p class="font-bold">Belum ada pesanan</p><p class="text-sm mt-1">Pesanan muncul di sini setelah kamu memesan via WhatsApp.</p><button onclick="navigate('home')" class="btn-primary !inline-block mt-4">Mulai Belanja</button></div>`;
                 return;
             }
             const orders = snap.val();
@@ -2158,19 +2246,19 @@
         if (currentUser) {
             const role  = currentUserData?.role || 'buyer';
             const label = role === 'admin' ? 'Admin' : role === 'seller' ? 'Seller' : 'Buyer';
-            const cls   = role === 'admin' ? 'text-red-400' : role === 'seller' ? 'text-green-400' : 'text-blue-400';
+            const cls   = role === 'admin' ? '#f87171' : role === 'seller' ? '#34d399' : '#93c5fd';
             authHeader.innerHTML = `
-                <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="navigate('profile')">
                     <div class="text-right hidden sm:block leading-none">
-                        <p class="text-xs font-bold">${currentUser.displayName || 'User'}</p>
-                        <p class="text-[9px] ${cls} font-black uppercase">${label}</p>
+                        <p class="text-xs font-bold text-slate-200">${currentUser.displayName || 'User'}</p>
+                        <p class="text-[9px] font-black uppercase" style="color:${cls}">${label}</p>
                     </div>
-                    <div class="w-9 h-9 rounded-xl grad-primary flex items-center justify-center font-black text-sm border border-white/10 glow" style="background:linear-gradient(135deg,#7c3aed,#3b82f6)">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm border border-white/10 glow" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">
                         ${(currentUser.displayName || 'U').charAt(0).toUpperCase()}
                     </div>
                 </div>`;
         } else {
-            authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-5 !text-sm flex items-center gap-2"><i class="fas fa-sign-in-alt"></i> Masuk</button>`;
+            authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2.5 !px-5 !text-xs flex items-center gap-1.5 !rounded-xl"><i class="fas fa-sign-in-alt text-xs"></i> Masuk</button>`;
         }
     };
 
@@ -2212,8 +2300,7 @@
             });
         });
 
-        // ── Realtime: Settings (Banner & Promo Ticker)
-        // ── Realtime: Settings Banner
+        // ── Realtime: Hero Banner
         onValue(ref(db, 'settings/banner'), (snap) => {
             renderHeroBanner(snap.val());
         });
@@ -2221,6 +2308,11 @@
         // ── Realtime: Promo Ticker
         onValue(ref(db, 'settings/promo_ticker'), (snap) => {
             renderPromoTicker(snap.val());
+        });
+
+        // ── Realtime: Papan Informasi / Pengumuman (dari Firebase /announcements)
+        onValue(ref(db, 'announcements'), (snap) => {
+            renderAnnouncementBoard(snap.val());
         });
 
         // ── Realtime: Global Stats (dari admin panel) → update banner & teks
@@ -2365,7 +2457,7 @@
                         // Seller → 1 dashboard
                         sellerBanner.className = 'w-full bg-gradient-to-r from-emerald-900/60 to-blue-950/40 p-5 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-emerald-500/30 mb-4';
                         sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
-                        sellerBanner.innerHTML = `<div class="flex items-center gap-4 text-left"><div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div><div><p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1">✅ Seller Aktif</p><h3 class="text-base font-black text-white uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3></div></div><span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase">Panel →</span>`;
+                        sellerBanner.innerHTML = `<div class="flex items-center gap-4 text-left"><div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div><div><p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1">✅ Seller Aktif</p><h3 class="text-base font-black text-white uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3></div></div><span class="text-xs font-bold px-4 py-2 rounded-xl" style="background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.3)">Panel →</span>`;
                         if (homeSellerCta) homeSellerCta.classList.add('hidden');
                         if (sellerCtaCard) sellerCtaCard.classList.add('hidden');
 
@@ -2510,10 +2602,4 @@
 
             // Sembunyikan promosi dari profil & home setelah daftar
             document.getElementById('homeSellerCta')?.classList.add('hidden');
-            document.getElementById('sellerCtaCard')?.classList.add('hidden');
-
-            refreshProfilePage();
-            showToast('Terkirim! 🎉', 'Pendaftaran seller berhasil dikirim!', 'success');
-        } catch (e) {
-            console.error(e);
-            showToast('G
+            document.getE
