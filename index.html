@@ -2602,4 +2602,19 @@
 
             // Sembunyikan promosi dari profil & home setelah daftar
             document.getElementById('homeSellerCta')?.classList.add('hidden');
-            document.getE
+            document.getElementById('sellerCtaCard')?.classList.add('hidden');
+
+            refreshProfilePage();
+            showToast('Terkirim! 🎉', 'Pendaftaran seller berhasil dikirim!', 'success');
+        } catch (e) {
+            console.error(e);
+            showToast('Gagal', 'Gagal mengirim pendaftaran. Coba lagi!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane text-sm"></i> Kirim Pendaftaran';
+        }
+    };
+
+    initApp();
+</script>
+</body>
+</html>
