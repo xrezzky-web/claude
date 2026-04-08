@@ -69,6 +69,16 @@ textarea.inp{resize:vertical;min-height:80px}
 #authLoading.show{display:flex}
 /* ANNOUNCEMENT */
 .announcement-item{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+
+/* BAN MODAL */
+.ban-type-btn{flex:1;padding:14px 10px;border-radius:12px;border:2px solid var(--border);background:var(--s2);color:#94a3b8;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;text-align:center}
+.ban-type-btn:hover{border-color:#64748b;color:#e2e8f0}
+#btnBanPerm.active{border-color:#ef4444;background:rgba(239,68,68,.12);color:#fca5a5}
+#btnBanTemp.active{border-color:#f59e0b;background:rgba(245,158,11,.12);color:#fcd34d}
+
+.duration-chip{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:#64748b;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+.duration-chip:hover{border-color:#64748b;color:#e2e8f0}
+.duration-chip.selected{border-color:#f59e0b;background:rgba(245,158,11,.15);color:#fcd34d}
 /* SEARCH HIGHLIGHT */
 .hl{background:rgba(59,130,246,.3);border-radius:3px;padding:0 2px}
 </style>
@@ -1274,30 +1284,47 @@ window.renderBuyers = () => {
         const roleMap = {admin:'badge-admin',seller:'badge-seller',buyer:'badge-buyer'};
         const dt = u.createdAt ? new Date(u.createdAt).toLocaleDateString('id-ID') : '-';
         const tr = document.createElement('tr');
+
+        // Status ban dengan detail
+        let statusHtml = '<span class="text-green-400 text-xs font-bold">✓ Aktif</span>';
+        if (u.banned) {
+            if (u.bannedType === 'permanent') {
+                statusHtml = '<span class="badge badge-banned">⛔ Permanen</span>';
+            } else if (u.bannedType === 'temporary' && u.bannedUntil) {
+                const rem = u.bannedUntil - Date.now();
+                const label = rem > 0 ? Math.ceil(rem/3600000) + 'j lagi' : 'Expired';
+                statusHtml = `<span class="badge" style="background:rgba(245,158,11,.2);color:#fcd34d;border:1px solid rgba(245,158,11,.35)">⏱ ${label}</span>`;
+            } else {
+                statusHtml = '<span class="badge badge-banned">Banned</span>';
+            }
+        }
+
+        const safeName  = (u.name||'').replace(/'/g,"\'");
+        const safeEmail = (u.email||'').replace(/'/g,"\'");
+
         tr.innerHTML = `
             <td class="font-semibold text-sm">${u.name||'-'}</td>
             <td class="text-xs text-slate-400">${u.email||'-'}</td>
             <td><span class="badge ${roleMap[u.role||'buyer']||'badge-buyer'}">${u.role||'buyer'}</span></td>
-            <td>${u.banned?'<span class="badge badge-banned">Banned</span>':'<span class="text-green-400 text-xs font-bold">Aktif</span>'}</td>
+            <td>${statusHtml}</td>
             <td class="text-xs text-slate-500">${dt}</td>
             <td><div class="flex gap-1">
-                ${u.role!=='admin'?`<button onclick="triggerBanUser('${uid}','${(u.name||'').replace(/'/g,"\\'")}',${u.banned})" class="btn btn-${u.banned?'green':'yellow'} text-xs py-1.5 px-2"><i class="fas fa-${u.banned?'unlock':'ban'}"></i></button>`:''}
-                ${u.role!=='admin'?`<button onclick="triggerDeleteUser('${uid}','${(u.name||'').replace(/'/g,"\\'")}')" class="btn btn-red text-xs py-1.5 px-2"><i class="fas fa-trash"></i></button>`:'<span class="text-slate-700 text-xs">—</span>'}
+                ${u.role!=='admin'
+                    ? u.banned
+                        ? `<button onclick="triggerUnbanUser('${uid}','${safeName}')" class="btn btn-green text-xs py-1.5 px-2" title="Unban akun"><i class="fas fa-unlock"></i></button>`
+                        : `<button onclick="openBanModal('${uid}','${safeName}','${safeEmail}')" class="btn btn-yellow text-xs py-1.5 px-2" title="Ban akun"><i class="fas fa-ban"></i></button>`
+                    : ''}
+                ${u.role!=='admin'
+                    ? `<button onclick="triggerDeleteUser('${uid}','${safeName}')" class="btn btn-red text-xs py-1.5 px-2"><i class="fas fa-trash"></i></button>`
+                    : '<span class="text-slate-700 text-xs">—</span>'}
             </div></td>`;
         body.appendChild(tr);
     });
 };
-window.triggerBanUser = (uid, name, isBanned) => {
-    if (isBanned) {
-        update(ref(db,`users/${uid}`),{banned:false,bannedReason:null}).then(()=>{toast('Unban',`"${name}" diaktifkan kembali`);logAction('Unban User',`"${name}" diaktifkan`,'blue','unlock');});
-        return;
-    }
-    pendingAction = async reason => {
-        await update(ref(db,`users/${uid}`),{banned:true,bannedReason:reason});
-        toast('Dibanned',`"${name}" dibanned`,'warning');
-        logAction('Ban User',`"${name}" dibanned. Alasan: ${reason}`,'red','ban');
-    };
-    openConfirmModal('Ban Pengguna',`Kamu akan membanned "<strong>${name}</strong>".`,'red','ban');
+
+window.triggerBanUser = (uid, name, isBanned, email) => {
+    if (isBanned) { triggerUnbanUser(uid, name); return; }
+    openBanModal(uid, name, email || '');
 };
 window.triggerDeleteUser = (uid, name) => {
     pendingAction = async reason => {
@@ -1306,6 +1333,169 @@ window.triggerDeleteUser = (uid, name) => {
         logAction('Hapus User',`"${name}" dihapus. Alasan: ${reason}`,'red','trash');
     };
     openConfirmModal('Hapus Pengguna',`Kamu akan menghapus data "<strong>${name}</strong>" dari database.`,'red','user-times');
+};
+
+// ════════════════════════════════════════════════════════════
+//  BAN USER MODAL — Permanen & Sementara (jam/menit/detik)
+// ════════════════════════════════════════════════════════════
+let banTargetUid   = null;
+let banTargetName  = '';
+let currentBanType = 'permanent';
+let selectedHours  = 0;   // 0 = belum pilih/custom
+
+window.openBanModal = (uid, name, email) => {
+    banTargetUid  = uid;
+    banTargetName = name;
+    currentBanType = 'permanent';
+    selectedHours  = 0;
+    const m = document.getElementById('mBanUser');
+    m.style.display = 'flex';
+    document.getElementById('banTargetName').textContent  = name  || uid;
+    document.getElementById('banTargetEmail').textContent = email || '-';
+    document.getElementById('banReasonInput').value = '';
+    document.getElementById('banUntilPreview').classList.add('hidden');
+    document.getElementById('banDurationWrap').style.display = 'none';
+    document.getElementById('customDurationWrap').style.display = 'none';
+    // Reset tombol tipe
+    document.querySelectorAll('.ban-type-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btnBanPerm').classList.add('active');
+    // Reset chips
+    document.querySelectorAll('.duration-chip').forEach(b => b.classList.remove('active'));
+};
+
+window.closeBanModal = () => {
+    const m = document.getElementById('mBanUser');
+    m.style.display = 'none';
+    banTargetUid = null;
+};
+
+window.selectBanType = (type) => {
+    currentBanType = type;
+    document.querySelectorAll('.ban-type-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(type === 'permanent' ? 'btnBanPerm' : 'btnBanTemp').classList.add('active');
+    document.getElementById('banDurationWrap').style.display = type === 'temporary' ? 'block' : 'none';
+    document.getElementById('banUntilPreview').classList.add('hidden');
+    selectedHours = 0;
+    document.querySelectorAll('.duration-chip').forEach(b => b.classList.remove('active'));
+};
+
+window.selectDuration = (hours) => {
+    document.querySelectorAll('.duration-chip').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    if (hours === 0) {
+        // Custom — input jam + menit + detik
+        document.getElementById('customDurationWrap').style.display = 'block';
+        document.getElementById('banUntilPreview').classList.add('hidden');
+        selectedHours = 0;
+    } else {
+        document.getElementById('customDurationWrap').style.display = 'none';
+        selectedHours = hours;
+        updateBanPreview(hours * 3600 * 1000);
+    }
+};
+
+window.setBanReason = (reason) => {
+    document.getElementById('banReasonInput').value = reason;
+};
+
+// Preview waktu berakhir
+const updateBanPreview = (ms) => {
+    const until = Date.now() + ms;
+    const el = document.getElementById('banUntilPreview');
+    el.textContent = 'Berakhir: ' + new Date(until).toLocaleString('id-ID', {
+        weekday: 'short', year: 'numeric', month: 'short',
+        day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    el.classList.remove('hidden');
+};
+
+// Hitung ms dari input custom (jam, menit, detik)
+const getCustomDurationMs = () => {
+    const h = parseInt(document.getElementById('customDurationHours')?.value || '0') || 0;
+    const m = parseInt(document.getElementById('customDurationMinutes')?.value || '0') || 0;
+    const s = parseInt(document.getElementById('customDurationSeconds')?.value || '0') || 0;
+    return (h * 3600 + m * 60 + s) * 1000;
+};
+
+// Update preview saat custom input berubah
+window.onCustomDurationChange = () => {
+    const ms = getCustomDurationMs();
+    if (ms > 0) updateBanPreview(ms);
+    else document.getElementById('banUntilPreview').classList.add('hidden');
+};
+
+window.executeBanUser = async () => {
+    if (!banTargetUid) return;
+    const reason = document.getElementById('banReasonInput').value.trim();
+    if (!reason) { toast('Error', 'Alasan ban wajib diisi!', 'error'); return; }
+
+    const btn = document.getElementById('btnExecuteBan');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+    try {
+        if (currentBanType === 'permanent') {
+            // Ban permanen
+            await update(ref(db, `users/${banTargetUid}`), {
+                banned:       true,
+                bannedType:   'permanent',
+                bannedReason: reason,
+                bannedAt:     Date.now(),
+                bannedUntil:  null,
+            });
+            toast('Dibanned Permanen', `"${banTargetName}" diblokir permanen.`, 'error');
+            logAction('Ban Permanen', `"${banTargetName}" diblokir permanen. Alasan: ${reason}`, 'red', 'ban');
+
+        } else {
+            // Ban sementara — hitung durasi
+            let durationMs = selectedHours > 0 ? selectedHours * 3600 * 1000 : getCustomDurationMs();
+            if (durationMs <= 0) {
+                toast('Error', 'Atur durasi ban terlebih dahulu!', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-ban"></i> Eksekusi Ban';
+                return;
+            }
+            const bannedUntil = Date.now() + durationMs;
+            await update(ref(db, `users/${banTargetUid}`), {
+                banned:       true,
+                bannedType:   'temporary',
+                bannedReason: reason,
+                bannedAt:     Date.now(),
+                bannedUntil:  bannedUntil,
+            });
+            const durLabel = selectedHours > 0 ? `${selectedHours} jam` : `custom (${Math.round(durationMs/3600000*10)/10} jam)`;
+            toast('Dibanned Sementara', `"${banTargetName}" diblokir ${durLabel}.`, 'warning');
+            logAction('Ban Sementara', `"${banTargetName}" diblokir ${durLabel}. Alasan: ${reason}`, 'orange', 'clock');
+        }
+
+        closeBanModal();
+        renderUsersTable();
+    } catch (e) {
+        console.error(e);
+        toast('Error', 'Gagal mengeksekusi ban. Coba lagi.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-ban"></i> Eksekusi Ban';
+};
+
+// Unban user
+window.triggerUnbanUser = async (uid, name) => {
+    if (!confirm(`Yakin mau unban "${name}"?`)) return;
+    try {
+        await update(ref(db, `users/${uid}`), {
+            banned:       false,
+            bannedType:   null,
+            bannedReason: null,
+            bannedAt:     null,
+            bannedUntil:  null,
+        });
+        toast('Unban Berhasil', `"${name}" sudah bisa akses kembali.`, 'success');
+        logAction('Unban User', `"${name}" di-unban oleh admin.`, 'green', 'unlock');
+        renderUsersTable();
+    } catch (e) {
+        toast('Error', 'Gagal unban. Coba lagi.', 'error');
+    }
 };
 
 // ─── KELOLA ROLE ───
@@ -1604,5 +1794,82 @@ const renderCatList = () => {
 window.addCategory = () => { const v=$('newCat').value.trim(); if(!v||categories.includes(v)) return; categories.push(v); $('newCat').value=''; renderCatList(); };
 window.removeCat = i => { categories.splice(i,1); renderCatList(); };
 </script>
+
+  <!-- ══ MODAL BAN USER ══ -->
+  <div id="mBanUser" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:9000;align-items:center;justify-content:center;padding:16px">
+    <div style="background:var(--s1);border:1px solid rgba(255,255,255,.1);border-radius:24px;width:100%;max-width:480px;padding:32px;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)">
+      <div class="flex items-center gap-3 mb-5">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-ban text-red-400"></i>
+        </div>
+        <div>
+          <h2 class="font-extrabold syne text-lg">Ban Pengguna</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Memblokir akses pengguna ke marketplace</p>
+        </div>
+        <button onclick="closeBanModal()" class="ml-auto w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition" style="background:rgba(255,255,255,.05)"><i class="fas fa-times text-sm"></i></button>
+      </div>
+
+      <div class="p-3 rounded-xl mb-5" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
+        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Target User</p>
+        <p class="font-bold text-sm" id="banTargetName">-</p>
+        <p class="text-xs text-slate-500" id="banTargetEmail">-</p>
+      </div>
+
+      <!-- Pilih tipe ban -->
+      <p class="text-xs text-slate-400 font-black uppercase tracking-wider mb-2">Tipe Ban</p>
+      <div class="flex gap-2 mb-4">
+        <button id="btnBanPerm" class="ban-type-btn" onclick="selectBanType('permanent')">
+          <i class="fas fa-ban block text-xl mb-1"></i>
+          Permanen
+          <p class="text-[10px] font-normal mt-0.5 opacity-70">Tidak bisa login selamanya</p>
+        </button>
+        <button id="btnBanTemp" class="ban-type-btn" onclick="selectBanType('temporary')">
+          <i class="fas fa-clock block text-xl mb-1"></i>
+          Sementara
+          <p class="text-[10px] font-normal mt-0.5 opacity-70">Otomatis terbuka setelah waktu habis</p>
+        </button>
+      </div>
+
+      <!-- Durasi (hanya muncul saat sementara) -->
+      <div id="banDurationWrap" style="display:none" class="mb-4">
+        <p class="text-xs text-slate-400 font-black uppercase tracking-wider mb-2">Durasi Ban</p>
+        <div class="flex gap-2 flex-wrap mb-3" id="durationChips">
+          <button class="duration-chip" onclick="selectDuration(1)">1 Jam</button>
+          <button class="duration-chip" onclick="selectDuration(6)">6 Jam</button>
+          <button class="duration-chip" onclick="selectDuration(12)">12 Jam</button>
+          <button class="duration-chip" onclick="selectDuration(24)">1 Hari</button>
+          <button class="duration-chip" onclick="selectDuration(72)">3 Hari</button>
+          <button class="duration-chip" onclick="selectDuration(168)">7 Hari</button>
+          <button class="duration-chip" onclick="selectDuration(720)">30 Hari</button>
+          <button class="duration-chip" onclick="selectDuration(0)">Custom</button>
+        </div>
+        <div id="customDurationWrap" style="display:none">
+          <label class="text-xs text-slate-500 mb-1.5 block">Durasi Custom (jam)</label>
+          <input type="number" id="customDurationHours" class="inp !py-2" placeholder="Contoh: 48 (= 2 hari)" min="1" max="8760">
+        </div>
+        <div id="banUntilPreview" class="text-xs text-amber-400 font-semibold mt-2 hidden"></div>
+      </div>
+
+      <!-- Alasan -->
+      <p class="text-xs text-slate-400 font-black uppercase tracking-wider mb-2">Alasan Ban <span class="text-red-400">*</span></p>
+      <textarea id="banReasonInput" class="inp mb-1" style="height:80px;resize:none" placeholder="Jelaskan alasan pemblokirannya..."></textarea>
+      <div class="flex flex-wrap gap-1.5 mb-4" id="banReasonChips">
+        <button class="duration-chip text-[11px]" onclick="setBanReason('Melanggar ketentuan layanan')">Melanggar ketentuan</button>
+        <button class="duration-chip text-[11px]" onclick="setBanReason('Penipuan / scam')">Penipuan / scam</button>
+        <button class="duration-chip text-[11px]" onclick="setBanReason('Spam atau pelecehan')">Spam / pelecehan</button>
+        <button class="duration-chip text-[11px]" onclick="setBanReason('Akun ganda / manipulasi')">Akun ganda</button>
+        <button class="duration-chip text-[11px]" onclick="setBanReason('Transaksi di luar platform')">Transaksi di luar</button>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="closeBanModal()" class="btn btn-ghost flex-1">Batal</button>
+        <button onclick="executeBanUser()" id="btnExecuteBan" class="btn btn-red flex-1 justify-center">
+          <i class="fas fa-ban"></i> Eksekusi Ban
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 </body>
 </html>
