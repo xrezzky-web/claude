@@ -413,10 +413,10 @@
         @media (min-width: 769px) { .show-mobile-only { display: none !important; } }
 
         /* ===== BAN SCREEN ===== */
-        #banScreen{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;overflow-y:auto}
+        #banScreen{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;overflow-y:auto;background:#06080f}
         #banScreen.on{display:flex}
-        #banScreen.perm{background:radial-gradient(ellipse at 20% 20%,rgba(239,68,68,.18) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(185,28,28,.12) 0%,transparent 55%),var(--bg-dark)}
-        #banScreen.temp{background:radial-gradient(ellipse at 20% 20%,rgba(245,158,11,.15) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(180,83,9,.1) 0%,transparent 55%),var(--bg-dark)}
+        #banScreen.perm{background:#06080f;background-image:radial-gradient(ellipse at 20% 20%,rgba(220,38,38,.25) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(185,28,28,.2) 0%,transparent 60%)}
+        #banScreen.temp{background:#06080f;background-image:radial-gradient(ellipse at 20% 20%,rgba(245,158,11,.2) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(180,83,9,.18) 0%,transparent 60%)}
         .ban-wrap{width:100%;max-width:480px;animation:banIn .5s cubic-bezier(.34,1.56,.64,1)}
         @keyframes banIn{from{transform:translateY(48px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
         .ban-perm{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(185,28,28,.04));border:1px solid rgba(239,68,68,.3);border-radius:28px;padding:40px 36px;text-align:center;box-shadow:0 0 80px rgba(239,68,68,.12),0 32px 80px rgba(0,0,0,.6)}
@@ -1649,12 +1649,31 @@
     };
 
     window.processLogin = async () => {
-        // Blokir login jika device sudah banned permanen
+        // Cek device ban — tapi verifikasi dulu ke Firebase (mungkin sudah di-unban)
         if (localStorage.getItem(PERM_BAN_KEY)) {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass  = document.getElementById('authPass').value;
+            if (!email || !pass) return showToast('Error', 'Email & password wajib diisi!', 'error');
             try {
-                const ban = JSON.parse(localStorage.getItem(PERM_BAN_KEY));
+                const cred2 = await signInWithEmailAndPassword(auth, email, pass);
+                const snap2 = await get(ref(db, 'users/' + cred2.user.uid));
+                const ud2 = snap2.val() || {};
+                if (!ud2.banned) {
+                    // Sudah di-unban admin — hapus device ban dan lanjutkan
+                    localStorage.removeItem(PERM_BAN_KEY);
+                    if (isBanScreenShowing) _hideBanScreen(false);
+                    closeModal('modalAuth');
+                    showToast('Berhasil! 👋', 'Selamat datang kembali!', 'success');
+                } else {
+                    // Masih banned
+                    const ban = JSON.parse(localStorage.getItem(PERM_BAN_KEY) || '{}');
+                    _showPermBanScreen(ud2.bannedReason || ban.reason, ud2.bannedAt || ban.bannedAt);
+                    closeModal('modalAuth');
+                }
+            } catch {
+                const ban = JSON.parse(localStorage.getItem(PERM_BAN_KEY) || '{}');
                 _showPermBanScreen(ban.reason, ban.bannedAt);
-            } catch { _showPermBanScreen('Melanggar ketentuan layanan.', null); }
+            }
             return;
         }
         const email = document.getElementById('authEmail').value.trim();
@@ -1674,9 +1693,9 @@
     };
 
     window.logoutUser = () => {
-        // Ban permanen: tidak bisa logout
-        if (localStorage.getItem(PERM_BAN_KEY)) {
-            showToast('Diblokir', 'Akun diblokir permanen. Logout tidak tersedia.', 'error');
+        // Ban permanen: tidak bisa logout (harus tunggu admin unban)
+        if (isBanScreenShowing) {
+            showToast('Diblokir', 'Akun masih diblokir. Tidak bisa logout.', 'error');
             return;
         }
         // Ban sementara: tidak bisa logout
@@ -2422,7 +2441,17 @@
             if (!raw) return false;
             const d = JSON.parse(raw);
             if (d && d.uid && d.reason) {
+                // Tampilkan ban screen dulu (cepat dari localStorage)
                 _showPermBanScreen(d.reason, d.bannedAt);
+                // Verifikasi ke Firebase: mungkin admin sudah unban
+                get(ref(db, 'users/' + d.uid)).then(snap => {
+                    const ud = snap.val() || {};
+                    if (!ud.banned) {
+                        // Admin sudah unban — hapus device lock dan sembunyikan ban screen
+                        localStorage.removeItem(PERM_BAN_KEY);
+                        _hideBanScreen(true);
+                    }
+                }).catch(() => {}); // Kalau gagal fetch, biarkan ban screen tetap muncul
                 return true;
             }
         } catch { localStorage.removeItem(PERM_BAN_KEY); }
@@ -2517,22 +2546,25 @@
         if (banCountdownInterval) { clearInterval(banCountdownInterval); banCountdownInterval = null; }
         document.body.style.overflow = 'auto';
         isBanScreenShowing = false;
+        // Hapus device ban dari localStorage saat admin unban
+        try { localStorage.removeItem(PERM_BAN_KEY); } catch {}
+        console.log('[XREZZKY] Ban screen hidden, localStorage cleared');
         if (showNotif) {
-            // Notif akun dibuka
             setTimeout(() => showToast(
-                '✅ Akun Dibuka!',
-                'Akun kamu telah dibuka oleh admin. Selamat berbelanja!',
+                '✅ Akun Telah Dibuka!',
+                'Akunmu telah dibuka oleh admin. Selamat berbelanja kembali!',
                 'success'
-            ), 300);
+            ), 400);
         }
     };
 
     // ── Proses ban dari data Firebase — dipanggil oleh onValue listener ──
     const processBanCheck = (userData, uid) => {
         if (!userData || !userData.banned) {
-            // Akun TIDAK banned — jika sebelumnya ban screen muncul, sembunyikan
-            if (isBanScreenShowing) {
-                _hideBanScreen(true);  // tampilkan notif "akun dibuka"
+            // Akun TIDAK banned — cek apakah ban screen sedang tampil (via DOM)
+            const bs = document.getElementById('banScreen');
+            if (bs && bs.classList.contains('on')) {
+                _hideBanScreen(true);  // sembunyikan + notif "akun dibuka"
             }
             return false;
         }
@@ -2541,11 +2573,11 @@
         const reason = userData.bannedReason || 'Melanggar ketentuan layanan.';
 
         if (type === 'permanent') {
-            // Simpan ke device supaya banned permanen walau ganti akun
+            // Simpan ke device (device lock)
             saveDeviceBan(uid, reason, userData.bannedAt);
+            // Tampilkan ban screen — JANGAN signOut agar onValue tetap berjalan
+            // Kalau admin unban → onValue detect banned=false → _hideBanScreen otomatis
             _showPermBanScreen(reason, userData.bannedAt);
-            // Force logout — tidak bisa ganti akun
-            setTimeout(() => signOut(auth).catch(() => {}), 1000);
             return true;
 
         } else if (type === 'temporary') {
