@@ -1663,12 +1663,10 @@
         try {
             const cred = await signInWithEmailAndPassword(auth, email, pass);
             // Langsung cek ban di Firebase setelah login
-            const snapUser = await get(ref(db, `users/${cred.user.uid}`));
+            const snapUser = await get(ref(db, 'users/' + cred.user.uid));
             const ud = snapUser.val() || {};
-            if (ud.banned) {
-                const isBanned = processBanCheck(ud, cred.user.uid);
-                if (isBanned) { closeModal('modalAuth'); return; }
-            }
+            const isBannedLogin = processBanCheck(ud, cred.user.uid);
+            if (isBannedLogin) { closeModal('modalAuth'); return; }
             showToast('Berhasil!', 'Selamat datang kembali! 👋', 'success');
         } catch (e) {
             showToast('Gagal', 'Email atau password salah!', 'error');
@@ -2405,13 +2403,19 @@
     // ============================================================
 
     // ════════════════════════════════════════════════════════════════
-    //  SISTEM BAN — COMPLETE (Permanen + Sementara + Device Lock)
+    //  SISTEM BAN — REALTIME (Permanen + Sementara + Device Lock)
     // ════════════════════════════════════════════════════════════════
     const PERM_BAN_KEY = 'xrz_device_ban_v1';
     const DEFAULT_CS   = '6285822558353';
     let banCountdownInterval = null;
+    let isBanScreenShowing   = false;  // flag agar tidak double show
 
-    // Cek apakah perangkat ini sudah di-banned permanen via localStorage
+    // ── Simpan device ban permanen ke localStorage ──
+    const saveDeviceBan = (uid, reason, bannedAt) => {
+        try { localStorage.setItem(PERM_BAN_KEY, JSON.stringify({ uid, reason, bannedAt, savedAt: Date.now() })); } catch {}
+    };
+
+    // ── Cek device ban permanen dari localStorage (sebelum Firebase load) ──
     const checkDeviceBan = () => {
         try {
             const raw = localStorage.getItem(PERM_BAN_KEY);
@@ -2425,14 +2429,12 @@
         return false;
     };
 
-    // Simpan flag banned permanen ke localStorage (device lock)
-    const saveDeviceBan = (uid, reason, bannedAt) => {
-        try { localStorage.setItem(PERM_BAN_KEY, JSON.stringify({ uid, reason, bannedAt, savedAt: Date.now() })); } catch {}
-    };
-
-    // Tampilkan ban screen permanen
+    // ── Tampilkan ban screen PERMANEN ──
     const _showPermBanScreen = (reason, bannedAt) => {
+        if (banCountdownInterval) { clearInterval(banCountdownInterval); banCountdownInterval = null; }
+        isBanScreenShowing = true;
         document.getElementById('loader') && (document.getElementById('loader').style.display = 'none');
+        // Tutup semua modal
         document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
         document.body.style.overflow = 'hidden';
 
@@ -2441,14 +2443,20 @@
         const bs = document.getElementById('banScreen');
         bs.className = 'on perm';
 
-        document.getElementById('banPermReason').textContent = reason || 'Melanggar ketentuan layanan XREZZKY STORE.';
+        document.getElementById('banPermReason').textContent =
+            reason || 'Melanggar ketentuan layanan XREZZKY STORE.';
         document.getElementById('banPermDate').textContent = bannedAt
-            ? new Date(bannedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            ? new Date(bannedAt).toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long',
+                day: 'numeric', hour: '2-digit', minute: '2-digit'
+              })
             : 'Tidak diketahui';
     };
 
-    // Tampilkan ban screen sementara
+    // ── Tampilkan ban screen SEMENTARA dengan countdown realtime ──
     const _showTempBanScreen = (reason, bannedUntil) => {
+        if (banCountdownInterval) clearInterval(banCountdownInterval);
+        isBanScreenShowing = true;
         document.getElementById('loader') && (document.getElementById('loader').style.display = 'none');
         document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
         document.body.style.overflow = 'hidden';
@@ -2457,59 +2465,98 @@
         document.getElementById('banCardTemp').style.display = 'block';
         const bs = document.getElementById('banScreen');
         bs.className = 'on temp';
-
-        document.getElementById('banTempReason').textContent = reason || 'Pelanggaran ketentuan layanan.';
-
-        const endDate = new Date(bannedUntil);
-        document.getElementById('banEndDate').textContent = 'Berakhir: ' + endDate.toLocaleString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
         document.getElementById('banLockOverlay').className = 'on';
 
-        if (banCountdownInterval) clearInterval(banCountdownInterval);
-        banCountdownInterval = setInterval(() => {
+        document.getElementById('banTempReason').textContent =
+            reason || 'Pelanggaran ketentuan layanan.';
+
+        const endDate = new Date(bannedUntil);
+        document.getElementById('banEndDate').textContent =
+            'Berakhir: ' + endDate.toLocaleString('id-ID', {
+                weekday: 'short', year: 'numeric', month: 'short',
+                day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+        // Countdown realtime
+        const tick = () => {
             const rem = bannedUntil - Date.now();
+            const el  = document.getElementById('banCountdown');
+            if (!el) return;
             if (rem <= 0) {
                 clearInterval(banCountdownInterval);
-                document.getElementById('banCountdown').textContent = '00:00:00';
+                banCountdownInterval = null;
+                el.textContent = '00:00:00';
+                // Auto-unban di Firebase
                 if (currentUser) {
-                    update(ref(db, `users/${currentUser.uid}`), { banned: false, bannedType: null, bannedReason: null, bannedUntil: null })
-                        .then(() => { _hideBanScreen(); location.reload(); }).catch(() => location.reload());
-                } else location.reload();
-            } else {
-                const h = Math.floor(rem / 3600000);
-                const m = Math.floor((rem % 3600000) / 60000);
-                const s = Math.floor((rem % 60000) / 1000);
-                document.getElementById('banCountdown').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                    update(ref(db, 'users/' + currentUser.uid), {
+                        banned: false, bannedType: null,
+                        bannedReason: null, bannedUntil: null
+                    }).catch(() => {});
+                }
+                // hideBanScreen akan dipanggil oleh onValue listener saat data berubah
+                return;
             }
-        }, 1000);
+            const h = Math.floor(rem / 3600000);
+            const m = Math.floor((rem % 3600000) / 60000);
+            const s = Math.floor((rem % 60000) / 1000);
+            el.textContent =
+                String(h).padStart(2, '0') + ':' +
+                String(m).padStart(2, '0') + ':' +
+                String(s).padStart(2, '0');
+        };
+        tick();
+        banCountdownInterval = setInterval(tick, 1000);
     };
 
-    // Sembunyikan ban screen
-    const _hideBanScreen = () => {
+    // ── Sembunyikan ban screen + tampilkan notif dibuka ──
+    const _hideBanScreen = (showNotif = true) => {
         const bs = document.getElementById('banScreen');
-        if (bs) bs.className = '';
         const lo = document.getElementById('banLockOverlay');
+        if (bs) bs.className = '';
         if (lo) lo.className = '';
-        document.body.style.overflow = 'auto';
         if (banCountdownInterval) { clearInterval(banCountdownInterval); banCountdownInterval = null; }
+        document.body.style.overflow = 'auto';
+        isBanScreenShowing = false;
+        if (showNotif) {
+            // Notif akun dibuka
+            setTimeout(() => showToast(
+                '✅ Akun Dibuka!',
+                'Akun kamu telah dibuka oleh admin. Selamat berbelanja!',
+                'success'
+            ), 300);
+        }
     };
 
-    // Proses ban check dari data Firebase user
+    // ── Proses ban dari data Firebase — dipanggil oleh onValue listener ──
     const processBanCheck = (userData, uid) => {
-        if (!userData.banned) return false;
-        const type   = userData.bannedType || 'permanent';
+        if (!userData || !userData.banned) {
+            // Akun TIDAK banned — jika sebelumnya ban screen muncul, sembunyikan
+            if (isBanScreenShowing) {
+                _hideBanScreen(true);  // tampilkan notif "akun dibuka"
+            }
+            return false;
+        }
+
+        const type   = userData.bannedType  || 'permanent';
         const reason = userData.bannedReason || 'Melanggar ketentuan layanan.';
 
         if (type === 'permanent') {
+            // Simpan ke device supaya banned permanen walau ganti akun
             saveDeviceBan(uid, reason, userData.bannedAt);
             _showPermBanScreen(reason, userData.bannedAt);
-            setTimeout(() => signOut(auth).catch(() => {}), 800);
+            // Force logout — tidak bisa ganti akun
+            setTimeout(() => signOut(auth).catch(() => {}), 1000);
             return true;
+
         } else if (type === 'temporary') {
             const bannedUntil = userData.bannedUntil || 0;
             if (Date.now() >= bannedUntil) {
-                // Sudah expired — auto unban
-                update(ref(db, `users/${uid}`), { banned: false, bannedType: null, bannedReason: null, bannedUntil: null });
+                // Sudah expired, auto-unban di Firebase
+                update(ref(db, 'users/' + uid), {
+                    banned: false, bannedType: null,
+                    bannedReason: null, bannedUntil: null
+                }).catch(() => {});
+                if (isBanScreenShowing) _hideBanScreen(true);
                 return false;
             }
             _showTempBanScreen(reason, bannedUntil);
@@ -2518,26 +2565,27 @@
         return false;
     };
 
-    // Tombol "Periksa Status" di ban sementara
+    // ── Tombol "Periksa Status" di ban sementara ──
     window.checkBanStatus = async () => {
         if (!currentUser) { location.reload(); return; }
         try {
-            const snap = await get(ref(db, `users/${currentUser.uid}`));
+            const snap = await get(ref(db, 'users/' + currentUser.uid));
             const d = snap.val() || {};
             if (!d.banned) {
-                _hideBanScreen();
-                showToast('Akses Dipulihkan! ✅', 'Ban kamu telah dicabut!', 'success');
+                _hideBanScreen(true);
             } else if (d.bannedType === 'temporary' && d.bannedUntil && Date.now() >= d.bannedUntil) {
-                await update(ref(db, `users/${currentUser.uid}`), { banned: false, bannedType: null, bannedReason: null, bannedUntil: null });
-                _hideBanScreen();
-                showToast('Akses Dipulihkan! ✅', 'Waktu ban sudah habis!', 'success');
+                await update(ref(db, 'users/' + currentUser.uid), {
+                    banned: false, bannedType: null,
+                    bannedReason: null, bannedUntil: null
+                });
+                _hideBanScreen(true);
             } else {
                 showToast('Masih Diblokir', 'Akun masih dalam masa blokir. Tunggu sesuai waktu yang tertera.', 'warning');
             }
         } catch { showToast('Error', 'Gagal memeriksa status. Coba lagi.', 'error'); }
     };
 
-    // Update CS link dari Firebase ke ban buttons
+    // ── Update CS links di ban screen dari Firebase contact ──
     const updateBanCsLinks = (csHref) => {
         ['banPermCsBtn', 'banTempCsBtn'].forEach(id => {
             const el = document.getElementById(id);
@@ -2669,18 +2717,12 @@
                 onValue(ref(db, 'users/' + user.uid), (snapU) => {
                     currentUserData = snapU.exists() ? snapU.val() : { role: 'buyer' };
 
-                    // ── CEK BAN REALTIME ──
-                    if (currentUserData.banned) {
-                        const wasBanned = processBanCheck(currentUserData, user.uid);
-                        if (wasBanned) return; // stop semua rendering
-                    } else {
-                        // Jika ban dicabut oleh admin, sembunyikan ban screen
-                        const bs = document.getElementById('banScreen');
-                        if (bs && bs.classList.contains('on') && currentUserData.bannedType !== 'permanent') {
-                            _hideBanScreen();
-                            showToast('Akses Dipulihkan! ✅', 'Ban kamu telah dicabut oleh admin!', 'success');
-                        }
-                    }
+                    // ── CEK BAN REALTIME (setiap kali data user berubah di Firebase) ──
+                    // processBanCheck sudah handle:
+                    //   - banned=true  → tampilkan ban screen (perm/temp)
+                    //   - banned=false → sembunyikan ban screen + notif "akun dibuka"
+                    const isBanned = processBanCheck(currentUserData, user.uid);
+                    if (isBanned) return; // jangan render apapun kalau masih banned
 
                     const role      = currentUserData?.role || 'buyer';
                     const isAdmin   = role === 'admin';
